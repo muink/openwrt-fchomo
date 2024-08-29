@@ -36,5 +36,11 @@ define Package/mihomo
   USERID:=mihomo=7790:mihomo=7790
 endef
 
+define Build/Prepare
+	$(Build/Prepare/Default)
+	# rm unit test
+	rm -f $(PKG_BUILD_DIR)/rules/logic_test/logic_test.go
+endef
+
 $(eval $(call GoBinPackage,mihomo))
 $(eval $(call BuildPackage,mihomo))

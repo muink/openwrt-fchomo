@@ -1,0 +1,47 @@
+#!/usr/bin/ucode
+
+'use strict';
+
+import { access, popen } from 'fs';
+
+/* Kanged from ucode/luci */
+function shellquote(s) {
+	return `'${replace(s, "'", "'\\''")}'`;
+}
+
+function hasKernelModule(kmod) {
+	return (system(sprintf('[ -e "/lib/modules/$(uname -r)"/%s ]', shellquote(kmod))) === 0);
+}
+
+const methods = {
+	get_features: {
+		call: function() {
+			let features = {};
+
+			const fd = popen('/usr/bin/mihomo -v');
+			if (fd) {
+				for (let line = fd.read('line'); length(line); line = fd.read('line')) {
+					let ver = match(trim(line), /Mihomo Meta (.*)/);
+					if (ver)
+						features.core_version = split(ver[1], ' ')[0];
+					let tags = match(trim(line), /Use tags: (.*)/);
+					if (tags)
+						for (let k in split(tags[1], ','))
+							features[k] = true;
+				}
+
+				fd.close();
+			}
+
+			features.hm_has_dnsmasq_full = system(`[ -n "$(opkg list-installed dnsmasq-full)" ]`) == 0 || null;
+			features.hm_has_ip_full = access('/usr/libexec/ip-full');
+			features.hm_has_tcp_brutal = hasKernelModule('brutal.ko');
+			features.hm_has_tproxy = hasKernelModule('nft_tproxy.ko') || access('/etc/modules.d/nft-tproxy');
+			features.hm_has_tun = hasKernelModule('tun.ko') || access('/etc/modules.d/30-tun');
+
+			return features;
+		}
+	}
+};
+
+return { 'luci.fchomo': methods };

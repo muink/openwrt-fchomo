@@ -5,10 +5,10 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:= \
 	+mihomo \
 	+ca-bundle \
-	+firewall4 +dnsmasq-full \
+	+firewall4 \
 	+kmod-nft-tproxy \
-	+ip-full +kmod-tun \
-	+curl +yq
+	+curl +yq \
+#	+ip-full +kmod-tun +dnsmasq-full \
 
 PKG_NAME:=luci-app-fchomo
 

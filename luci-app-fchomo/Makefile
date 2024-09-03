@@ -18,6 +18,10 @@ define Package/luci-app-fchomo/conffiles
 /etc/fchomo/provider/
 /etc/fchomo/ruleset/
 /etc/fchomo/resources/
+/etc/fchomo/resources.json
+/etc/fchomo/geoip.dat
+/etc/fchomo/geosite.dat
+/etc/fchomo/cache.db
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk

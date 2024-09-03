@@ -34,6 +34,17 @@ return baseclass.extend({
 			});
 	},
 
+	getClashAPI: function(instance) {
+		var callGetClashAPI = rpc.declare({
+			object: 'luci.fchomo',
+			method: 'get_clash_api',
+			params: ['instance'],
+			expect: { '': {} }
+		});
+
+		return L.resolveDefault(callGetClashAPI(instance), {});
+	},
+
 	handleReload: function(ev, sid, instance) {
 		var instance = instance || '';
 		return fs.exec('/etc/init.d/fchomo', ['reload', instance])

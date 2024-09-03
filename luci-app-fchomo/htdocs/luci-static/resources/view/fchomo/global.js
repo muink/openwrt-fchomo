@@ -23,10 +23,20 @@ function renderStatus(ElId, isRunning, instance) {
 	]);
 }
 
-function updateStatus(El, isRunning) {
+function updateStatus(El, isRunning, instance) {
 	if (El) {
 		El.style.color = isRunning ? 'green' : 'red';
 		El.innerHTML = '&ensp;%s&ensp;'.format(isRunning ? _('Running') : _('Not Running'));
+		/* Dashboard button */
+		if (El.nextSibling?.localName === 'a')
+			hm.getClashAPI(instance).then((res) => {
+				let visible = isRunning && (res.http || res.https)
+				El.nextSibling.className = 'cbi-button cbi-button-apply' + (visible ? '' : ' hidden');
+				if (visible)
+					El.nextSibling.href = 'http%s://%s:%s/'.format(res.https ? 's' : '',
+						window.location.hostname,
+						res.https ? res.https.split(':').pop() : res.http.split(':').pop());
+			});
 	}
 
 	return El;
@@ -63,7 +73,7 @@ return view.extend({
 		so.cfgvalue = function() { return renderStatus('_client_bar', false, 'mihomo-c') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-c').then((isRunning) => {
-				updateStatus(document.getElementById('_client_bar'), isRunning);
+				updateStatus(document.getElementById('_client_bar'), isRunning, 'mihomo-c');
 			});
 		})
 
@@ -71,7 +81,7 @@ return view.extend({
 		so.cfgvalue = function() { return renderStatus('_server_bar', false, 'mihomo-s') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-s').then((isRunning) => {
-				updateStatus(document.getElementById('_server_bar'), isRunning);
+				updateStatus(document.getElementById('_server_bar'), isRunning, 'mihomo-s');
 			});
 		})
 

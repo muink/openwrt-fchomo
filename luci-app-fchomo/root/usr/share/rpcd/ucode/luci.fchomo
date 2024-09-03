@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { access, popen } from 'fs';
+import { access, popen, readfile } from 'fs';
 
 /* Kanged from ucode/luci */
 function shellquote(s) {
@@ -12,6 +12,9 @@ function shellquote(s) {
 function hasKernelModule(kmod) {
 	return (system(sprintf('[ -e "/lib/modules/$(uname -r)"/%s ]', shellquote(kmod))) === 0);
 }
+
+const HM_DIR = '/etc/fchomo';
+const RUN_DIR = '/var/run/fchomo';
 
 const methods = {
 	get_features: {
@@ -40,6 +43,24 @@ const methods = {
 			features.hm_has_tun = hasKernelModule('tun.ko') || access('/etc/modules.d/30-tun');
 
 			return features;
+		}
+	},
+
+	get_clash_api: {
+		args: { instance: 'instance' },
+		call: function(req) {
+			if (req.args?.instance) {
+				const instance = req.args?.instance;
+				const config = json(trim(readfile(`${RUN_DIR}/${instance}.json`)) || '{}');
+
+				return {
+					http: config['external-controller'],
+					https: config['external-controller-tls'],
+					doh: config['external-doh-server'],
+					secret: config.secret
+				};
+			} else
+				return {}
 		}
 	}
 };

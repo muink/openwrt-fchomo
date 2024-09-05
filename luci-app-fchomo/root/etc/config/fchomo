@@ -1,6 +1,8 @@
 
 config fchomo 'config'
 
+config fchomo 'resources'
+
 config fchomo 'global'
 
 config fchomo 'experimental'

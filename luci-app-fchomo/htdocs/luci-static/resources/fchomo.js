@@ -5,6 +5,12 @@
 'require ui';
 
 return baseclass.extend({
+	dashrepos: [
+		['metacubex/metacubexd', _('metacubexd')],
+		['metacubex/yacd-meta', _('yacd-meta')],
+		['metacubex/razord-meta', _('razord-meta')]
+	],
+
 	getFeatures: function() {
 		var callGetFeatures = rpc.declare({
 			object: 'luci.fchomo',
@@ -45,7 +51,7 @@ return baseclass.extend({
 		return L.resolveDefault(callGetClashAPI(instance), {});
 	},
 
-	handleReload: function(ev, sid, instance) {
+	handleReload: function(ev, section_id, instance) {
 		var instance = instance || '';
 		return fs.exec('/etc/init.d/fchomo', ['reload', instance])
 			.then((res) => { return window.location = window.location.href.split('#')[0] })

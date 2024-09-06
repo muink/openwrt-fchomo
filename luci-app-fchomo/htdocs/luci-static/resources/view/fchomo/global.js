@@ -170,6 +170,37 @@ return view.extend({
 		so.inputstyle = 'apply';
 		so.onclick = L.bind(hm.handleReload, this);
 
+		so = ss.option(form.DummyValue, '_conn_check', _('Connection check'));
+		so.cfgvalue = function() {
+			var callConnStat = rpc.declare({
+				object: 'luci.fchomo',
+				method: 'connection_check',
+				params: ['url'],
+				expect: { '': {} }
+			});
+
+			var ElId = '_connection_check_results';
+
+			return E([
+				E('button', {
+					'class': 'cbi-button cbi-button-apply',
+					'click': ui.createHandlerFn(self, function() {
+						var weight = document.getElementById(ElId);
+
+						weight.innerHTML = '';
+						return hm.checkurls.forEach((site) => {
+							L.resolveDefault(callConnStat(site[0]), {}).then((res) => {
+								weight.innerHTML += '<span style="color:%s">&ensp;%s</span>'.format((res.httpcode && res.httpcode.match(/^20\d$/)) ? 'green' : 'red', site[1]);
+							});
+						});
+					})
+				}, [ _('Check') ]),
+				E('strong', { id: ElId}, [
+					E('span', { style: 'color:gray' }, ' ' + _('unchecked'))
+				])
+			]);
+		}
+
 		/* Resources management */
 		o = s.taboption('status', form.SectionValue, '_config', form.NamedSection, 'resources', 'fchomo', _('Resources management'));
 		ss = o.subsection;
@@ -180,7 +211,7 @@ return view.extend({
 			so.value(repo[0], repo[1]);
 		});
 		so.write = function() {};
-		so.renderWidget = function() {
+		so.renderWidget = function(/* ... */) {
 			var El = form.ListValue.prototype.renderWidget.apply(this, arguments);
 
 			El.className = 'control-group';

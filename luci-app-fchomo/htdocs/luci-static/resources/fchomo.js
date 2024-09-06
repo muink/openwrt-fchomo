@@ -11,6 +11,14 @@ return baseclass.extend({
 		['metacubex/razord-meta', _('razord-meta')]
 	],
 
+	checkurls: [
+		['https://www.baidu.com', _('Baidu')],
+		['https://s1.music.126.net/style/favicon.ico', _('163Music')],
+		['https://www.google.com/generate_204', _('Google')],
+		['https://github.com', _('GitHub')],
+		['https://www.youtube.com', _('YouTube')]
+	],
+
 	getFeatures: function() {
 		var callGetFeatures = rpc.declare({
 			object: 'luci.fchomo',

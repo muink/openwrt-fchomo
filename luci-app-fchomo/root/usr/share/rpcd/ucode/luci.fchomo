@@ -64,6 +64,24 @@ const methods = {
 		}
 	},
 
+	connection_check: {
+		args: { url: 'url' },
+		call: function(req) {
+			if (!req.args?.url)
+				return { httpcode: null };
+
+			let httpcode = '-1';
+			const fd = popen("wget --spider -ST3 '" + req.args?.url + "' 2>&1 | awk '/^\\s*HTTP\\//{print $2}'");
+			if (fd) {
+				httpcode = trim(fd.read('line')) || httpcode;
+
+				fd.close();
+			}
+
+			return { httpcode: httpcode };
+		}
+	},
+
 	resources_get_version: {
 		args: { type: 'type', repo: 'repo' },
 		call: function(req) {

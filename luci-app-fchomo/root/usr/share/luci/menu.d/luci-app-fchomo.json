@@ -1,6 +1,6 @@
 {
 	"admin/services/fchomo": {
-		"title": "fchomo",
+		"title": "FullCombo Mihomo",
 		"order": 12,
 		"action": {
 			"type": "firstchild"
@@ -27,7 +27,7 @@
 		}
 	},
 	"admin/services/fchomo/node": {
-		"title": "Node",
+		"title": "Nodes",
 		"order": 20,
 		"action": {
 			"type": "view",
@@ -35,7 +35,7 @@
 		}
 	},
 	"admin/services/fchomo/ruleset": {
-		"title": "Ruleset",
+		"title": "Rulesets",
 		"order": 25,
 		"action": {
 			"type": "view",
@@ -51,7 +51,7 @@
 		}
 	},
 	"admin/services/fchomo/log": {
-		"title": "Log",
+		"title": "Logs",
 		"order": 35,
 		"action": {
 			"type": "view",

@@ -135,10 +135,12 @@ return view.extend({
 
 		m = new form.Map('fchomo');
 
-		s = m.section(form.NamedSection, 'config', 'fchomo');
+		s = m.section(form.NamedSection, 'config', 'fchomo', _('FullCombo Mihomo'));
 
-		/* Service status START */
-		s.tab('status', _('Service status'));
+		/* Overview START */
+		s.tab('status', _('Overview'));
+
+		/* Service status */
 		o = s.taboption('status', form.SectionValue, '_status', form.NamedSection, 'config', 'fchomo', _('Service status'));
 		ss = o.subsection;
 
@@ -215,7 +217,7 @@ return view.extend({
 
 		so = ss.option(form.DummyValue, '_china_list_version', _('China list version'));
 		so.cfgvalue = function() { return renderResVersion(this, null, 'china_list') };
-		/* Service status END */
+		/* Overview END */
 
 		/* Global settings START */
 		s.tab('global', _('Global settings'));

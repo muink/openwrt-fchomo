@@ -135,7 +135,16 @@ return view.extend({
 
 		m = new form.Map('fchomo');
 
-		s = m.section(form.NamedSection, 'config', 'fchomo', _('FullCombo Mihomo'));
+		s = m.section(form.NamedSection, 'config', 'fchomo', _('FullCombo Mihomo'),
+			'shark-taiko');
+		s.renderContents = function(/* ... */) {
+			var sectionEl = form.NamedSection.prototype.renderContents.apply(this, arguments);
+
+			// .cbi-section-descr
+			sectionEl.childNodes[1].innerHTML = '<img src="' + hm.sharktaikogif + '" height="52"></img>'
+
+			return sectionEl;
+		}
 
 		/* Overview START */
 		s.tab('status', _('Overview'));
@@ -252,9 +261,12 @@ return view.extend({
 
 		/* Global settings START */
 		s.tab('global', _('Global settings'));
+
+		/* Global settings*/
 		o = s.taboption('global', form.SectionValue, '_global', form.NamedSection, 'global', 'fchomo', _('Global settings'));
 		ss = o.subsection;
 
+		/* Experimental settings */
 		o = s.taboption('global', form.SectionValue, '_experimental', form.NamedSection, 'experimental', 'fchomo', _('Experimental settings'));
 		ss = o.subsection;
 

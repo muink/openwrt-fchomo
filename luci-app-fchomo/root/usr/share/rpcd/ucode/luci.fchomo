@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { access, popen, readfile } from 'fs';
+import { access, lstat, popen, readfile, writefile } from 'fs';
 
 /* Kanged from ucode/luci */
 function shellquote(s) {
@@ -79,6 +79,19 @@ const methods = {
 			}
 
 			return { httpcode: httpcode };
+		}
+	},
+
+	log_clean: {
+		args: { type: 'type' },
+		call: function(req) {
+			if (!(req.args?.type in ['fchomo', 'mihomo-c', 'mihomo-s']))
+				return { result: false, error: 'illegal type' };
+
+			const filestat = lstat(`${RUN_DIR}/${req.args?.type}.log`);
+			if (filestat)
+				writefile(`${RUN_DIR}/${req.args?.type}.log`, '');
+			return { result: true };
 		}
 	},
 

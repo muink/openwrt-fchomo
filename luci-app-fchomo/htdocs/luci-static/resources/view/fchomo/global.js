@@ -15,6 +15,13 @@ var callResVersion = rpc.declare({
 	expect: { '': {} }
 });
 
+var callCrondSet = rpc.declare({
+	object: 'luci.fchomo',
+	method: 'crond_set',
+	params: ['type', 'expr'],
+	expect: { '': {} }
+});
+
 function handleResUpdate(type, repo) {
 	var callResUpdate = rpc.declare({
 		object: 'luci.fchomo',
@@ -205,6 +212,37 @@ return view.extend({
 		/* Resources management */
 		o = s.taboption('status', form.SectionValue, '_config', form.NamedSection, 'resources', 'fchomo', _('Resources management'));
 		ss = o.subsection;
+
+		so = ss.option(form.Flag, 'auto_update', _('Auto update'),
+			_('Auto update resources.'));
+		so.default = so.disabled;
+		so.rmempty = false;
+		so.write = function(section_id, formvalue) {
+			if (formvalue == 1) {
+				callCrondSet('resources', uci.get(data[0], section_id, 'auto_update_expr'));
+			} else
+				callCrondSet('resources');
+
+			return this.super('write', section_id, formvalue);
+		}
+
+		so = ss.option(form.Value, 'auto_update_expr', _('Cron expression'),
+			_('The default value is 2:00 every day.'));
+		so.default = '0 2 * * *';
+		so.placeholder = '0 2 * * *';
+		so.rmempty = false;
+		so.retain = true;
+		so.depends('auto_update', '1');
+		so.write = function(section_id, formvalue) {
+			callCrondSet('resources', formvalue);
+
+			return this.super('write', section_id, formvalue);
+		};
+		so.remove = function(section_id) {
+			callCrondSet('resources');
+
+			return this.super('remove', section_id);
+		};
 
 		so = ss.option(form.ListValue, '_dashboard_version', _('Dashboard version'));
 		so.default = hm.dashrepos[0][0];

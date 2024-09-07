@@ -95,7 +95,7 @@ return view.extend({
 
 		s = m.section(form.NamedSection, 'config', 'fchomo');
 
-		o = s.option(form.DummyValue, '_fchome_logview');
+		o = s.option(form.DummyValue, '_fchomo_logview');
 		o.render = L.bind(getRuntimeLog, this, _('FullCombo Mihomo'), 'fchomo');
 
 		o = s.option(form.DummyValue, '_mihomo-c_logview');

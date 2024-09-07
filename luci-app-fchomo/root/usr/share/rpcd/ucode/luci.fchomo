@@ -68,7 +68,7 @@ const methods = {
 		args: { url: 'url' },
 		call: function(req) {
 			if (!req.args?.url)
-				return { httpcode: null };
+				return { httpcode: null, error: 'illegal url' };
 
 			let httpcode = '-1';
 			const fd = popen("wget --spider -ST3 '" + req.args?.url + "' 2>&1 | awk '/^\\s*HTTP\\//{print $2}'");
@@ -79,6 +79,21 @@ const methods = {
 			}
 
 			return { httpcode: httpcode };
+		}
+	},
+
+	crond_set: {
+		args: { type: 'type', expr: 'expr' },
+		call: function(req) {
+			if (req.args?.type == 'resources') {
+				system(`sed -i "/${replace(HM_DIR, "/", "\\/")}\\/scripts\\/update_resources.sh/d" /etc/crontabs/root`);
+				if (req.args?.expr)
+					system(`echo -e "` + req.args?.expr + ` ${HM_DIR}/scripts/update_resources.sh ALL" >> /etc/crontabs/root`);
+			} else
+				return { result: false, error: 'illegal type' };
+
+			system(`/etc/init.d/cron restart`);
+			return { result: true };
 		}
 	},
 

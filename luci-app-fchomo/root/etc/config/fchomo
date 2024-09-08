@@ -2,8 +2,25 @@
 config fchomo 'config'
 
 config fchomo 'resources'
+	option auto_update '0'
 
 config fchomo 'global'
+	option mode 'rule'
+	option find_process_mode 'off'
+	option log_level 'warning'
+	option unified_delay '1'
+	option tcp_concurrent '1'
+	list skip_auth_prefixes '127.0.0.1/8'
+	list skip_auth_prefixes '::1/128'
+	option HARDCODE_interface-name 'en0'
+	option HARDCODE_routing-mark '6666'
+
+config fchomo 'tls'
+	option tls_cert_path '/etc/uhttpd.crt'
+	option tls_key_path '/etc/uhttpd.key'
+
+config fchomo 'api'
+	option external_controller_port '9090'
+	option external_controller_tls_port '9443'
 
 config fchomo 'experimental'
-

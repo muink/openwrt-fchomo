@@ -54,7 +54,7 @@ get_local_ver() {
 check_dashboard_update() {
 	local dashtype="$1"
 	local dashrepo="$2"
-	local dashrepoid="$(echo -n "$dashrepo" | sed 's|[^[:alnum:]]|_|g' | tr 'A-Z' 'a-z')"
+	local dashrepoid="$(echo -n "$dashrepo" | sed 's|\W|_|g' | tr 'A-Z' 'a-z')"
 	local wget="wget --timeout=10 -q"
 
 	set_lock "set" "$dashtype"

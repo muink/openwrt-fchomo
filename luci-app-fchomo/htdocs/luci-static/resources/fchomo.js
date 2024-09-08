@@ -25,6 +25,18 @@ return baseclass.extend({
 		['https://www.youtube.com', _('YouTube')]
 	],
 
+	tls_client_fingerprints: [
+		'chrome',
+		'firefox',
+		'safari',
+		'iOS',
+		'android',
+		'edge',
+		'360',
+		'qq',
+		'random'
+	],
+
 	getFeatures: function() {
 		var callGetFeatures = rpc.declare({
 			object: 'luci.fchomo',

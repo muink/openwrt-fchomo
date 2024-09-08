@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ! uci -q get fchomo.global.authentication; then
+	uci add_list fchomo.global.authentication="fchomodef:$(cat /proc/sys/kernel/random/uuid)"
+	uci commit fchomo
+fi
+
+exit 0

@@ -86,7 +86,7 @@ function updateStatus(El, isRunning, instance) {
 		/* Dashboard button */
 		if (El.nextSibling?.localName === 'a')
 			hm.getClashAPI(instance).then((res) => {
-				let visible = isRunning && (res.http || res.https)
+				let visible = isRunning && (res.http || res.https);
 				El.nextSibling.className = 'cbi-button cbi-button-apply' + (visible ? '' : ' hidden');
 				if (visible)
 					El.nextSibling.href = 'http%s://%s:%s/'.format(res.https ? 's' : '',
@@ -289,15 +289,137 @@ return view.extend({
 		so.cfgvalue = function() { return renderResVersion(this, null, 'china_list') };
 		/* Overview END */
 
-		/* Global settings START */
-		s.tab('global', _('Global settings'));
+		/* General START */
+		s.tab('general', _('General'));
 
-		/* Global settings*/
-		o = s.taboption('global', form.SectionValue, '_global', form.NamedSection, 'global', 'fchomo', _('Global settings'));
+		/* General settings */
+		o = s.taboption('general', form.SectionValue, '_global', form.NamedSection, 'global', 'fchomo', _('General settings'));
 		ss = o.subsection;
 
+		so = ss.option(form.ListValue, 'mode', _('Operation mode'));
+		so.value('direct', _('Direct'));
+		so.value('rule', _('Rule'));
+		so.value('global', _('Global'));
+		so.default = 'rule';
+
+		so = ss.option(form.ListValue, 'find_process_mode', _('Process matching mode'));
+		so.value('always', _('Enable'));
+		so.value('strict', _('Auto'));
+		so.value('off', _('Disable'));
+		so.default = 'off';
+
+		so = ss.option(form.ListValue, 'log_level', _('Log level'));
+		so.value('silent', _('Silent'));
+		so.value('error', _('Error'));
+		so.value('warning', _('Warning'));
+		so.value('info', _('Info'));
+		so.value('debug', _('Debug'));
+		so.default = 'warning';
+
+		so = ss.option(form.Flag, 'ipv6', _('IPv6 support'));
+		so.default = so.enabled;
+
+		so = ss.option(form.Flag, 'unified_delay', _('Unified delay'));
+		so.default = so.disabled;
+
+		so = ss.option(form.Flag, 'tcp_concurrent', _('TCP concurrency'));
+		so.default = so.disabled;
+
+		so = ss.option(form.Value, 'keep_alive_interval', _('TCP Keep Alive interval'),
+			_('Unit is seconds.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '120';
+
+		/* Global Authentication */
+		o = s.taboption('general', form.SectionValue, '_global', form.NamedSection, 'global', 'fchomo', _('Global Authentication'));
+		ss = o.subsection;
+
+		so = ss.option(form.DynamicList, 'authentication', _('User Authentication'));
+		so.datatype = 'list(string)';
+		so.placeholder = 'user1:pass1';
+		so.validate = function(section_id, value) {
+			if (!value)
+				return true;
+			if (!value.match(/^[\w-]{3,}:[^:]+$/))
+				return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}:[^:]+');
+
+			return true;
+		}
+
+		so = ss.option(form.DynamicList, 'skip_auth_prefixes', _('No Authentication IP ranges'));
+		so.datatype = 'list(cidr)';
+		so.placeholder = '127.0.0.1/8';
+		/* General END */
+
+		/* TLS START */
+		s.tab('tls', _('TLS'));
+
+		/* TLS settings */
+		o = s.taboption('tls', form.SectionValue, '_tls', form.NamedSection, 'tls', 'fchomo', null);
+		ss = o.subsection;
+
+		so = ss.option(form.ListValue, 'global_client_fingerprint', _('Global client fingerprint'));
+		so.default = hm.tls_client_fingerprints[0];
+		hm.tls_client_fingerprints.forEach((res) => {
+			so.value(res);
+		});
+
+		so = ss.option(form.Value, 'tls_cert_path', _('API TLS certificate path'));
+		so.datatype = 'file';
+		so.value('/etc/uhttpd.crt');
+
+		so = ss.option(form.Value, 'tls_key_path', _('API TLS private key path'));
+		so.datatype = 'file';
+		so.value('/etc/uhttpd.key');
+		/* TLS END */
+
+		/* API START */
+		s.tab('api', _('API'));
+
+		/* API settings */
+		o = s.taboption('api', form.SectionValue, '_api', form.NamedSection, 'api', 'fchomo', null);
+		ss = o.subsection;
+
+		so = ss.option(form.ListValue, 'dashboard_repo', _('Select Dashboard'));
+		so.default = hm.dashrepos[0][0];
+		so.load = function(section_id) {
+			delete this.keylist;
+			delete this.vallist;
+
+			this.value('', _('-- Please choose --'));
+			hm.dashrepos.forEach((repo) => {
+				L.resolveDefault(callResVersion('dashboard', repo[0]), {}).then((res) => {
+					this.value(repo[0], repo[1] + ' - ' + (res.version || _('Not Installed')));
+				});
+			});
+
+			return this.super('load', section_id);
+		}
+		so.rmempty = false;
+
+		so = ss.option(form.Value, 'external_controller_port', _('API HTTP port'));
+		so.datatype = 'port';
+		so.placeholder = '9090';
+
+		so = ss.option(form.Value, 'external_controller_tls_port', _('API HTTPS port'));
+		so.datatype = 'port';
+		so.placeholder = '9443';
+		so.depends({'fchomo.tls.tls_cert_path': /^\/.+/, 'fchomo.tls.tls_key_path': /^\/.+/});
+
+		so = ss.option(form.Value, 'external_doh_server', _('API DoH service'));
+		so.placeholder = '/dns-query';
+		so.depends({'external_controller_tls_port': /\d+/});
+
+		so = ss.option(form.Value, 'secret', _('API secret'),
+			_('Random will be used if empty.'));
+		so.password = true;
+		/* API END */
+
+		/* Experimental START */
+		s.tab('experimental', _('Experimental'));
+
 		/* Experimental settings */
-		o = s.taboption('global', form.SectionValue, '_experimental', form.NamedSection, 'experimental', 'fchomo', _('Experimental settings'));
+		o = s.taboption('experimental', form.SectionValue, '_experimental', form.NamedSection, 'experimental', 'fchomo', null);
 		ss = o.subsection;
 
 		so = ss.option(form.Flag, 'quic_go_disable_gso', _('quic-go-disable-gso'));
@@ -308,7 +430,7 @@ return view.extend({
 
 		so = ss.option(form.Flag, 'dialer_ip4p_convert', _('dialer-ip4p-convert'));
 		so.default = so.disabled;
-		/* Global settings END */
+		/* Experimental END */
 
 		return m.render();
 	}

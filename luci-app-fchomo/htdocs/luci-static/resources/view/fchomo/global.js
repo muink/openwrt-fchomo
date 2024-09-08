@@ -258,16 +258,14 @@ return view.extend({
 
 			return renderResVersion(this, El, 'dashboard', this.default);
 		}
-		so.validate = function(section_id, value) {
+		so.onchange = function(ev, section_id, value) {
 			this.default = value;
 
-			var weight = document.getElementById(this.cbid(section_id));
+			var weight = ev.target;
 			if (weight)
-				L.resolveDefault(callResVersion('dashboard', value), {}).then((res) => {
+				return L.resolveDefault(callResVersion('dashboard', value), {}).then((res) => {
 					updateResVersion(weight.lastChild, res.version);
 				});
-
-			return true;
 		}
 
 		so = ss.option(form.DummyValue, '_geoip_version', _('GeoIP version'));
@@ -326,7 +324,7 @@ return view.extend({
 		so.default = so.disabled;
 
 		so = ss.option(form.Value, 'keep_alive_interval', _('TCP Keep Alive interval'),
-			_('Unit is seconds.'));
+			_('In seconds. <code>120</code> is used by default.'));
 		so.datatype = 'uinteger';
 		so.placeholder = '120';
 
@@ -350,6 +348,84 @@ return view.extend({
 		so.datatype = 'list(cidr)';
 		so.placeholder = '127.0.0.1/8';
 		/* General END */
+
+		/* Inbound START */
+		s.tab('inbound', _('Inbound'));
+
+		/* Listen ports */
+		o = s.taboption('inbound', form.SectionValue, '_inbound', form.NamedSection, 'inbound', 'fchomo', _('Listen ports'));
+		ss = o.subsection;
+
+		so = ss.option(form.Value, 'mixed_port', _('Mixed port'));
+		so.datatype = 'port'
+		so.placeholder = '7790';
+		so.rmempty = false;
+
+		so = ss.option(form.Value, 'redir_port', _('Redir port'));
+		so.datatype = 'port'
+		so.placeholder = '7791';
+		so.rmempty = false;
+
+		so = ss.option(form.Value, 'tproxy_port', _('Tproxy port'));
+		so.datatype = 'port'
+		so.placeholder = '7792';
+		so.rmempty = false;
+
+		so = ss.option(form.ListValue, 'proxy_mode', _('Proxy mode'));
+		so.value('redir', _('Redirect TCP'));
+		if (features.hm_has_tproxy)
+			so.value('redir_tproxy', _('Redirect TCP + TProxy UDP'));
+		if (features.hm_has_ip_full && features.hm_has_tun) {
+			so.value('redir_tun', _('Redirect TCP + Tun UDP'));
+			so.value('tun', _('Tun TCP/UDP'));
+		} else
+			so.description = _('To enable Tun support, you need to install <code>ip-full</code> and <code>kmod-tun</code>');
+		so.default = 'redir_tproxy';
+		so.rmempty = false;
+
+		/* Tun settings */
+		o = s.taboption('inbound', form.SectionValue, '_inbound', form.NamedSection, 'inbound', 'fchomo', _('Tun settings'));
+		ss = o.subsection;
+
+		so = ss.option(form.ListValue, 'tun_stack', _('Stack'),
+			_('Tun stack.'));
+		so.value('system', _('System'));
+		if (features.with_gvisor) {
+			so.value('gvisor', _('gVisor'));
+			so.value('mixed', _('Mixed'));
+		}
+		so.default = 'system';
+		so.rmempty = false;
+		so.onchange = function(ev, section_id, value) {
+			var desc = ev.target.nextElementSibling;
+			if (value === 'mixed')
+				desc.innerHTML = _('Mixed <code>system</code> TCP stack and <code>gVisor</code> UDP stack.')
+			else if (value === 'gvisor')
+				desc.innerHTML = _('Based on google/gvisor.');
+			else if (value === 'system')
+				desc.innerHTML = _('Less compatibility and sometimes better performance.');
+		}
+
+		so = ss.option(form.Value, 'tun_mtu', _('Maximum Transmission Unit'));
+		so.datatype = 'uinteger';
+		so.placeholder = '9000';
+
+		so = ss.option(form.Flag, 'tun_gso', _('Generic segmentation offload'));
+		so.default = so.disabled;
+
+		so = ss.option(form.Value, 'tun_gso_max_size', _('Segment maximum size'));
+		so.datatype = 'uinteger';
+		so.placeholder = '65536';
+
+		so = ss.option(form.Value, 'tun_udp_timeout', _('UDP NAT expiration time'),
+			_('In seconds. <code>300</code> is used by default.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '300';
+
+		so = ss.option(form.Flag, 'tun_endpoint_independent_nat', _('Endpoint-Independent NAT'),
+			_('Performance may degrade slightly, so it is not recommended to enable on when it is not needed.'));
+		so.default = so.disabled;
+		/* Inbound END */
 
 		/* TLS START */
 		s.tab('tls', _('TLS'));

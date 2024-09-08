@@ -21,12 +21,23 @@ const ucifchm = 'config',
       ucires = 'resources';
 
 const uciglobal = 'global',
+      uciinbound = 'inbound',
       ucitls = 'tls',
       uciapi = 'api',
       ucisniffer = 'sniffer',
       uciexpr = 'experimental';
 
 const ucisniff = 'sniff';
+
+/* Hardcode config */
+const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
+      tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',
+      tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',
+      route_table_id = strToInt(uci.get(uciconf, ucifchm, 'route_table_id')) || 2022,
+      route_rule_pref = strToInt(uci.get(uciconf, ucifchm, 'route_rule_pref')) || 9000,
+	  redirect_gate_mark = 2023,
+	  redirect_pass_mark = 2024,
+      posh = 'c2luZ2JveA';
 
 /* UCI config END */
 
@@ -91,6 +102,15 @@ config.profile = {
 };
 /* Cache END */
 
+/* Experimental START */
+/* Experimental settings */
+config.experimental = {
+	"quic-go-disable-gso": strToBool(uci.get(uciconf, uciexpr, 'quic_go_disable_gso')),
+	"quic-go-disable-ecn": strToBool(uci.get(uciconf, uciexpr, 'quic_go_disable_ecn')),
+	"dialer-ip4p-convert": strToBool(uci.get(uciconf, uciexpr, 'dialer_ip4p_convert'))
+};
+/* Experimental END */
+
 /* Sniffer START */
 /* Sniffer settings */
 config.sniffer = {
@@ -116,13 +136,71 @@ uci.foreach(uciconf, ucisniff, (cfg) => {
 });
 /* Sniffer END */
 
-/* Experimental START */
-/* Experimental settings */
-config.experimental = {
-	"quic-go-disable-gso": strToBool(uci.get(uciconf, uciexpr, 'quic_go_disable_gso')),
-	"quic-go-disable-ecn": strToBool(uci.get(uciconf, uciexpr, 'quic_go_disable_ecn')),
-	"dialer-ip4p-convert": strToBool(uci.get(uciconf, uciexpr, 'dialer_ip4p_convert'))
-};
-/* Experimental END */
+/* Inbound START */
+const proxy_mode = uci.get(uciconf, uciinbound, 'proxy_mode') || 'redir_tproxy';
+/* Listen ports */
+config.listeners = [];
+push(config.listeners, {
+	name: 'mixed-in',
+	type: 'mixed',
+	port: strToInt(uci.get(uciconf, uciinbound, 'mixed_port')) || '7790',
+	listen: '::',
+	udp: true
+});
+if (match(proxy_mode, /redir/))
+	push(config.listeners, {
+		name: 'redir-in',
+		type: 'redir',
+		port: strToInt(uci.get(uciconf, uciinbound, 'redir_port')) || '7791',
+		listen: '::'
+	});
+if (match(proxy_mode, /tproxy/))
+	push(config.listeners, {
+		name: 'tproxy-in',
+		type: 'tproxy',
+		port: strToInt(uci.get(uciconf, uciinbound, 'tproxy_port')) || '7792',
+		listen: '::',
+		udp: true
+	});
+/* Tun settings */
+if (match(proxy_mode, /tun/))
+	push(config.listeners, {
+		name: 'tun-in',
+		type: 'tun',
+
+		device: tun_name,
+		stack: uci.get(uciconf, uciinbound, 'tun_stack') || 'system',
+		"dns-hijack": ['udp://[::]:53', 'tcp://[::]:53'],
+		"inet4-address": [ tun_addr4 ],
+		"inet6-address": [ tun_addr6 ],
+		mtu: strToInt(uci.get(uciconf, uciinbound, 'tun_mtu')) || 9000,
+		gso: strToBool(uci.get(uciconf, uciinbound, 'tun_gso')) || false,
+		"gso-max-size": strToInt(uci.get(uciconf, uciinbound, 'tun_gso_max_size')) || 65536,
+		"auto-route": false,
+		"iproute2-table-index": route_table_id,
+		"iproute2-rule-index": route_rule_pref,
+		"auto-redirect": false,
+		"auto-redirect-input-mark": redirect_gate_mark,
+		"auto-redirect-output-mark": redirect_pass_mark,
+		"strict-route": false,
+		"route-address": [
+			"0.0.0.0/1",
+			"128.0.0.0/1",
+			"::/1",
+			"8000::/1"
+		],
+		"route-exclude-address": [
+			"192.168.0.0/16",
+			"fc00::/7"
+		],
+		"route-address-set": [],
+		"route-exclude-address-set": [],
+		"include-interface": [],
+		"exclude-interface": [],
+		"udp-timeout": strToInt(uci.get(uciconf, uciinbound, 'tun_udp_timeout')) || 300,
+		"endpoint-independent-nat": strToBool(uci.get(uciconf, uciinbound, 'tun_endpoint_independent_nat')),
+		"auto-detect-interface": true
+	});
+/* Inbound END */
 
 printf('%.J\n', config);

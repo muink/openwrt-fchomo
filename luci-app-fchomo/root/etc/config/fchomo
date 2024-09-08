@@ -1,5 +1,10 @@
 
 config fchomo 'config'
+	option tun_name 'hmtun0'
+	option tun_addr4 '198.19.0.1/30'
+	option tun_addr6 'fdfe:dcba:9877::1/126'
+	option route_table_id '2022'
+	option route_rule_pref '9000'
 
 config fchomo 'resources'
 	option auto_update '0'
@@ -14,6 +19,13 @@ config fchomo 'global'
 	list skip_auth_prefixes '::1/128'
 	option HARDCODE_interface-name 'en0'
 	option HARDCODE_routing-mark '6666'
+
+config fchomo 'inbound'
+	option mixed_port '7790'
+	option redir_port '7791'
+	option tproxy_port '7792'
+	option proxy_mode 'redir_tproxy'
+	option tun_stack 'system'
 
 config fchomo 'tls'
 	option tls_cert_path '/etc/uhttpd.crt'

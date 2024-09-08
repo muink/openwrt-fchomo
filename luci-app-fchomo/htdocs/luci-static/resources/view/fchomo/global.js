@@ -133,18 +133,10 @@ return view.extend({
 
 		var m, s, o, ss, so;
 
-		m = new form.Map('fchomo');
+		m = new form.Map('fchomo', _('FullCombo Mihomo'),
+			'<img src="' + hm.sharktaikogif + '" title="Ciallo～(∠・ω< )⌒☆" height="52"></img>');
 
-		s = m.section(form.NamedSection, 'config', 'fchomo', _('FullCombo Mihomo'),
-			'shark-taiko');
-		s.renderContents = function(/* ... */) {
-			var sectionEl = form.NamedSection.prototype.renderContents.apply(this, arguments);
-
-			// .cbi-section-descr
-			sectionEl.childNodes[1].innerHTML = '<img src="' + hm.sharktaikogif + '" height="52"></img>'
-
-			return sectionEl;
-		}
+		s = m.section(form.NamedSection, 'config', 'fchomo');
 
 		/* Overview START */
 		s.tab('status', _('Overview'));

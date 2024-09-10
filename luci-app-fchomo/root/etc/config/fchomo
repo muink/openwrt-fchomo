@@ -23,4 +23,22 @@ config fchomo 'api'
 	option external_controller_port '9090'
 	option external_controller_tls_port '9443'
 
+config fchomo 'sniffer'
+	list skip_domain 'Mijia Cloud'
+
 config fchomo 'experimental'
+
+config sniff
+	option protocol 'HTTP'
+	list ports '80'
+	list ports '8080-8880'
+
+config sniff
+	option protocol 'TLS'
+	list ports '443'
+	list ports '8443'
+
+config sniff
+	option protocol 'QUIC'
+	list ports '443'
+	list ports '8443'

@@ -415,6 +415,48 @@ return view.extend({
 		so.password = true;
 		/* API END */
 
+		/* Sniffer START */
+		s.tab('sniffer', _('Sniffer'));
+
+		/* Sniffer settings */
+		o = s.taboption('sniffer', form.SectionValue, '_sniffer', form.NamedSection, 'sniffer', 'fchomo', null);
+		ss = o.subsection;
+
+		so = ss.option(form.Flag, 'override_destination', _('Override destination'),
+			_('Override the connection destination address with the sniffed domain.'));
+		so.default = so.enabled;
+
+		so = ss.option(form.DynamicList, 'force_domain', _('Forced sniffing domains'));
+		so.datatype = 'list(string)';
+
+		so = ss.option(form.DynamicList, 'skip_domain', _('Skiped sniffing domains'));
+		so.datatype = 'list(string)';
+
+		/* Sniff protocol settings */
+		o = s.taboption('sniffer', form.SectionValue, '_sniffer_sniff', form.GridSection, 'sniff', _('Sniff protocol'));
+		ss = o.subsection;
+		ss.anonymous = true;
+		ss.addremove = false;
+		ss.sortable = true;
+
+		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so.default = so.enabled;
+		so.editable = true;
+
+		so = ss.option(form.ListValue, 'protocol', _('Protocol'));
+		so.value('HTTP');
+		so.value('TLS');
+		so.value('QUIC');
+		so.readonly = true;
+
+		so = ss.option(form.DynamicList, 'ports', _('Ports'));
+		so.datatype = 'list(or(port, portrange))';
+
+		so = ss.option(form.Flag, 'override_destination', _('Override destination'));
+		so.default = so.enabled;
+		so.editable = true;
+		/* Sniffer END */
+
 		/* Experimental START */
 		s.tab('experimental', _('Experimental'));
 

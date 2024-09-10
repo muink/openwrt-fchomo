@@ -17,7 +17,10 @@ export function strToBool(str) {
 };
 
 export function strToInt(str) {
-	return !isEmpty(str) ? (int(str) || null) : null;
+	if (isEmpty(str))
+		return null;
+
+	return !match(str, /^\d+$/) ? str : int(str) || null;
 };
 
 export function removeBlankAttrs(res) {

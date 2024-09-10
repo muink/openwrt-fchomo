@@ -23,7 +23,10 @@ const ucifchm = 'config',
 const uciglobal = 'global',
       ucitls = 'tls',
       uciapi = 'api',
+      ucisniffer = 'sniffer',
       uciexpr = 'experimental';
+
+const ucisniff = 'sniff';
 
 /* UCI config END */
 
@@ -87,6 +90,31 @@ config.profile = {
 	"store-fake-ip": false
 };
 /* Cache END */
+
+/* Sniffer START */
+/* Sniffer settings */
+config.sniffer = {
+	enable: true,
+	"force-dns-mapping": true,
+	"parse-pure-ip": true,
+	"override-destination": (uci.get(uciconf, ucisniffer, 'override_destination') === '0') ? false : true,
+	sniff: {},
+	"force-domain": uci.get(uciconf, ucisniffer, 'force_domain'),
+	"skip-domain": uci.get(uciconf, ucisniffer, 'skip_domain')
+};
+/* Sniff protocol settings */
+uci.foreach(uciconf, ucisniff, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	config.sniffer.sniff[cfg.protocol] = {
+		ports: map(cfg.ports, (ports) => {
+			return strToInt(ports); // DEBUG ERROR data type *utils.IntRanges[uint16]
+		}),
+		"override-destination": (cfg.override_destination === '0') ? false : true
+	};
+});
+/* Sniffer END */
 
 /* Experimental START */
 /* Experimental settings */

@@ -1,10 +1,12 @@
 
 config fchomo 'config'
+	option __warning 'ACCESS CONTROL FIELDS'
 	option tun_name 'hmtun0'
 	option tun_addr4 '198.19.0.1/30'
 	option tun_addr6 'fdfe:dcba:9877::1/126'
 	option route_table_id '2022'
 	option route_rule_pref '9000'
+	option self_mark '200'
 
 config fchomo 'resources'
 	option auto_update '0'
@@ -17,8 +19,6 @@ config fchomo 'global'
 	option tcp_concurrent '1'
 	list skip_auth_prefixes '127.0.0.1/8'
 	list skip_auth_prefixes '::1/128'
-	option HARDCODE_interface-name 'en0'
-	option HARDCODE_routing-mark '6666'
 
 config fchomo 'inbound'
 	option mixed_port '7890'

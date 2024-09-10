@@ -7,6 +7,7 @@
 'require view';
 
 'require fchomo as hm';
+'require tools.widgets as widgets';
 
 var callResVersion = rpc.declare({
 	object: 'luci.fchomo',
@@ -531,6 +532,34 @@ return view.extend({
 		so = ss.option(form.Flag, 'dialer_ip4p_convert', _('dialer-ip4p-convert'));
 		so.default = so.disabled;
 		/* Experimental END */
+
+		/* ACL START */
+		s.tab('control', _('Access Control'));
+
+		/* Access Control settings */
+		o = s.taboption('control', form.SectionValue, '_control', form.NamedSection, 'config', 'fchomo', null);
+		ss = o.subsection;
+
+		/* Interface control */
+		ss.tab('interface', _('Interface Control'));
+
+		so = ss.taboption('interface', widgets.DeviceSelect, 'listen_interfaces', _('Listen interfaces'),
+			_('Only process traffic from specific interfaces. Leave empty for all.'));
+		so.multiple = true;
+		so.noaliases = true;
+
+		so = ss.taboption('interface', widgets.DeviceSelect, 'bind_interface', _('Bind interface'),
+			_('Bind outbound traffic to specific interface. Leave empty to auto detect.</br>') +
+			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.multiple = false;
+		so.noaliases = true;
+
+		so = ss.taboption('interface', form.Value, 'self_mark', _('Routing mark'),
+			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.datatype = 'uinteger'
+		so.placeholder = '200';
+		so.rmempty = false;
+		/* ACL END */
 
 		return m.render();
 	}

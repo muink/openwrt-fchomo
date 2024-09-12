@@ -141,6 +141,13 @@ const proxy_mode = uci.get(uciconf, uciinbound, 'proxy_mode') || 'redir_tproxy';
 /* Listen ports */
 config.listeners = [];
 push(config.listeners, {
+	name: 'dns-in',
+	type: 'tunnel',
+	port: strToInt(uci.get(uciconf, uciinbound, 'tunnel_port')) || '7793',
+	listen: '::',
+	network: ['tcp', 'udp']
+});
+push(config.listeners, {
 	name: 'mixed-in',
 	type: 'mixed',
 	port: strToInt(uci.get(uciconf, uciinbound, 'mixed_port')) || '7790',

@@ -371,6 +371,11 @@ return view.extend({
 		so.placeholder = '7792';
 		so.rmempty = false;
 
+		so = ss.option(form.Value, 'tunnel_port', _('DNS port'));
+		so.datatype = 'port'
+		so.placeholder = '7793';
+		so.rmempty = false;
+
 		so = ss.option(form.ListValue, 'proxy_mode', _('Proxy mode'));
 		so.value('redir', _('Redirect TCP'));
 		if (features.hm_has_tproxy)

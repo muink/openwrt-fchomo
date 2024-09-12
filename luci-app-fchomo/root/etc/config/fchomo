@@ -24,6 +24,7 @@ config fchomo 'inbound'
 	option mixed_port '7790'
 	option redir_port '7791'
 	option tproxy_port '7792'
+	option tunnel_port '7793'
 	option proxy_mode 'redir_tproxy'
 	option tun_stack 'system'
 

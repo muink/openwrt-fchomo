@@ -79,6 +79,60 @@ return baseclass.extend({
 		return L.resolveDefault(callGetClashAPI(instance), {});
 	},
 
+	// thanks for homeproxy
+	loadDefaultLabel: function(uciconfig, ucisection) {
+		var label = uci.get(uciconfig, ucisection, 'label');
+		if (label) {
+			return label;
+		} else {
+			uci.set(uciconfig, ucisection, 'label', ucisection);
+			return ucisection;
+		}
+	},
+
+	// thanks for homeproxy
+	loadModalTitle: function(title, addtitle, uciconfig, ucisection) {
+		var label = uci.get(uciconfig, ucisection, 'label');
+		return label ? title + ' » ' + label : addtitle;
+	},
+
+	renderSectionAdd: function(section, prefmt, LC, extra_class) {
+		var el = form.GridSection.prototype.renderSectionAdd.apply(section, [ extra_class ]),
+			nameEl = el.querySelector('.cbi-section-create-name');
+		ui.addValidator(nameEl, 'uciname', true, (v) => {
+			var button = el.querySelector('.cbi-section-create > .cbi-button-add');
+			var uciconfig = section.uciconfig || section.map.config;
+			var prefix = prefmt?.prefix ? prefmt.prefix : '',
+				suffix = prefmt?.suffix ? prefmt.suffix : '';
+
+			if (!v) {
+				button.disabled = true;
+				return true;
+			} else if (LC && (v !== v.toLowerCase())) {
+				button.disabled = true;
+				return _('Expecting: %s').format(_('Lowercase only'));
+			} else if (uci.get(uciconfig, v)) {
+				button.disabled = true;
+				return _('Expecting: %s').format(_('unique UCI identifier'));
+			} else if (uci.get(uciconfig, prefix + v + suffix)) {
+				button.disabled = true;
+				return _('Expecting: %s').format(_('unique label'));
+			} else {
+				button.disabled = null;
+				return true;
+			}
+		}, 'blur', 'keyup');
+
+		return el;
+	},
+
+	handleAdd: function(section, prefmt, ev, name) {
+		var prefix = prefmt?.prefix ? prefmt.prefix : '',
+			suffix = prefmt?.suffix ? prefmt.suffix : '';
+
+		return form.GridSection.prototype.handleAdd.apply(section, [ ev, prefix + name + suffix ]);
+	},
+
 	handleReload: function(ev, section_id, instance) {
 		var instance = instance || '';
 		return fs.exec('/etc/init.d/fchomo', ['reload', instance])
@@ -86,5 +140,24 @@ return baseclass.extend({
 			.catch((e) => {
 				ui.addNotification(null, E('p', _('Failed to execute "/etc/init.d/fchomo %s %s" reason: %s').format('reload', instance, e)))
 			})
+	},
+
+	// thanks for homeproxy
+	validateUniqueValue: function(uciconfig, ucisection, ucioption, section_id, value) {
+		if (section_id) {
+			if (!value)
+				return _('Expecting: %s').format(_('non-empty value'));
+
+			var duplicate = false;
+			uci.sections(uciconfig, ucisection, (res) => {
+				if (res['.name'] !== section_id)
+					if (res[ucioption] === value)
+						duplicate = true
+			});
+			if (duplicate)
+				return _('Expecting: %s').format(_('unique value'));
+		}
+
+		return true;
 	}
 });

@@ -41,6 +41,10 @@ config fchomo 'sniffer'
 
 config fchomo 'experimental'
 
+config fchomo 'client'
+
+config fchomo 'dns'
+
 config sniff
 	option protocol 'HTTP'
 	list ports '80'
@@ -55,3 +59,5 @@ config sniff
 	option protocol 'QUIC'
 	list ports '443'
 	list ports '8443'
+
+config proxy_group

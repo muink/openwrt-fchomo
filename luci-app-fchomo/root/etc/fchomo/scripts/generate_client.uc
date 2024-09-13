@@ -27,7 +27,11 @@ const uciglobal = 'global',
       ucisniffer = 'sniffer',
       uciexpr = 'experimental';
 
-const ucisniff = 'sniff';
+const uciclient = 'client',
+      ucidns = 'dns';
+
+const ucisniff = 'sniff',
+      ucidnser = 'dns_server';
 
 /* Hardcode options */
 const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
@@ -209,5 +213,9 @@ if (match(proxy_mode, /tun/))
 		"auto-detect-interface": true
 	});
 /* Inbound END */
+
+/* DNS START */
+/* DNS settings */
+/* DNS END */
 
 printf('%.J\n', config);

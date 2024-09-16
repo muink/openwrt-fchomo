@@ -29,7 +29,7 @@ const uciglobal = 'global',
 
 const ucisniff = 'sniff';
 
-/* Hardcode config */
+/* Hardcode options */
 const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
       tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',
       tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',
@@ -54,7 +54,6 @@ config.ipv6 = (uci.get(uciconf, uciglobal, 'ipv6') === '0') ? false : true;
 config["unified-delay"] = strToBool(uci.get(uciconf, uciglobal, 'unified_delay')) || false;
 config["tcp-concurrent"] = strToBool(uci.get(uciconf, uciglobal, 'tcp_concurrent')) || false;
 config["keep-alive-interval"] = strToInt(uci.get(uciconf, uciglobal, 'keep_alive_interval')) || 120;
-
 /* Global Authentication */
 config.authentication = uci.get(uciconf, uciglobal, 'authentication');
 config["skip-auth-prefixes"] = uci.get(uciconf, uciglobal, 'skip_auth_prefixes');
@@ -145,7 +144,8 @@ push(config.listeners, {
 	type: 'tunnel',
 	port: strToInt(uci.get(uciconf, uciinbound, 'tunnel_port')) || '7793',
 	listen: '::',
-	network: ['tcp', 'udp']
+	network: ['tcp', 'udp'],
+	target: '1.1.1.1:53'
 });
 push(config.listeners, {
 	name: 'mixed-in',

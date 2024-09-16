@@ -27,7 +27,7 @@
 		}
 	},
 	"admin/services/fchomo/node": {
-		"title": "Nodes",
+		"title": "Node",
 		"order": 20,
 		"action": {
 			"type": "view",
@@ -35,7 +35,7 @@
 		}
 	},
 	"admin/services/fchomo/ruleset": {
-		"title": "Rulesets",
+		"title": "Ruleset",
 		"order": 25,
 		"action": {
 			"type": "view",
@@ -51,7 +51,7 @@
 		}
 	},
 	"admin/services/fchomo/log": {
-		"title": "Logs",
+		"title": "Log",
 		"order": 35,
 		"action": {
 			"type": "view",

@@ -1,7 +1,9 @@
 'use strict';
 'require baseclass';
+'require form';
 'require fs';
 'require rpc';
+'require uci';
 'require ui';
 
 var sharktaikogif = function() {
@@ -9,7 +11,7 @@ var sharktaikogif = function() {
 }()
 
 return baseclass.extend({
-	sharktaikogif : sharktaikogif,
+	sharktaikogif: sharktaikogif,
 
 	dashrepos: [
 		['metacubex/metacubexd', _('metacubexd')],

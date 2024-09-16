@@ -323,7 +323,7 @@ return view.extend({
 		so = ss.option(form.Flag, 'tcp_concurrent', _('TCP concurrency'));
 		so.default = so.disabled;
 
-		so = ss.option(form.Value, 'keep_alive_interval', _('TCP Keep Alive interval'),
+		so = ss.option(form.Value, 'keep_alive_interval', _('TCP-Keep-Alive interval'),
 			_('In seconds. <code>120</code> is used by default.'));
 		so.datatype = 'uinteger';
 		so.placeholder = '120';
@@ -411,7 +411,7 @@ return view.extend({
 				desc.innerHTML = _('Less compatibility and sometimes better performance.');
 		}
 
-		so = ss.option(form.Value, 'tun_mtu', _('Maximum Transmission Unit'));
+		so = ss.option(form.Value, 'tun_mtu', _('Maximum transmission unit'));
 		so.datatype = 'uinteger';
 		so.placeholder = '9000';
 
@@ -500,17 +500,17 @@ return view.extend({
 		s.tab('sniffer', _('Sniffer'));
 
 		/* Sniffer settings */
-		o = s.taboption('sniffer', form.SectionValue, '_sniffer', form.NamedSection, 'sniffer', 'fchomo', null);
+		o = s.taboption('sniffer', form.SectionValue, '_sniffer', form.NamedSection, 'sniffer', 'fchomo', _('Sniffer settings'));
 		ss = o.subsection;
 
 		so = ss.option(form.Flag, 'override_destination', _('Override destination'),
 			_('Override the connection destination address with the sniffed domain.'));
 		so.default = so.enabled;
 
-		so = ss.option(form.DynamicList, 'force_domain', _('Forced sniffing domains'));
+		so = ss.option(form.DynamicList, 'force_domain', _('Forced sniffing domain'));
 		so.datatype = 'list(string)';
 
-		so = ss.option(form.DynamicList, 'skip_domain', _('Skiped sniffing domains'));
+		so = ss.option(form.DynamicList, 'skip_domain', _('Skiped sniffing domain'));
 		so.datatype = 'list(string)';
 
 		/* Sniff protocol settings */
@@ -518,7 +518,9 @@ return view.extend({
 		ss = o.subsection;
 		ss.anonymous = true;
 		ss.addremove = false;
+		ss.rowcolors = true;
 		ss.sortable = true;
+		ss.nodescriptions = true;
 
 		so = ss.option(form.Flag, 'enabled', _('Enable'));
 		so.default = so.enabled;

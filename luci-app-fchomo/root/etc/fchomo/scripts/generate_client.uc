@@ -43,7 +43,42 @@ const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
 	  redirect_pass_mark = 2024,
       posh = 'c2luZ2JveA';
 
+/* All DNS server object */
+const dnsservers = {};
+uci.foreach(uciconf, ucidnser, (cfg) => {
+	if (cfg.enabled === '0')
+		return;
+
+	dnsservers[cfg['.name']] = {
+		label: cfg.label,
+		address: cfg.address
+	};
+});
+
 /* UCI config END */
+
+/* Config helper START */
+function get_nameserver(cfg) {
+	if (isEmpty(cfg))
+		return [];
+
+	if ('block-dns' in cfg)
+		//https://github.com/MetaCubeX/mihomo/blob/0128a0bb1fce17d39158c745a912d7b2b87cf975/config/config.go#L1131
+		return 'rcode://name_error';
+
+	let servers = [];
+	for (let k in cfg) {
+		if (k === 'system-dns') {
+			push(servers, 'system');
+		} else if (k === 'default-dns') {
+			push(servers, '114.114.114.114#DIRECT');
+		} else
+			push(servers, dnsservers[k]?.address);
+	}
+
+	return servers;
+}
+/* Config helper END */
 
 /* Main */
 const config = {};
@@ -216,6 +251,24 @@ if (match(proxy_mode, /tun/))
 
 /* DNS START */
 /* DNS settings */
+config.dns = {
+	enable: true,
+	"prefer-h3": false,
+	listen: '[::]:' + (uci.get(uciconf, ucidns, 'port') || '7753'),
+	ipv6: (uci.get(uciconf, ucidns, 'ipv6') === '0') ? false : true,
+	"enhanced-mode": 'redir-host',
+	"use-hosts": true,
+	"use-system-hosts": true,
+	"respect-rules": true,
+	"default-nameserver": get_nameserver(uci.get(uciconf, ucidns, 'boot_server')),
+	"proxy-server-nameserver": get_nameserver(uci.get(uciconf, ucidns, 'bootnode_server')),
+	nameserver: get_nameserver(uci.get(uciconf, ucidns, 'default_server')),
+	fallback: get_nameserver(uci.get(uciconf, ucidns, 'fallback_server')),
+	"nameserver-policy": {},
+	"fallback-filter": {}
+};
+/* DNS policy */
+/* Fallback filter */
 /* DNS END */
 
 printf('%.J\n', config);

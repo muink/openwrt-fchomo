@@ -8,6 +8,28 @@
 
 'require fchomo as hm';
 
+function loadDNSServerLabel(self, uciconfig, ucisection) {
+	delete self.keylist;
+	delete self.vallist;
+
+	self.value('default-dns', _('Default DNS (114)'));
+	self.value('system-dns', _('System DNS'));
+	self.value('block-dns', _('Block DNS queries'));
+	uci.sections(uciconfig, 'dns_server', (res) => {
+		if (res.enabled !== '0')
+			self.value(res['.name'], res.label);
+	});
+
+	return self.super('load', ucisection);
+}
+function validateNameserver(section_id, value) {
+	const arr = value.trim().split(' ');
+	if (arr.length > 1 && arr.includes('block-dns'))
+		return _('Expecting: %s').format(_('If Block is selected, uncheck others'));
+
+	return true;
+}
+
 class DNSAddress {
 	constructor(address) {
 		this.rawaddr = address || '';
@@ -82,6 +104,44 @@ return view.extend({
 		s = m.section(form.NamedSection, 'client', 'fchomo');
 
 		/* DNS START */
+		/* DNS settings */
+		s.tab('dns', _('DNS settings'));
+
+		o = s.taboption('dns', form.SectionValue, '_dns', form.NamedSection, 'dns', 'fchomo', null);
+		ss = o.subsection;
+
+		so = ss.option(form.Value, 'port', _('Listen port'));
+		so.datatype = 'port'
+		so.placeholder = '7753';
+		so.rmempty = false;
+
+		so = ss.option(form.Flag, 'ipv6', _('IPv6 support'));
+		so.default = so.enabled;
+
+		so = ss.option(form.MultiValue, 'boot_server', _('Boot DNS server'),
+			_('Used to resolve the domain of the DNS server. Must be IP.'));
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.default = 'default-dns';
+		so.validate = L.bind(validateNameserver, this);
+		so.rmempty = false;
+
+		so = ss.option(form.MultiValue, 'bootnode_server', _('Boot DNS server (node)'),
+			_('Used to resolve the domain of the Proxy node.'));
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.default = 'default-dns';
+		so.validate = L.bind(validateNameserver, this);
+		so.rmempty = false;
+
+		so = ss.option(form.MultiValue, 'default_server', _('Default DNS server'));
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.default = 'default-dns';
+		so.validate = L.bind(validateNameserver, this);
+		so.rmempty = false;
+
+		so = ss.option(form.MultiValue, 'fallback_server', _('Fallback DNS server'));
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.validate = L.bind(validateNameserver, this);
+
 		/* DNS server */
 		s.tab('dns_server', _('DNS server'));
 		o = s.taboption('dns_server', form.SectionValue, '_dns_server', form.GridSection, 'dns_server', null);
@@ -211,6 +271,7 @@ return view.extend({
 		so.modalonly = true;
 
 		/* DNS policy */
+		/* Fallback filter */
 		/* DNS END */
 
 		return m.render();

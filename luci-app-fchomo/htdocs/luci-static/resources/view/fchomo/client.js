@@ -120,21 +120,21 @@ return view.extend({
 
 		so = ss.option(form.MultiValue, 'boot_server', _('Boot DNS server'),
 			_('Used to resolve the domain of the DNS server. Must be IP.'));
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.default = 'default-dns';
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
 		so = ss.option(form.MultiValue, 'bootnode_server', _('Boot DNS server (node)'),
 			_('Used to resolve the domain of the Proxy node.'));
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.default = 'default-dns';
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
 		so = ss.option(form.MultiValue, 'default_server', _('Default DNS server'));
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.default = 'default-dns';
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
@@ -177,6 +177,12 @@ return view.extend({
 		so.load = function(section_id) {
 			return new DNSAddress(uci.get(data[0], section_id, 'address')).addr;
 		}
+		so.validate = function(section_id, value) {
+			if (value.match('#'))
+				return _('Expecting: %s').format(_('No add\'l params'));
+
+			return true;
+		}
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'address');
 
@@ -186,16 +192,10 @@ return view.extend({
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
-		so.validate = function(section_id, value) {
-			if (value.match('#'))
-				return _('Expecting: %s').format(_('No add\'l params'));
-
-			return true;
-		}
 		so.rmempty = false;
 		so.modalonly = true;
 
-		so = ss.option(form.ListValue, 'detour', _('Detour'));
+		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
 			delete this.keylist;
 			delete this.vallist;

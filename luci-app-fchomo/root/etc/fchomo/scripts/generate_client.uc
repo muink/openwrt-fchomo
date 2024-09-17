@@ -31,7 +31,8 @@ const uciclient = 'client',
       ucidns = 'dns';
 
 const ucisniff = 'sniff',
-      ucidnser = 'dns_server';
+      ucidnser = 'dns_server',
+      ucidnspoli = 'dns_policy';
 
 /* Hardcode options */
 const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
@@ -268,6 +269,24 @@ config.dns = {
 	"fallback-filter": {}
 };
 /* DNS policy */
+uci.foreach(uciconf, ucidnspoli, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	let key;
+	if (cfg.type === 'domain') {
+		key = isEmpty(cfg.domain) ? null : join(',', cfg.domain);
+	} else if (cfg.type === 'geosite') {
+		key = isEmpty(cfg.geosite) ? null : 'geosite:' + join(',', cfg.geosite);
+	} else if (cfg.type === 'rule_set') {
+		key = isEmpty(cfg.rule_set) ? null : 'rule-set:' + join(',', cfg.rule_set);
+	};
+
+	if (!key)
+		return null;
+
+	config.dns["nameserver-policy"][key] = get_nameserver(cfg.server);
+});
 /* Fallback filter */
 /* DNS END */
 

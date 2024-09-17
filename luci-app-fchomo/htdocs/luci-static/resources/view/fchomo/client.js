@@ -30,6 +30,20 @@ function validateNameserver(section_id, value) {
 	return true;
 }
 
+function loadRulesetLabel(self, behaviors, uciconfig, ucisection) {
+	delete self.keylist;
+	delete self.vallist;
+
+	self.value('', _('-- Please choose --'));
+	uci.sections(uciconfig, 'ruleset', (res) => {
+		if (res.enabled !== '0')
+			if (behaviors ? behaviors.includes(res.behavior) : true)
+				self.value(res['.name'], res.label);
+	});
+
+	return self.super('load', ucisection);
+}
+
 class DNSAddress {
 	constructor(address) {
 		this.rawaddr = address || '';
@@ -271,6 +285,67 @@ return view.extend({
 		so.modalonly = true;
 
 		/* DNS policy */
+		s.tab('dns_policy', _('DNS policy'));
+		o = s.taboption('dns_policy', form.SectionValue, '_dns_policy', form.GridSection, 'dns_policy', null);
+		ss = o.subsection;
+		var prefmt = { 'prefix': '', 'suffix': '_domain' };
+		ss.addremove = true;
+		ss.rowcolors = true;
+		ss.sortable = true;
+		ss.nodescriptions = true;
+		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('DNS policy'), _('Add a DNS policy'), data[0]);
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, this, ss, prefmt, false);
+		ss.handleAdd = L.bind(hm.handleAdd, this, ss, prefmt);
+
+		so = ss.option(form.Value, 'label', _('Label'));
+		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'dns_policy', 'label');
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so.default = so.enabled;
+		so.editable = true;
+
+		so = ss.option(form.ListValue, 'type', _('Type'));
+		so.value('domain', _('Domain'));
+		so.value('geosite', _('Geosite'));
+		so.value('rule_set', _('Rule set'));
+		so.default = 'domain';
+
+		so = ss.option(form.DynamicList, 'domain', _('Domain'),
+			_('Match domain. Support wildcards.'));
+		so.depends('type', 'domain');
+		so.modalonly = true;
+
+		so = ss.option(form.DynamicList, 'geosite', _('Geosite'),
+			_('Match geosite.'));
+		so.depends('type', 'geosite');
+		so.modalonly = true;
+
+		so = ss.option(form.MultiValue, 'rule_set', _('Rule set'),
+			_('Match rule set.'));
+		so.value('');
+		so.load = L.bind(loadRulesetLabel, this, so, ['domain', 'classical'], data[0]);
+		so.depends('type', 'rule_set');
+		so.modalonly = true;
+
+		so = ss.option(form.DummyValue, '_value', _('Value'));
+		so.load = function(section_id) {
+			var option = uci.get(data[0], section_id, 'type');
+
+			return uci.get(data[0], section_id, option)?.join(',');
+		}
+		so.modalonly = false;
+
+		so = ss.option(form.MultiValue, 'server', _('DNS server'));
+		so.value('default-dns');
+		so.default = 'default-dns';
+		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.validate = L.bind(validateNameserver, this);
+		so.rmempty = false;
+		so.editable = true;
+
 		/* Fallback filter */
 		/* DNS END */
 

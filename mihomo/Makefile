@@ -42,5 +42,16 @@ define Build/Prepare
 	rm -f $(PKG_BUILD_DIR)/rules/logic_test/logic_test.go
 endef
 
+define Package/$(PKG_NAME)/install
+	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
+	$(CURDIR)/.prepare.sh $(VERSION) $(CURDIR) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)
+
+	$(INSTALL_DIR) $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME) $(1)/usr/bin/
+
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./uci-defaults $(1)/etc/uci-defaults/99_$(PKG_NAME)
+endef
+
 $(eval $(call GoBinPackage,mihomo))
 $(eval $(call BuildPackage,mihomo))

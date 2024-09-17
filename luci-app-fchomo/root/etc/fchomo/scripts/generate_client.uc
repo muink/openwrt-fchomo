@@ -271,4 +271,9 @@ config.dns = {
 /* Fallback filter */
 /* DNS END */
 
+/* Hosts START */
+/* Hosts */
+config.hosts = {};
+/* Hosts END */
+
 printf('%.J\n', config);

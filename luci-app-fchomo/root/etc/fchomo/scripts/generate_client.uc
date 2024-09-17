@@ -266,7 +266,9 @@ config.dns = {
 	nameserver: get_nameserver(uci.get(uciconf, ucidns, 'default_server')),
 	fallback: get_nameserver(uci.get(uciconf, ucidns, 'fallback_server')),
 	"nameserver-policy": {},
-	"fallback-filter": {}
+	"fallback-filter": {
+		geoip: false
+	}
 };
 /* DNS policy */
 uci.foreach(uciconf, ucidnspoli, (cfg) => {
@@ -288,6 +290,14 @@ uci.foreach(uciconf, ucidnspoli, (cfg) => {
 	config.dns["nameserver-policy"][key] = get_nameserver(cfg.server);
 });
 /* Fallback filter */
+if (!isEmpty(config.dns.fallback))
+	config.dns["fallback-filter"] = {
+		geoip: (uci.get(uciconf, ucidns, 'fallback_filter_geoip') === '0') ? false : true,
+		"geoip-code": uci.get(uciconf, ucidns, 'fallback_filter_geoip_code') || 'cn',
+		geosite: uci.get(uciconf, ucidns, 'fallback_filter_geosite') || [],
+		ipcidr: uci.get(uciconf, ucidns, 'fallback_filter_ipcidr') || [],
+		domain: uci.get(uciconf, ucidns, 'fallback_filter_domain') || [],
+	};
 /* DNS END */
 
 /* Hosts START */

@@ -147,14 +147,27 @@ return view.extend({
 		so.rmempty = false;
 
 		so = ss.option(form.MultiValue, 'default_server', _('Default DNS server'));
+		so.description = uci.get(data[0], so.section.section, 'fallback_server') ? _('Final DNS server (Used to Domestic-IP response)') : _('Final DNS server');
 		so.default = 'default-dns';
 		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
 		so = ss.option(form.MultiValue, 'fallback_server', _('Fallback DNS server'));
+		so.description = uci.get(data[0], so.section.section, 'fallback_server') ? _('Final DNS server (Used to Overseas-IP response)') : _('Fallback DNS server');
 		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
+		so.onchange = function(ev, section_id, value) {
+			var ddesc = this.section.getUIElement(section_id, 'default_server').node.nextSibling;
+			var fdesc = ev.target.nextSibling;
+			if (value.length > 0) {
+				ddesc.innerHTML = _('Final DNS server (Used to Domestic-IP response)');
+				fdesc.innerHTML = _('Final DNS server (Used to Overseas-IP response)');
+			} else {
+				ddesc.innerHTML = _('Final DNS server');
+				fdesc.innerHTML = _('Fallback DNS server');
+			}
+		}
 
 		/* DNS server */
 		s.tab('dns_server', _('DNS server'));
@@ -203,7 +216,7 @@ return view.extend({
 
 			var newvalue = ('N' + UIEl.getValue()).replace(/^[^#]+/, value);
 
-			UIEl.node.previousElementSibling.innerText = newvalue;
+			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
@@ -229,7 +242,7 @@ return view.extend({
 
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('detour', value).toString();
 
-			UIEl.node.previousElementSibling.innerText = newvalue;
+			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
@@ -245,7 +258,7 @@ return view.extend({
 
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('h3', flagToStr(value)).toString();
 
-			UIEl.node.previousElementSibling.innerText = newvalue;
+			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
@@ -261,7 +274,7 @@ return view.extend({
 
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('ecs', value).toString();
 
-			UIEl.node.previousElementSibling.innerText = newvalue;
+			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
@@ -278,7 +291,7 @@ return view.extend({
 
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('ecs-override', flagToStr(value)).toString();
 
-			UIEl.node.previousElementSibling.innerText = newvalue;
+			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
@@ -348,6 +361,41 @@ return view.extend({
 		so.editable = true;
 
 		/* Fallback filter */
+		s.tab('fallback_filter', _('Fallback filter'));
+		o = s.taboption('fallback_filter', form.SectionValue, '_fallback_filter', form.NamedSection, 'dns', 'fchomo', null);
+		o.depends({'fchomo.dns.fallback_server': /.+/});
+		ss = o.subsection;
+
+		so = ss.option(form.Flag, 'fallback_filter_geoip', _('Geoip enable'));
+		so.default = so.enabled;
+
+		so = ss.option(form.Value, 'fallback_filter_geoip_code', _('Geoip code'),
+			_('Match response with geoip.</br>') +
+			_('The matching <code>%s</code> will be deemed as not-poisoned.').format(_('IP')));
+		so.default = 'cn';
+		so.placeholder = 'cn';
+		so.rmempty = false;
+		so.retain = true;
+		so.depends('fallback_filter_geoip', '1');
+
+		so = ss.option(form.DynamicList, 'fallback_filter_geosite', _('Geosite'),
+			_('Match geosite.</br>') +
+			_('The matching <code>%s</code> will be deemed as poisoned.').format(_('Domain')));
+
+		so = ss.option(form.DynamicList, 'fallback_filter_ipcidr', _('IP CIDR'),
+			_('Match response with ipcidr.</br>') +
+			_('The matching <code>%s</code> will be deemed as poisoned.').format(_('IP')));
+		so.datatype = 'list(cidr)';
+
+		so = ss.option(form.DynamicList, 'fallback_filter_domain', _('Domain'),
+			_('Match domain. Support wildcards.</br>') +
+			_('The matching <code>%s</code> will be deemed as poisoned.').format(_('Domain')));
+
+		/*
+		so = ss.option(form.MultiValue, 'fallback_filter_rule_set', _('Rule set'),
+			_('Match rule set.'));
+		so.load = L.bind(loadRulesetLabel, this, so, ['domain', 'ipcidr'], data[0]);
+		*/
 		/* DNS END */
 
 		return m.render();

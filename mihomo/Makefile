@@ -30,7 +30,7 @@ include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
 define Package/mihomo
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=A rule based proxy in Go.
+  TITLE:=Another Mihomo Kernel.
   URL:=https://wiki.metacubex.one
   DEPENDS:=$(GO_ARCH_DEPENDS)
   USERID:=mihomo=7790:mihomo=7790

@@ -139,7 +139,7 @@ return view.extend({
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
-		so = ss.option(form.MultiValue, 'bootnode_server', _('Boot DNS server (node)'),
+		so = ss.option(form.MultiValue, 'bootnode_server', _('Boot DNS server (Node)'),
 			_('Used to resolve the domain of the Proxy node.'));
 		so.default = 'default-dns';
 		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);

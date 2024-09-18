@@ -34,10 +34,8 @@ function getRuntimeLog(name, filename) {
 	});
 
 	var log_textarea = E('div', { 'id': 'log_textarea' },
-		E('img', {
-			'src': L.resource(['icons/loading.gif']),
-			'alt': _('Loading'),
-			'style': 'vertical-align:middle'
+		E('pre', {
+			'class': 'spinning'
 		}, _('Collecting data...'))
 	);
 

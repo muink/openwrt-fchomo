@@ -186,6 +186,7 @@ return view.extend({
 		so.remove = function(/* ... */) {
 			return form.AbstractValue.prototype.remove.apply(this, arguments);
 		}
+		so.editable = true;
 
 		so = ss.option(form.Value, 'addr', _('Address'));
 		so.load = function(section_id) {
@@ -232,7 +233,7 @@ return view.extend({
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
-		so.modalonly = true;
+		so.editable = true;
 
 		so = ss.option(form.Flag, 'h3', _('HTTP/3'));
 		so.default = so.disabled;

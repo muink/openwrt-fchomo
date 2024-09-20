@@ -27,6 +27,7 @@ return view.extend({
 		/* Proxy Node */
 		o = s.taboption('node', form.SectionValue, '_node', form.GridSection, 'node', null);
 		ss = o.subsection;
+		var prefmt = { 'prefix': 'node_', 'suffix': '' };
 		/* Proxy Node END */
 
 		/* Provider START */

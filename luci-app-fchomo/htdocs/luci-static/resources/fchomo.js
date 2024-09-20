@@ -331,7 +331,7 @@ return baseclass.extend({
 					}, [ filename ]),
 					E('div', { class: 'cbi-value-field' }, [
 						E('button', {
-							class: 'cbi-button cbi-button-reset',
+							class: 'cbi-button cbi-button-negative important',
 							id: 'rmidles.' + filename + '.button',
 							click: ui.createHandlerFn(this, function(filename) {
 								return self.removeFile(ucisection, filename).then((res) => {

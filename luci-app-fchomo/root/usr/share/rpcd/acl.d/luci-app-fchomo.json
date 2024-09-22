@@ -3,6 +3,7 @@
 		"description": "Grant access to fchomo configuration",
 		"read": {
 			"file": {
+				"/etc/fchomo/ruleset/*": [ "read" ],
 				"/etc/fchomo/templates/*": [ "read" ],
 				"/etc/init.d/fchomo reload *": [ "exec" ],
 				"/var/run/fchomo/fchomo.log": [ "read" ],
@@ -17,6 +18,7 @@
 		},
 		"write": {
 			"file": {
+				"/etc/fchomo/ruleset/*": [ "write" ],
 				"/etc/fchomo/templates/*": [ "write" ]
 			},
 			"uci": [ "fchomo" ]

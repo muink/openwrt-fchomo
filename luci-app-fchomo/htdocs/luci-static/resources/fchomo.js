@@ -13,6 +13,17 @@ var sharktaikogif = function() {
 return baseclass.extend({
 	sharktaikogif: sharktaikogif,
 
+	monospacefonts: [
+		'"Cascadia Code"',
+		'"Cascadia Mono"',
+		'Menlo',
+		'Monaco',
+		'Consolas',
+		'"Liberation Mono"',
+		'"Courier New"',
+		'monospace'
+	],
+
 	dashrepos: [
 		['metacubex/metacubexd', _('metacubexd')],
 		['metacubex/yacd-meta', _('yacd-meta')],

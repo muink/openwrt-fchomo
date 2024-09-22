@@ -1,9 +1,79 @@
 'use strict';
 'require form';
 'require uci';
+'require ui';
 'require view';
 
 'require fchomo as hm';
+
+const rulefilesuffix = '.rule';
+
+function parseRulesetLink(uri) {
+	var config,
+		filefmt = new RegExp(/^(text|yaml|mrs)$/),
+		filebehav = new RegExp(/^(domain|ipcidr|classical)$/),
+		unuciname = new RegExp(/[^a-zA-Z0-9_]+/, "g");
+
+	uri = uri.split('://');
+	if (uri[0] && uri[1]) {
+		switch (uri[0]) {
+		case 'http':
+		case 'https':
+			var url = new URL('http://' + uri[1]);
+			var format = url.searchParams.get('fmt');
+			var behavior = url.searchParams.get('behav');
+			var interval = url.searchParams.get('sec');
+			var rawquery = url.searchParams.get('rawq');
+			var name = decodeURI(url.pathname).split('/').pop()
+				.replace(/[\s\.-]/g, '_').replace(unuciname, '');
+
+			if (filefmt.test(format) && filebehav.test(behavior)) {
+				var fullpath = (url.username ? url.username + '@' : '') + url.host + url.pathname + (rawquery ? '?' + decodeURIComponent(rawquery) : '');
+				config = {
+					label: url.hash ? decodeURIComponent(url.hash.slice(1)) : name ? name : null,
+					type: 'http',
+					format: format,
+					behavior: behavior,
+					url: String.format('%s://%s', uri[0], fullpath),
+					interval: interval,
+					href: String.format('http://%s', fullpath)
+				};
+			}
+
+			break;
+		case 'file':
+			var url = new URL('file://' + uri[1]);
+			var format = url.searchParams.get('fmt');
+			var behavior = url.searchParams.get('behav');
+			var filler = url.searchParams.get('fill');
+			var path = decodeURI(url.pathname);
+			var name = path.split('/').pop()
+				.replace(/[\s\.-]/g, '_').replace(unuciname, '');
+
+			if (filefmt.test(format) && filebehav.test(behavior)) {
+				config = {
+					label: url.hash ? decodeURIComponent(url.hash.slice(1)) : name ? name : null,
+					type: 'file',
+					format: format,
+					behavior: behavior,
+					href: String.format('file://%s%s', url.host, url.pathname)
+				};
+				alert('%s > %s'.format(hm.decodeBase64Str(filler), '/etc/fchomo/ruleset/' + hm.calcStringMD5(config.href) + rulefilesuffix));
+			}
+
+			break;
+		}
+	}
+
+	if (config) {
+		if (!config.type || !config.href)
+			return null;
+		else if (!config.label)
+			config.label = hm.calcStringMD5(config.href);
+	}
+
+	return config;
+}
 
 return view.extend({
 	load: function() {
@@ -19,7 +89,7 @@ return view.extend({
 
 		/* Rule set START */
 		/* Rule set settings */
-		var prefmt = { 'prefix': 'rule_', 'suffix': '' };
+		var prefix = 'rule_';
 		s = m.section(form.GridSection, 'ruleset');
 		s.addremove = true;
 		s.rowcolors = true;
@@ -27,8 +97,100 @@ return view.extend({
 		s.nodescriptions = true;
 		s.modaltitle = L.bind(hm.loadModalTitle, this, _('Rule set'), _('Add a rule set'), data[0]);
 		s.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
-		s.renderSectionAdd = L.bind(hm.renderSectionAdd, this, s, prefmt, false);
-		s.handleAdd = L.bind(hm.handleAdd, this, s, prefmt);
+		/* Import rule-set links start */
+		s.handleLinkImport = function() {
+			var textarea = new ui.Textarea('', {
+				'placeholder': 'http(s)://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/Providers/BanAD.yaml?fmt=yaml&behav=classical&rawq=good%3Djob#BanAD\n' +
+							   'file:///example.txt?fmt=text&behav=domain&fill=LmNuCg#CN%20TLD\n'
+			});
+			ui.showModal(_('Import rule-set links'), [
+				E('p', _('Supports rule-set links of type: <code>file, http</code> and format: <code>text, yaml, mrs</code>.</br>') +
+							_('Please refer to <a href="%s" target="_blank">%s</a> for link format standards.')
+								.format(hm.rulesetdoc, _('Ruleset-URI-Scheme'))),
+				textarea.render(),
+				E('div', { class: 'right' }, [
+					E('button', {
+						class: 'btn',
+						click: ui.hideModal
+					}, [ _('Cancel') ]),
+					'',
+					E('button', {
+						class: 'btn cbi-button-action',
+						click: ui.createHandlerFn(this, function() {
+							var input_links = textarea.getValue().trim().split('\n');
+							if (input_links && input_links[0]) {
+								/* Remove duplicate lines */
+								input_links = input_links.reduce((pre, cur) =>
+									(!pre.includes(cur) && pre.push(cur), pre), []);
+
+								var imported_ruleset = 0;
+								input_links.forEach((l) => {
+									var config = parseRulesetLink(l);
+									if (config) {
+										var hrefHash = hm.calcStringMD5(config.href);
+										config.href = null;
+										var sid = uci.add(data[0], 'ruleset', hrefHash);
+										Object.keys(config).forEach((k) => {
+											uci.set(data[0], sid, k, config[k] || '');
+										});
+										imported_ruleset++;
+									}
+								});
+
+								if (imported_ruleset === 0)
+									ui.addNotification(null, E('p', _('No valid rule-set link found.')));
+								else
+									ui.addNotification(null, E('p', _('Successfully imported %s rule-set of total %s.').format(
+										imported_ruleset, input_links.length)));
+
+								return uci.save()
+									.then(L.bind(this.map.load, this.map))
+									.then(L.bind(this.map.reset, this.map))
+									.then(L.ui.hideModal)
+									.catch(function() {});
+							} else {
+								return ui.hideModal();
+							}
+						})
+					}, [ _('Import') ])
+				])
+			])
+		}
+		s.renderSectionAdd = function(extra_class) {
+			var el = form.GridSection.prototype.renderSectionAdd.apply(this, arguments),
+				nameEl = el.querySelector('.cbi-section-create-name');
+
+			ui.addValidator(nameEl, 'uciname', true, (v) => {
+				var button = el.querySelector('.cbi-section-create > .cbi-button-add');
+				var uciconfig = this.uciconfig || this.map.config;
+
+				if (!v) {
+					button.disabled = true;
+					return true;
+				} else if (uci.get(uciconfig, v)) {
+					button.disabled = true;
+					return _('Expecting: %s').format(_('unique UCI identifier'));
+				} else if (uci.get(uciconfig, prefix + v)) {
+					button.disabled = true;
+					return _('Expecting: %s').format(_('unique label'));
+				} else {
+					button.disabled = null;
+					return true;
+				}
+			}, 'blur', 'keyup');
+
+			el.appendChild(E('button', {
+				'class': 'cbi-button cbi-button-add',
+				'title': _('Import rule-set links'),
+				'click': ui.createHandlerFn(this, 'handleLinkImport')
+			}, [ _('Import rule-set links') ]));
+
+			return el;
+		}
+		s.handleAdd = function(ev, name) {
+			return form.GridSection.prototype.handleAdd.apply(this, [ ev, prefix + name ]);
+		}
+		/* Import rule-set links end */
 
 		o = s.option(form.Value, 'label', _('Label'));
 		o.load = L.bind(hm.loadDefaultLabel, this, data[0]);
@@ -78,7 +240,7 @@ return view.extend({
 
 			switch (option) {
 				case 'file':
-					return uci.get(data[0], section_id, '.name').replace(new RegExp("^[^_]+_"), '') + '.rule';
+					return uci.get(data[0], section_id, '.name').replace(new RegExp("^[^_]+_"), '') + rulefilesuffix;
 				case 'http':
 					return uci.get(data[0], section_id, 'url');
 				default:

@@ -125,16 +125,12 @@ return view.extend({
 		o = s.option(form.ListValue, 'proxy', _('Proxy group'),
 			_('Name of the Proxy group to download rule set.'));
 		o.load = function(section_id) {
-			delete this.keylist;
-			delete this.vallist;
+			var preadds = [
+				['', _('null')],
+				['DIRECT', _('DIRECT')]
+			];
 
-			this.value('', _('DIRECT'));
-			uci.sections(data[0], 'proxy_group', (res) => {
-				if (res.enabled !== '0')
-					this.value(res['.name'], res.label);
-			});
-
-			return this.super('load', section_id);
+			return hm.loadProxyGroupLabel(this, preadds, data[0], section_id);
 		}
 		//o.editable = true;
 		o.depends('type', 'http');

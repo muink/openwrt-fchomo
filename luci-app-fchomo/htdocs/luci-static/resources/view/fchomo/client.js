@@ -30,20 +30,6 @@ function validateNameserver(section_id, value) {
 	return true;
 }
 
-function loadRulesetLabel(self, behaviors, uciconfig, ucisection) {
-	delete self.keylist;
-	delete self.vallist;
-
-	self.value('', _('-- Please choose --'));
-	uci.sections(uciconfig, 'ruleset', (res) => {
-		if (res.enabled !== '0')
-			if (behaviors ? behaviors.includes(res.behavior) : true)
-				self.value(res['.name'], res.label);
-	});
-
-	return self.super('load', ucisection);
-}
-
 class DNSAddress {
 	constructor(address) {
 		this.rawaddr = address || '';
@@ -225,15 +211,12 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
-			delete this.keylist;
-			delete this.vallist;
+			var preadds = [
+				['', _('RULES')],
+				['DIRECT', _('DIRECT')]
+			];
 
-			this.value('', _('RULES'));
-			this.value('DIRECT', _('DIRECT'));
-			uci.sections(data[0], 'proxy_group', (res) => {
-				if (res.enabled !== '0')
-					this.value(res['.name'], res.label);
-			});
+			hm.loadProxyGroupLabel(this, preadds, data[0], section_id);
 
 			return new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('detour');
 		}
@@ -340,7 +323,7 @@ return view.extend({
 		so = ss.option(form.MultiValue, 'rule_set', _('Rule set'),
 			_('Match rule set.'));
 		so.value('');
-		so.load = L.bind(loadRulesetLabel, this, so, ['domain', 'classical'], data[0]);
+		so.load = L.bind(hm.loadRulesetLabel, this, so, ['domain', 'classical'], data[0]);
 		so.depends('type', 'rule_set');
 		so.modalonly = true;
 
@@ -390,12 +373,6 @@ return view.extend({
 		so = ss.option(form.DynamicList, 'fallback_filter_domain', _('Domain'),
 			_('Match domain. Support wildcards.</br>') +
 			_('The matching <code>%s</code> will be deemed as poisoned.').format(_('Domain')));
-
-		/*
-		so = ss.option(form.MultiValue, 'fallback_filter_rule_set', _('Rule set'),
-			_('Match rule set.'));
-		so.load = L.bind(loadRulesetLabel, this, so, ['domain', 'ipcidr'], data[0]);
-		*/
 		/* DNS END */
 
 		return m.render();

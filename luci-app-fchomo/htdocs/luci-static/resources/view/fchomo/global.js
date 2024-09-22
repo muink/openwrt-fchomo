@@ -248,8 +248,7 @@ return view.extend({
 		so.default = hm.dashrepos[0][0];
 		hm.dashrepos.forEach((repo) => {
 			so.value(repo[0], repo[1]);
-		});
-		so.write = function() {};
+		})
 		so.renderWidget = function(/* ... */) {
 			var El = form.ListValue.prototype.renderWidget.apply(this, arguments);
 
@@ -267,6 +266,7 @@ return view.extend({
 					updateResVersion(weight.lastChild, res.version);
 				});
 		}
+		so.write = function() {};
 
 		so = ss.option(form.DummyValue, '_geoip_version', _('GeoIP version'));
 		so.cfgvalue = function() { return renderResVersion(this, null, 'geoip') };

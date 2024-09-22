@@ -3,6 +3,8 @@
 'require fs';
 'require ui';
 
+'require fchomo as hm';
+
 const hostspath = '/etc/fchomo/templates/hosts.yaml'
 
 var isReadonlyView = !L.hasViewPermission() || null;
@@ -29,7 +31,7 @@ return view.extend({
 			E('p', { 'class': 'cbi-section-descr' }, _('Custom internal hosts. Support <code>yaml</code> or <code>json</code> format.')),
 			E('p', {}, E('textarea', {
 				'class': 'cbi-input-textarea',
-				'style': 'width:100%;font-family:"Cascadia Code","Cascadia Mono",Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace',
+				'style': 'width:100%;font-family:' + hm.monospacefonts.join(','),
 				'rows': 25,
 				'disabled': isReadonlyView
 			}, [ content ? content : 'hosts:\n' ]))

@@ -87,7 +87,10 @@ function updateStatus(El, isRunning, instance) {
 		if (El.nextSibling?.localName === 'a')
 			hm.getClashAPI(instance).then((res) => {
 				let visible = isRunning && (res.http || res.https);
-				El.nextSibling.className = 'cbi-button cbi-button-apply' + (visible ? '' : ' hidden');
+				if (visible) {
+					El.nextSibling.classList.remove('hidden');
+				} else
+					El.nextSibling.classList.add('hidden');
 				if (visible)
 					El.nextSibling.href = 'http%s://%s:%s/'.format(res.https ? 's' : '',
 						window.location.hostname,

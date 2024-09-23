@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for d in ruleset resources templates; do
+for d in certs provider ruleset resources templates; do
 	mkdir -p "/etc/fchomo/$d/" 2>/dev/null
 done
 

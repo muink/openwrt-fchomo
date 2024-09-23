@@ -15,6 +15,7 @@ function hasKernelModule(kmod) {
 
 const HM_DIR = '/etc/fchomo';
 const RUN_DIR = '/var/run/fchomo';
+const RES_TYPE = ['certs', 'provider', 'ruleset', 'templates'];
 
 const methods = {
 	get_features: {
@@ -142,7 +143,7 @@ const methods = {
 	file_read: {
 		args: { type: 'type', filename: 'filename' },
 		call: function(req) {
-			if (!(req.args?.type in ['ruleset', 'templates']))
+			if (!(req.args?.type in RES_TYPE))
 				return { content: null, error: 'illegal type' };
 
 			if (!req.args?.filename)
@@ -156,7 +157,7 @@ const methods = {
 	file_write: {
 		args: { type: 'type', filename: 'filename', content: 'content' },
 		call: function(req) {
-			if (!(req.args?.type in ['ruleset', 'templates']))
+			if (!(req.args?.type in RES_TYPE))
 				return { result: false, error: 'illegal type' };
 
 			if (!req.args?.filename)
@@ -173,7 +174,7 @@ const methods = {
 					content += '\n';
 			}
 
-			system(`mkdir -p ${HM_DIR}/${req.args?.type}`);
+			//system(`mkdir -p ${HM_DIR}/${req.args?.type}`);
 			writefile(file, content);
 
 			return { result: true };

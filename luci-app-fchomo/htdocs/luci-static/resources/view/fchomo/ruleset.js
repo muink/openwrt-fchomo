@@ -58,7 +58,7 @@ function parseRulesetLink(uri) {
 					behavior: behavior,
 					href: String.format('file://%s%s', url.host, url.pathname)
 				};
-				alert('%s > %s'.format(hm.decodeBase64Str(filler), '/etc/fchomo/ruleset/' + hm.calcStringMD5(config.href) + rulefilesuffix));
+				hm.writeFile('ruleset', hm.calcStringMD5(config.href) + rulefilesuffix, hm.decodeBase64Str(filler));
 			}
 
 			break;
@@ -156,7 +156,7 @@ return view.extend({
 				])
 			])
 		}
-		s.renderSectionAdd = function(extra_class) {
+		s.renderSectionAdd = function(/* ... */) {
 			var el = form.GridSection.prototype.renderSectionAdd.apply(this, arguments),
 				nameEl = el.querySelector('.cbi-section-create-name');
 
@@ -260,10 +260,16 @@ return view.extend({
 		}
 		o.placeholder = _('Content will not be verified, Please make sure you enter it correctly.');
 		o.rmempty = false;
-		o.load = function() {};
-		o.write = function() {
-			alert('Editer is a development feature');
-		};
+		o.load = function(section_id) {
+			return L.resolveDefault(hm.readFile('ruleset', section_id + rulefilesuffix), '');
+		}
+		o.write = function(section_id, formvalue) {
+			return hm.writeFile('ruleset', section_id + rulefilesuffix, formvalue);
+		}
+		o.remove = function(section_id, formvalue) {
+			return hm.writeFile('ruleset', section_id + rulefilesuffix, '');
+		}
+		o.retain = true;
 		o.depends({'type': 'file', 'format': /^(text|yaml)$/});
 		o.modalonly = true;
 

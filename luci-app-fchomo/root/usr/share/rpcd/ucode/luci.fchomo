@@ -137,6 +137,47 @@ const methods = {
 			} else
 				return { status: 255, error: 'illegal type' };
 		}
+	},
+
+	file_read: {
+		args: { type: 'type', filename: 'filename' },
+		call: function(req) {
+			if (!(req.args?.type in ['ruleset', 'templates']))
+				return { content: null, error: 'illegal type' };
+
+			if (!req.args?.filename)
+				return { content: null, error: 'illegal filename' };
+
+			const filecontent = readfile(`${HM_DIR}/${req.args?.type}/${req.args?.filename}`);
+			return { content: filecontent };
+		}
+	},
+
+	file_write: {
+		args: { type: 'type', filename: 'filename', content: 'content' },
+		call: function(req) {
+			if (!(req.args?.type in ['ruleset', 'templates']))
+				return { result: false, error: 'illegal type' };
+
+			if (!req.args?.filename)
+				return { result: false, error: 'illegal filename' };
+
+			const file = `${HM_DIR}/${req.args?.type}/${req.args?.filename}`;
+			let content = req.args?.content;
+
+			/* Sanitize content */
+			if (content) {
+				content = trim(content);
+				content = replace(content, /\r\n?/g, '\n');
+				if (!match(content, /\n$/))
+					content += '\n';
+			}
+
+			system(`mkdir -p ${HM_DIR}/${req.args?.type}`);
+			writefile(file, content);
+
+			return { result: true };
+		}
 	}
 };
 

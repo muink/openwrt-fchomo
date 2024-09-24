@@ -1,27 +1,24 @@
 'use strict';
 'require view';
-'require fs';
 'require ui';
 
 'require fchomo as hm';
-
-const hostspath = '/etc/fchomo/templates/hosts.yaml'
 
 var isReadonlyView = !L.hasViewPermission() || null;
 
 return view.extend({
 	load: function() {
-		return L.resolveDefault(fs.read(hostspath), '');
+		return L.resolveDefault(hm.readFile('templates', 'hosts.yaml'), '');
 	},
 
 	handleSave: function(ev) {
 		var value = (document.querySelector('textarea').value || '').trim().replace(/\r\n/g, '\n') + '\n';
 
-		return fs.write(hostspath, value).then(function(rc) {
+		return hm.writeFile('templates', 'hosts.yaml', value).then(function(rc) {
 			document.querySelector('textarea').value = value;
 			ui.addNotification(null, E('p', _('Contents have been saved.')), 'info');
 		}).catch(function(e) {
-			ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
+			ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e)));
 		});
 	},
 

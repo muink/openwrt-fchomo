@@ -300,5 +300,37 @@ return baseclass.extend({
 		}
 
 		return true;
+	},
+
+	readFile: function(type, filename) {
+		var callReadFile = rpc.declare({
+			object: 'luci.fchomo',
+			method: 'file_read',
+			params: ['type', 'filename'],
+			expect: { '': {} }
+		});
+
+		return L.resolveDefault(callReadFile(type, filename), {}).then((res) => {
+			if (res.content ?? true) {
+				return res.content;
+			} else
+				throw res.error || 'unknown error';
+		});
+	},
+
+	writeFile: function(type, filename, content) {
+		var callWriteFile = rpc.declare({
+			object: 'luci.fchomo',
+			method: 'file_write',
+			params: ['type', 'filename', 'content'],
+			expect: { '': {} }
+		});
+
+		return L.resolveDefault(callWriteFile(type, filename, content), {}).then((res) => {
+			if (res.result) {
+				return res.result;
+			} else
+				throw res.error || 'unknown error';
+		});
 	}
 });

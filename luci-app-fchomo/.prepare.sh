@@ -31,8 +31,8 @@ echo '</style>'
 tail -n +$(( $p +1 )) $DOCNAME.html
 } > buildin.html
 popd
-minify "$PKG_BUILD_DIR"/buildin.html | base64 | tr -d '\n' > "$PKG_BUILD_DIR"/base64
-sed -i "s|'cmxzdHBsYWNlaG9sZGVy'|'$(cat "$PKG_BUILD_DIR"/base64)'|" "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js
+minify "$PKG_BUILD_DIR"/buildin.html | gzip -c | base64 | tr -d '\n' > "$PKG_BUILD_DIR"/base64
+sed -i "s|'H4sIAAAAAAAAAyvKKS4pyElMTs3Iz0lJLQIA8fIyYQ8AAAA='|'$(cat "$PKG_BUILD_DIR"/base64)'|" "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js
 
 if [ -d "$CURDIR/.git" ]; then
 	config="$CURDIR/.git/config"

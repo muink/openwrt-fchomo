@@ -58,7 +58,12 @@ function parseRulesetLink(uri) {
 					behavior: behavior,
 					href: String.format('file://%s%s', url.host, url.pathname)
 				};
-				hm.writeFile('ruleset', hm.calcStringMD5(config.href) + rulefilesuffix, hm.decodeBase64Str(filler));
+				if (filler.match(/^H4sI/)) {
+					hm.fetchGZ('data:application/octet-stream;base64,' + filler, (resp) => {
+						hm.writeFile('ruleset', hm.calcStringMD5(config.href) + rulefilesuffix, resp);
+					});
+				} else
+					hm.writeFile('ruleset', hm.calcStringMD5(config.href) + rulefilesuffix, hm.decodeBase64Str(filler));
 			}
 
 			break;
@@ -313,6 +318,9 @@ return view.extend({
 		o.inputtitle = _('🡇'); //🗘
 		o.inputstyle = 'apply';
 		o.onclick = function(ev, section_id) {
+			return hm.fetchGZ(hm.rulesetdoc, (resp) => {
+				alert(resp);
+			});
 			var type = uci.get(data[0], section_id, 'type');
 			var url = uci.get(data[0], section_id, 'url');
 			if (type === 'http') {

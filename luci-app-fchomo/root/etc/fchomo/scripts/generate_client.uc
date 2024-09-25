@@ -59,6 +59,28 @@ uci.foreach(uciconf, ucidnser, (cfg) => {
 /* UCI config END */
 
 /* Config helper START */
+function parse_time_duration(time) {
+	if (isEmpty(time))
+		return null;
+
+	let seconds = 0;
+	let arr = match(time, /^(\d+)(s|m|h|d)?$/);
+	if (arr) {
+		if (arr[2] === 's') {
+			seconds = strToInt(arr[1]);
+		} else if (arr[2] === 'm') {
+			seconds = strToInt(arr[1]) * 60;
+		} else if (arr[2] === 'h') {
+			seconds = strToInt(arr[1]) * 3600;
+		} else if (arr[2] === 'd') {
+			seconds = strToInt(arr[1]) * 86400;
+		} else
+			seconds = strToInt(arr[1]);
+	}
+
+	return seconds;
+}
+
 function get_nameserver(cfg) {
 	if (isEmpty(cfg))
 		return [];
@@ -93,7 +115,7 @@ config["log-level"] = uci.get(uciconf, uciglobal, 'log_level') || 'warning';
 config.ipv6 = (uci.get(uciconf, uciglobal, 'ipv6') === '0') ? false : true;
 config["unified-delay"] = strToBool(uci.get(uciconf, uciglobal, 'unified_delay')) || false;
 config["tcp-concurrent"] = strToBool(uci.get(uciconf, uciglobal, 'tcp_concurrent')) || false;
-config["keep-alive-interval"] = strToInt(uci.get(uciconf, uciglobal, 'keep_alive_interval')) || 120;
+config["keep-alive-interval"] = parse_time_duration(uci.get(uciconf, uciglobal, 'keep_alive_interval')) || 120;
 /* Global Authentication */
 config.authentication = uci.get(uciconf, uciglobal, 'authentication');
 config["skip-auth-prefixes"] = uci.get(uciconf, uciglobal, 'skip_auth_prefixes');
@@ -244,7 +266,7 @@ if (match(proxy_mode, /tun/))
 		"route-exclude-address-set": [],
 		"include-interface": [],
 		"exclude-interface": [],
-		"udp-timeout": strToInt(uci.get(uciconf, uciinbound, 'tun_udp_timeout')) || 300,
+		"udp-timeout": parse_time_duration(uci.get(uciconf, uciinbound, 'tun_udp_timeout')) || 300,
 		"endpoint-independent-nat": strToBool(uci.get(uciconf, uciinbound, 'tun_endpoint_independent_nat')),
 		"auto-detect-interface": true
 	});

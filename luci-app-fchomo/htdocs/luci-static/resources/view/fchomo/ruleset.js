@@ -305,8 +305,8 @@ return view.extend({
 
 		o = s.option(form.Value, 'interval', _('Update interval'),
 			_('In seconds. <code>259200</code> will be used if empty.'));
-		o.datatype = 'uinteger';
 		o.placeholder = '259200';
+		o.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
 		o.depends('type', 'http');
 
 		o = s.option(form.Button, '_update');

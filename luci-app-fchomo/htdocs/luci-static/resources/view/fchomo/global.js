@@ -328,8 +328,8 @@ return view.extend({
 
 		so = ss.option(form.Value, 'keep_alive_interval', _('TCP-Keep-Alive interval'),
 			_('In seconds. <code>120</code> is used by default.'));
-		so.datatype = 'uinteger';
 		so.placeholder = '120';
+		so.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
 
 		/* Global Authentication */
 		o = s.taboption('general', form.SectionValue, '_global', form.NamedSection, 'global', 'fchomo', _('Global Authentication'));
@@ -427,8 +427,8 @@ return view.extend({
 
 		so = ss.option(form.Value, 'tun_udp_timeout', _('UDP NAT expiration time'),
 			_('In seconds. <code>300</code> is used by default.'));
-		so.datatype = 'uinteger';
 		so.placeholder = '300';
+		so.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
 
 		so = ss.option(form.Flag, 'tun_endpoint_independent_nat', _('Endpoint-Independent NAT'),
 			_('Performance may degrade slightly, so it is not recommended to enable on when it is not needed.'));

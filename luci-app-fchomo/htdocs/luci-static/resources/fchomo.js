@@ -302,6 +302,16 @@ return baseclass.extend({
 		return true;
 	},
 
+	validateTimeDuration: function(uciconfig, ucisection, ucioption, section_id, value) {
+		if (!value)
+			return true;
+
+		if (!value.match(/^(\d+)(s|m|h|d)?$/))
+			return _('Expecting: %s').format(_('/^(\d+)(s|m|h|d)?$/'));
+
+		return true;
+	},
+
 	readFile: function(type, filename) {
 		var callReadFile = rpc.declare({
 			object: 'luci.fchomo',

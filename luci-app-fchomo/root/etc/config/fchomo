@@ -63,5 +63,3 @@ config sniff
 	list ports '8443'
 
 config proxy_group
-
-config ruleset

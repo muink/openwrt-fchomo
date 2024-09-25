@@ -32,7 +32,8 @@ const uciclient = 'client',
 
 const ucisniff = 'sniff',
       ucidnser = 'dns_server',
-      ucidnspoli = 'dns_policy';
+      ucidnspoli = 'dns_policy',
+      ucirule = 'ruleset';
 
 /* Hardcode options */
 const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
@@ -326,5 +327,24 @@ if (!isEmpty(config.dns.fallback))
 /* Hosts */
 config.hosts = {};
 /* Hosts END */
+
+/* Rule set START */
+/* Rule set settings */
+config["rule-providers"] = {};
+uci.foreach(uciconf, ucirule, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	config["rule-providers"][cfg['.name']] = {
+		type: cfg.type,
+		format: cfg.format,
+		behavior: cfg.behavior,
+		path: HM_DIR + '/ruleset/' + cfg['.name'],
+		url: cfg.url,
+		interval: (cfg.type === 'http') ? parse_time_duration(cfg.interval) || 259200 : null,
+		proxy: cfg.proxy
+	};
+});
+/* Rule set END */
 
 printf('%.J\n', config);

@@ -308,6 +308,24 @@ return view.extend({
 		o.datatype = 'uinteger';
 		o.placeholder = '259200';
 		o.depends('type', 'http');
+
+		o = s.option(form.Button, '_update');
+		o.inputtitle = _('🡇'); //🗘
+		o.inputstyle = 'apply';
+		o.onclick = function(ev, section_id) {
+			var type = uci.get(data[0], section_id, 'type');
+			var url = uci.get(data[0], section_id, 'url');
+			if (type === 'http') {
+				return hm.downloadFile('ruleset', section_id + rulefilesuffix, url).then((res) => {
+					ui.addNotification(null, E('p', _('Download successful.')));
+				}).catch((e) => {
+					ui.addNotification(null, E('p', _('Download failed: %s').format(e)));
+				});
+			} else
+				return ui.addNotification(null, E('p', _('Unable to download unsupported type: %s').format(type)));
+		};
+		o.editable = true;
+		o.modalonly = false;
 		/* Rule set END */
 
 		return m.render();

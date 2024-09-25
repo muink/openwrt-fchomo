@@ -179,6 +179,30 @@ const methods = {
 
 			return { result: true };
 		}
+	},
+
+	file_download: {
+		args: { type: 'type', filename: 'filename', url: 'url' },
+		call: function(req) {
+			if (!(req.args?.type in RES_TYPE))
+				return { result: false, error: 'illegal type' };
+
+			if (!req.args?.filename)
+				return { result: false, error: 'illegal filename' };
+
+			if (!req.args?.url)
+				return { result: false, error: 'illegal url' };
+
+			const file = `${HM_DIR}/${req.args?.type}/${req.args?.filename}`;
+
+			//system(`mkdir -p ${HM_DIR}/${req.args?.type}`);
+			let exitcode = system(`wget --timeout=10 -q "${req.args?.url}" -O "${file}"`);
+
+			if (exitcode === 0) {
+				return { result: true };
+			} else
+				return { result: false, error: 'wget exitcode: ' + sprintf("%d", exitcode) };
+		}
 	}
 };
 

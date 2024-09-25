@@ -332,5 +332,21 @@ return baseclass.extend({
 			} else
 				throw res.error || 'unknown error';
 		});
+	},
+
+	downloadFile: function(type, filename, url) {
+		var callDownloadFile = rpc.declare({
+			object: 'luci.fchomo',
+			method: 'file_download',
+			params: ['type', 'filename', 'url'],
+			expect: { '': {} }
+		});
+
+		return L.resolveDefault(callDownloadFile(type, filename, url), {}).then((res) => {
+			if (res.result) {
+				return res.result;
+			} else
+				throw res.error || 'unknown error';
+		});
 	}
 });

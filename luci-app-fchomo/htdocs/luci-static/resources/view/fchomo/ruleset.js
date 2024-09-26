@@ -6,8 +6,6 @@
 
 'require fchomo as hm';
 
-const rulefilesuffix = '.rule';
-
 function parseRulesetLink(uri) {
 	var config,
 		filefmt = new RegExp(/^(text|yaml|mrs)$/),
@@ -58,7 +56,7 @@ function parseRulesetLink(uri) {
 					behavior: behavior,
 					href: String.format('file://%s%s', url.host, url.pathname)
 				};
-				hm.writeFile('ruleset', hm.calcStringMD5(config.href) + rulefilesuffix, hm.decodeBase64Str(filler));
+				hm.writeFile('ruleset', hm.calcStringMD5(config.href), hm.decodeBase64Str(filler));
 			}
 
 			break;
@@ -240,7 +238,7 @@ return view.extend({
 
 			switch (option) {
 				case 'file':
-					return uci.get(data[0], section_id, '.name').replace(new RegExp("^[^_]+_"), '') + rulefilesuffix;
+					return uci.get(data[0], section_id, '.name');
 				case 'http':
 					return uci.get(data[0], section_id, 'url');
 				default:
@@ -261,13 +259,13 @@ return view.extend({
 		o.placeholder = _('Content will not be verified, Please make sure you enter it correctly.');
 		o.rmempty = false;
 		o.load = function(section_id) {
-			return L.resolveDefault(hm.readFile('ruleset', section_id + rulefilesuffix), '');
+			return L.resolveDefault(hm.readFile('ruleset', section_id), '');
 		}
 		o.write = function(section_id, formvalue) {
-			return hm.writeFile('ruleset', section_id + rulefilesuffix, formvalue);
+			return hm.writeFile('ruleset', section_id, formvalue);
 		}
 		o.remove = function(section_id, formvalue) {
-			return hm.writeFile('ruleset', section_id + rulefilesuffix, '');
+			return hm.writeFile('ruleset', section_id, '');
 		}
 		o.retain = true;
 		o.depends({'type': 'file', 'format': /^(text|yaml)$/});
@@ -316,7 +314,7 @@ return view.extend({
 			var type = uci.get(data[0], section_id, 'type');
 			var url = uci.get(data[0], section_id, 'url');
 			if (type === 'http') {
-				return hm.downloadFile('ruleset', section_id + rulefilesuffix, url).then((res) => {
+				return hm.downloadFile('ruleset', section_id, url).then((res) => {
 					ui.addNotification(null, E('p', _('Download successful.')));
 				}).catch((e) => {
 					ui.addNotification(null, E('p', _('Download failed: %s').format(e)));

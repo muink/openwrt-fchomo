@@ -111,7 +111,7 @@ return view.extend({
 						class: 'btn',
 						click: ui.hideModal
 					}, [ _('Cancel') ]),
-					'',
+					' ',
 					E('button', {
 						class: 'btn cbi-button-action',
 						click: ui.createHandlerFn(this, function() {
@@ -154,6 +154,47 @@ return view.extend({
 				])
 			])
 		}
+		s.handleRemoveIdles = function() {
+			let loaded = [];
+			uci.sections(data[0], 'ruleset', (section, sid) => loaded.push(sid));
+
+			return hm.lsDir('ruleset').then((res) => {
+				let sectionEl = E('div', { class: 'cbi-section' }, []);
+
+				res.filter(e => !loaded.includes(e)).forEach((filename) => {
+					sectionEl.appendChild(E('div', { class: 'cbi-value' }, [
+						E('label', {
+							class: 'cbi-value-title',
+							id: 'rmidles.' + filename + '.label'
+						}, [ filename ]),
+						E('div', { class: 'cbi-value-field' }, [
+							E('button', {
+								class: 'cbi-button cbi-button-reset',
+								id: 'rmidles.' + filename + '.button',
+								click: ui.createHandlerFn(this, function(filename) {
+									return hm.removeFile('ruleset', filename).then((res) => {
+										let node = document.getElementById('rmidles.' + filename + '.label');
+										node.innerHTML = '<s>%s</s>'.format(node.innerHTML);
+										node = document.getElementById('rmidles.' + filename + '.button');
+										node.classList.add('hidden');
+									});
+								}, filename)
+							}, [ _('Remove') ])
+						])
+					]));
+				});
+
+				ui.showModal(_('Remove idles'), [
+					sectionEl,
+					E('div', { class: 'right' }, [
+						E('button', {
+							class: 'btn cbi-button-action',
+							click: ui.hideModal
+						}, [ _('Complete') ])
+					])
+				]);
+			});
+		}
 		s.renderSectionAdd = function(/* ... */) {
 			var el = form.GridSection.prototype.renderSectionAdd.apply(this, arguments),
 				nameEl = el.querySelector('.cbi-section-create-name');
@@ -182,6 +223,12 @@ return view.extend({
 				'title': _('Import rule-set links'),
 				'click': ui.createHandlerFn(this, 'handleLinkImport')
 			}, [ _('Import rule-set links') ]));
+
+			el.appendChild(E('button', {
+				'class': 'cbi-button cbi-button-add',
+				'title': _('Remove idles'),
+				'click': ui.createHandlerFn(this, 'handleRemoveIdles')
+			}, [ _('Remove idles') ]));
 
 			return el;
 		}

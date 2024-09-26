@@ -312,6 +312,22 @@ return baseclass.extend({
 		return true;
 	},
 
+	lsDir: function(type) {
+		var callLsDir = rpc.declare({
+			object: 'luci.fchomo',
+			method: 'dir_ls',
+			params: ['type'],
+			expect: { '': {} }
+		});
+
+		return L.resolveDefault(callLsDir(type), {}).then((res) => {
+			if (res.result) {
+				return res.result;
+			} else
+				throw res.error || 'unknown error';
+		});
+	},
+
 	readFile: function(type, filename) {
 		var callReadFile = rpc.declare({
 			object: 'luci.fchomo',
@@ -353,6 +369,22 @@ return baseclass.extend({
 		});
 
 		return L.resolveDefault(callDownloadFile(type, filename, url), {}).then((res) => {
+			if (res.result) {
+				return res.result;
+			} else
+				throw res.error || 'unknown error';
+		});
+	},
+
+	removeFile: function(type, filename) {
+		var callRemoveFile = rpc.declare({
+			object: 'luci.fchomo',
+			method: 'file_remove',
+			params: ['type', 'filename'],
+			expect: { '': {} }
+		});
+
+		return L.resolveDefault(callRemoveFile(type, filename), {}).then((res) => {
 			if (res.result) {
 				return res.result;
 			} else

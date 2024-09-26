@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { access, lstat, popen, readfile, writefile } from 'fs';
+import { access, lsdir, lstat, popen, readfile, writefile } from 'fs';
 
 /* Kanged from ucode/luci */
 function shellquote(s) {
@@ -140,6 +140,17 @@ const methods = {
 		}
 	},
 
+	dir_ls: {
+		args: { type: 'type' },
+		call: function(req) {
+			if (!(req.args?.type in RES_TYPE))
+				return { result: null, error: 'illegal type' };
+
+			const list = lsdir(`${HM_DIR}/${req.args?.type}/`);
+			return { result: list };
+		}
+	},
+
 	file_read: {
 		args: { type: 'type', filename: 'filename' },
 		call: function(req) {
@@ -202,6 +213,21 @@ const methods = {
 				return { result: true };
 			} else
 				return { result: false, error: 'wget exitcode: ' + sprintf("%d", exitcode) };
+		}
+	},
+
+	file_remove: {
+		args: { type: 'type', filename: 'filename' },
+		call: function(req) {
+			if (!(req.args?.type in RES_TYPE))
+				return { result: false, error: 'illegal type' };
+
+			if (!req.args?.filename)
+				return { result: false, error: 'illegal filename' };
+
+			system(`rm -f ${HM_DIR}/${req.args?.type}/${req.args?.filename}`);
+
+			return { result: true };
 		}
 	}
 };

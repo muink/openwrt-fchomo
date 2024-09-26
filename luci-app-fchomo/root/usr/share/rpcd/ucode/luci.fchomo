@@ -157,7 +157,7 @@ const methods = {
 			if (!(req.args?.type in RES_TYPE))
 				return { content: null, error: 'illegal type' };
 
-			if (!req.args?.filename)
+			if ((!req.args?.filename) || match(req.args?.filename, /\.\.\//))
 				return { content: null, error: 'illegal filename' };
 
 			const filecontent = readfile(`${HM_DIR}/${req.args?.type}/${req.args?.filename}`);
@@ -171,7 +171,7 @@ const methods = {
 			if (!(req.args?.type in RES_TYPE))
 				return { result: false, error: 'illegal type' };
 
-			if (!req.args?.filename)
+			if ((!req.args?.filename) || match(req.args?.filename, /\.\.\//))
 				return { result: false, error: 'illegal filename' };
 
 			const file = `${HM_DIR}/${req.args?.type}/${req.args?.filename}`;
@@ -198,7 +198,7 @@ const methods = {
 			if (!(req.args?.type in RES_TYPE))
 				return { result: false, error: 'illegal type' };
 
-			if (!req.args?.filename)
+			if ((!req.args?.filename) || match(req.args?.filename, /\.\.\//))
 				return { result: false, error: 'illegal filename' };
 
 			if (!req.args?.url)
@@ -222,7 +222,7 @@ const methods = {
 			if (!(req.args?.type in RES_TYPE))
 				return { result: false, error: 'illegal type' };
 
-			if (!req.args?.filename)
+			if ((!req.args?.filename) || match(req.args?.filename, /\.\.\//))
 				return { result: false, error: 'illegal filename' };
 
 			system(`rm -f ${HM_DIR}/${req.args?.type}/${req.args?.filename}`);

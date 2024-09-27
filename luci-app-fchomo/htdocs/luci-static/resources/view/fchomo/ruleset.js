@@ -231,7 +231,7 @@ return view.extend({
 		o.modalonly = false;
 
 		o = s.option(form.TextValue, '_editer', _('Editer'),
-			_('Please type <a target="_blank" href="https://wiki.metacubex.one/config/rule-providers/content/">Contents</a>.'));
+			_('Please type <a target="_blank" href="https://wiki.metacubex.one/config/rule-providers/content/" rel="noreferrer noopener">Contents</a>.'));
 		o.renderWidget = function(/* ... */) {
 			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 

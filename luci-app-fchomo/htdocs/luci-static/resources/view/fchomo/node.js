@@ -56,16 +56,21 @@ return view.extend({
 		ss.handleAdd = L.bind(hm.handleAdd, this, ss, prefmt);
 		/* Remove idle files end */
 
-		so = ss.option(form.Value, 'label', _('Label'));
+		ss.tab('field_general', _('General fields'));
+		ss.tab('field_override', _('Override fields'));
+		ss.tab('field_health', _('Health fields'));
+
+		/* General fields */
+		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
 		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'provider', 'label');
 		so.modalonly = true;
 
-		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so = ss.taboption('field_general', form.Flag, 'enabled', _('Enable'));
 		so.default = so.enabled;
 		so.editable = true;
 
-		so = ss.option(form.ListValue, 'type', _('Type'));
+		so = ss.taboption('field_general', form.ListValue, 'type', _('Type'));
 		so.value('file', _('Local'));
 		so.value('http', _('Remote'));
 		so.default = 'http';
@@ -85,8 +90,8 @@ return view.extend({
 		}
 		so.modalonly = false;
 
-		so = ss.option(form.TextValue, '_editer', _('Editer'),
-			_('Please type <a target="_blank" href="https://wiki.metacubex.one/config/proxy-providers/content/">Contents</a>.'));
+		so = ss.taboption('field_general', form.TextValue, '_editer', _('Editer'),
+			_('Please type <a target="_blank" href="https://wiki.metacubex.one/config/proxy-providers/content/" rel="noreferrer noopener">Contents</a>.'));
 		so.renderWidget = function(/* ... */) {
 			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 
@@ -109,19 +114,19 @@ return view.extend({
 		so.depends('type', 'file');
 		so.modalonly = true;
 
-		so = ss.option(form.Value, 'url', _('Provider URL'));
+		so = ss.taboption('field_general', form.Value, 'url', _('Provider URL'));
 		so.validate = L.bind(hm.validateUrl, this);
 		so.rmempty = false;
 		so.depends('type', 'http');
 		so.modalonly = true;
 
-		so = ss.option(form.Value, 'interval', _('Update interval'),
+		so = ss.taboption('field_general', form.Value, 'interval', _('Update interval'),
 			_('In seconds. <code>86400</code> will be used if empty.'));
 		so.placeholder = '86400';
 		so.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
 		so.depends('type', 'http');
 
-		so = ss.option(form.ListValue, 'proxy', _('Proxy group'),
+		so = ss.taboption('field_general', form.ListValue, 'proxy', _('Proxy group'),
 			_('Name of the Proxy group to download provider.'));
 		so.load = function(section_id) {
 			var preadds = [
@@ -134,7 +139,7 @@ return view.extend({
 		//o.editable = true;
 		so.depends('type', 'http');
 
-		so = ss.option(form.TextValue, 'header', _('HTTP header'),
+		so = ss.taboption('field_general', form.TextValue, 'header', _('HTTP header'),
 			_('Custom HTTP header.'));
 		so.renderWidget = function(/* ... */) {
 			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
@@ -145,6 +150,42 @@ return view.extend({
 		}
 		so.placeholder = 'User-Agent:\n- "Clash/v1.18.0"\n- "mihomo/1.18.3"\n# Accept:\n# - ' + "'" + 'application/vnd.github.v3.raw' + "'" + '\n# Authorization:\n# - ' + "'" + 'token 1231231' + "'";
 		so.depends('type', 'http');
+		so.modalonly = true;
+
+		/* Override fields */
+		/* Health fields */
+		so = ss.taboption('field_health', form.Flag, 'health_enable', _('Enable'));
+		so.default = so.enabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'health_url', _('Health check URL'));
+		so.value('https://cp.cloudflare.com');
+		so.value('https://www.gstatic.com/generate_204');
+		so.default = 'https://cp.cloudflare.com';
+		so.validate = L.bind(hm.validateUrl, this);
+		so.retain = true;
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'health_interval', _('Health check interval'),
+			_('In seconds. <code>600</code> will be used if empty.'));
+		so.placeholder = '600';
+		so.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'health_timeout', _('Health check timeout'),
+			_('In millisecond. <code>5000</code> will be used if empty.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '5000';
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Flag, 'health_lazy', _('Lazy'),
+			_('No testing is performed when this provider node is not in use.'));
+		so.default = so.enabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'health_expected_status', _('Health check expected status'),
+			_('Expected HTTP code. For format see <a target="_blank" href="https://wiki.metacubex.one/config/proxy-groups/#expected-status" rel="noreferrer noopener">Expected status</a>.'));
+		so.placeholder = '200/302/400-503';
 		so.modalonly = true;
 		/* Provider END */
 

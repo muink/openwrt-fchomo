@@ -255,18 +255,7 @@ return view.extend({
 		o.modalonly = true;
 
 		o = s.option(form.Value, 'url', _('Rule set URL'));
-		o.validate = function(section_id, value) {
-			try {
-				var url = new URL(value);
-				if (!url.hostname)
-					return _('Expecting: %s').format(_('valid URL'));
-			}
-			catch(e) {
-				return _('Expecting: %s').format(_('valid URL'));
-			}
-
-			return true;
-		}
+		o.validate = L.bind(hm.validateUrl, this);
 		o.rmempty = false;
 		o.depends('type', 'http');
 		o.modalonly = true;

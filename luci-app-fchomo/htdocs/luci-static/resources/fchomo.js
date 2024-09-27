@@ -325,6 +325,16 @@ return baseclass.extend({
 		});
 	},
 
+	validateTimeDuration: function(uciconfig, ucisection, ucioption, section_id, value) {
+		if (!value)
+			return true;
+
+		if (!value.match(/^(\d+)(s|m|h|d)?$/))
+			return _('Expecting: %s').format(_('/^(\d+)(s|m|h|d)?$/'));
+
+		return true;
+	},
+
 	// thanks to homeproxy
 	validateUniqueValue: function(uciconfig, ucisection, ucioption, section_id, value) {
 		if (section_id) {
@@ -344,12 +354,15 @@ return baseclass.extend({
 		return true;
 	},
 
-	validateTimeDuration: function(uciconfig, ucisection, ucioption, section_id, value) {
-		if (!value)
-			return true;
-
-		if (!value.match(/^(\d+)(s|m|h|d)?$/))
-			return _('Expecting: %s').format(_('/^(\d+)(s|m|h|d)?$/'));
+	validateUrl: function(section_id, value) {
+		try {
+			var url = new URL(value);
+			if (!url.hostname)
+				return _('Expecting: %s').format(_('valid URL'));
+		}
+		catch(e) {
+			return _('Expecting: %s').format(_('valid URL'));
+		}
 
 		return true;
 	},

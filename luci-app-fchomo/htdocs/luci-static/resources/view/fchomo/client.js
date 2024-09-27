@@ -103,10 +103,10 @@ return view.extend({
 
 		s = m.section(form.NamedSection, 'client', 'fchomo');
 
-		/* DNS START */
-		/* DNS settings */
+		/* DNS settings START */
 		s.tab('dns', _('DNS settings'));
 
+		/* DNS settings */
 		o = s.taboption('dns', form.SectionValue, '_dns', form.NamedSection, 'dns', 'fchomo', null);
 		ss = o.subsection;
 
@@ -154,9 +154,12 @@ return view.extend({
 				fdesc.innerHTML = _('Fallback DNS server');
 			}
 		}
+		/* DNS settings END */
+
+		/* DNS server START */
+		s.tab('dns_server', _('DNS server'));
 
 		/* DNS server */
-		s.tab('dns_server', _('DNS server'));
 		o = s.taboption('dns_server', form.SectionValue, '_dns_server', form.GridSection, 'dns_server', null);
 		ss = o.subsection;
 		var prefmt = { 'prefix': 'dns_', 'suffix': '' };
@@ -280,9 +283,12 @@ return view.extend({
 		so.write = function() {};
 		so.depends({'ecs': /.+/});
 		so.modalonly = true;
+		/* DNS server END */
+
+		/* DNS policy START */
+		s.tab('dns_policy', _('DNS policy'));
 
 		/* DNS policy */
-		s.tab('dns_policy', _('DNS policy'));
 		o = s.taboption('dns_policy', form.SectionValue, '_dns_policy', form.GridSection, 'dns_policy', null);
 		ss = o.subsection;
 		var prefmt = { 'prefix': '', 'suffix': '_domain' };
@@ -342,9 +348,12 @@ return view.extend({
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 		so.editable = true;
+		/* DNS policy END */
+
+		/* Fallback filter START */
+		s.tab('fallback_filter', _('Fallback filter'));
 
 		/* Fallback filter */
-		s.tab('fallback_filter', _('Fallback filter'));
 		o = s.taboption('fallback_filter', form.SectionValue, '_fallback_filter', form.NamedSection, 'dns', 'fchomo', null);
 		o.depends({'fchomo.dns.fallback_server': /.+/});
 		ss = o.subsection;
@@ -373,7 +382,7 @@ return view.extend({
 		so = ss.option(form.DynamicList, 'fallback_filter_domain', _('Domain'),
 			_('Match domain. Support wildcards.</br>') +
 			_('The matching <code>%s</code> will be deemed as poisoned.').format(_('Domain')));
-		/* DNS END */
+		/* Fallback filter END */
 
 		return m.render();
 	}

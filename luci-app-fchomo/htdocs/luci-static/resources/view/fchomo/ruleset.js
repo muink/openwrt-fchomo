@@ -87,7 +87,7 @@ return view.extend({
 
 		/* Rule set START */
 		/* Rule set settings */
-		var prefix = 'rule_';
+		var prefmt = { 'prefix': 'rule_', 'suffix': '' };
 		s = m.section(form.GridSection, 'ruleset');
 		s.addremove = true;
 		s.rowcolors = true;
@@ -95,7 +95,7 @@ return view.extend({
 		s.nodescriptions = true;
 		s.modaltitle = L.bind(hm.loadModalTitle, this, _('Rule set'), _('Add a rule set'), data[0]);
 		s.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
-		/* Import rule-set links start */
+		/* Import rule-set links and Remove idle files start */
 		s.handleLinkImport = function() {
 			var textarea = new ui.Textarea('', {
 				'placeholder': 'http(s)://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/Providers/BanAD.yaml?fmt=yaml&behav=classical&rawq=good%3Djob#BanAD\n' +
@@ -195,27 +195,7 @@ return view.extend({
 			});
 		}
 		s.renderSectionAdd = function(/* ... */) {
-			var el = form.GridSection.prototype.renderSectionAdd.apply(this, arguments),
-				nameEl = el.querySelector('.cbi-section-create-name');
-
-			ui.addValidator(nameEl, 'uciname', true, (v) => {
-				var button = el.querySelector('.cbi-section-create > .cbi-button-add');
-				var uciconfig = this.uciconfig || this.map.config;
-
-				if (!v) {
-					button.disabled = true;
-					return true;
-				} else if (uci.get(uciconfig, v)) {
-					button.disabled = true;
-					return _('Expecting: %s').format(_('unique UCI identifier'));
-				} else if (uci.get(uciconfig, prefix + v)) {
-					button.disabled = true;
-					return _('Expecting: %s').format(_('unique label'));
-				} else {
-					button.disabled = null;
-					return true;
-				}
-			}, 'blur', 'keyup');
+			var el = hm.renderSectionAdd.apply(this, [s, prefmt, false].concat(Array.prototype.slice.call(arguments)));
 
 			el.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
@@ -231,10 +211,8 @@ return view.extend({
 
 			return el;
 		}
-		s.handleAdd = function(ev, name) {
-			return form.GridSection.prototype.handleAdd.apply(this, [ ev, prefix + name ]);
-		}
-		/* Import rule-set links end */
+		s.handleAdd = L.bind(hm.handleAdd, this, s, prefmt);
+		/* Import rule-set links and Remove idle files end */
 
 		o = s.option(form.Value, 'label', _('Label'));
 		o.load = L.bind(hm.loadDefaultLabel, this, data[0]);

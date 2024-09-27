@@ -320,7 +320,7 @@ return view.extend({
 				['DIRECT', _('DIRECT')]
 			];
 
-			return hm.loadProxyGroupLabel(this, preadds, data[0], section_id);
+			return hm.loadProxyGroupLabel.call(this, preadds, data[0], section_id);
 		}
 		//o.editable = true;
 		o.depends('type', 'http');

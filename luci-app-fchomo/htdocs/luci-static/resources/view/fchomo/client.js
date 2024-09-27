@@ -8,19 +8,19 @@
 
 'require fchomo as hm';
 
-function loadDNSServerLabel(self, uciconfig, ucisection) {
-	delete self.keylist;
-	delete self.vallist;
+function loadDNSServerLabel(uciconfig, ucisection) {
+	delete this.keylist;
+	delete this.vallist;
 
-	self.value('default-dns', _('Default DNS (114)'));
-	self.value('system-dns', _('System DNS'));
-	self.value('block-dns', _('Block DNS queries'));
+	this.value('default-dns', _('Default DNS (114)'));
+	this.value('system-dns', _('System DNS'));
+	this.value('block-dns', _('Block DNS queries'));
 	uci.sections(uciconfig, 'dns_server', (res) => {
 		if (res.enabled !== '0')
-			self.value(res['.name'], res.label);
+			this.value(res['.name'], res.label);
 	});
 
-	return self.super('load', ucisection);
+	return this.super('load', ucisection);
 }
 function validateNameserver(section_id, value) {
 	const arr = value.trim().split(' ');
@@ -121,27 +121,27 @@ return view.extend({
 		so = ss.option(form.MultiValue, 'boot_server', _('Boot DNS server'),
 			_('Used to resolve the domain of the DNS server. Must be IP.'));
 		so.default = 'default-dns';
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.load = L.bind(loadDNSServerLabel, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
 		so = ss.option(form.MultiValue, 'bootnode_server', _('Boot DNS server (Node)'),
 			_('Used to resolve the domain of the Proxy node.'));
 		so.default = 'default-dns';
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.load = L.bind(loadDNSServerLabel, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
 		so = ss.option(form.MultiValue, 'default_server', _('Default DNS server'));
 		so.description = uci.get(data[0], so.section.section, 'fallback_server') ? _('Final DNS server (Used to Domestic-IP response)') : _('Final DNS server');
 		so.default = 'default-dns';
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.load = L.bind(loadDNSServerLabel, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 
 		so = ss.option(form.MultiValue, 'fallback_server', _('Fallback DNS server'));
 		so.description = uci.get(data[0], so.section.section, 'fallback_server') ? _('Final DNS server (Used to Overseas-IP response)') : _('Fallback DNS server');
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.load = L.bind(loadDNSServerLabel, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.onchange = function(ev, section_id, value) {
 			var ddesc = this.section.getUIElement(section_id, 'default_server').node.nextSibling;
@@ -219,7 +219,7 @@ return view.extend({
 				['DIRECT', _('DIRECT')]
 			];
 
-			hm.loadProxyGroupLabel(this, preadds, data[0], section_id);
+			hm.loadProxyGroupLabel.call(this, preadds, data[0], section_id);
 
 			return new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('detour');
 		}
@@ -329,7 +329,7 @@ return view.extend({
 		so = ss.option(form.MultiValue, 'rule_set', _('Rule set'),
 			_('Match rule set.'));
 		so.value('');
-		so.load = L.bind(hm.loadRulesetLabel, this, so, ['domain', 'classical'], data[0]);
+		so.load = L.bind(hm.loadRulesetLabel, so, ['domain', 'classical'], data[0]);
 		so.depends('type', 'rule_set');
 		so.modalonly = true;
 
@@ -344,7 +344,7 @@ return view.extend({
 		so = ss.option(form.MultiValue, 'server', _('DNS server'));
 		so.value('default-dns');
 		so.default = 'default-dns';
-		so.load = L.bind(loadDNSServerLabel, this, so, data[0]);
+		so.load = L.bind(loadDNSServerLabel, so, data[0]);
 		so.validate = L.bind(validateNameserver, this);
 		so.rmempty = false;
 		so.editable = true;

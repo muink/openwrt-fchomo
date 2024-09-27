@@ -101,12 +101,12 @@ function updateStatus(El, isRunning, instance) {
 	return El;
 }
 
-function renderResVersion(self, El, type, repo) {
+function renderResVersion(El, type, repo) {
 	return L.resolveDefault(callResVersion(type, repo), {}).then((res) => {
 		var resEl = E([
 			E('button', {
 				'class': 'cbi-button cbi-button-apply',
-				'click': ui.createHandlerFn(self, handleResUpdate, type, repo)
+				'click': ui.createHandlerFn(this, handleResUpdate, type, repo)
 			}, [ _('Check update') ]),
 			updateResVersion(E('span', { style: 'border: unset; font-weight: bold; align-items: center' }), res.version)
 		]);
@@ -195,7 +195,7 @@ return view.extend({
 			return E([
 				E('button', {
 					'class': 'cbi-button cbi-button-apply',
-					'click': ui.createHandlerFn(self, function() {
+					'click': ui.createHandlerFn(this, function() {
 						var weight = document.getElementById(ElId);
 
 						weight.innerHTML = '';
@@ -258,7 +258,7 @@ return view.extend({
 			El.className = 'control-group';
 			El.firstChild.style.width = '10em';
 
-			return renderResVersion(this, El, 'dashboard', this.default);
+			return renderResVersion.call(this, El, 'dashboard', this.default);
 		}
 		so.onchange = function(ev, section_id, value) {
 			this.default = value;
@@ -272,22 +272,22 @@ return view.extend({
 		so.write = function() {};
 
 		so = ss.option(form.DummyValue, '_geoip_version', _('GeoIP version'));
-		so.cfgvalue = function() { return renderResVersion(this, null, 'geoip') };
+		so.cfgvalue = function() { return renderResVersion.call(this, null, 'geoip') };
 
 		so = ss.option(form.DummyValue, '_geosite_version', _('GeoSite version'));
-		so.cfgvalue = function() { return renderResVersion(this, null, 'geosite') };
+		so.cfgvalue = function() { return renderResVersion.call(this, null, 'geosite') };
 
 		so = ss.option(form.DummyValue, '_china_ip4_version', _('China IPv4 list version'));
-		so.cfgvalue = function() { return renderResVersion(this, null, 'china_ip4') };
+		so.cfgvalue = function() { return renderResVersion.call(this, null, 'china_ip4') };
 
 		so = ss.option(form.DummyValue, '_china_ip6_version', _('China IPv6 list version'));
-		so.cfgvalue = function() { return renderResVersion(this, null, 'china_ip6') };
+		so.cfgvalue = function() { return renderResVersion.call(this, null, 'china_ip6') };
 
 		so = ss.option(form.DummyValue, '_gfw_list_version', _('GFW list version'));
-		so.cfgvalue = function() { return renderResVersion(this, null, 'gfw_list') };
+		so.cfgvalue = function() { return renderResVersion.call(this, null, 'gfw_list') };
 
 		so = ss.option(form.DummyValue, '_china_list_version', _('China list version'));
-		so.cfgvalue = function() { return renderResVersion(this, null, 'china_list') };
+		so.cfgvalue = function() { return renderResVersion.call(this, null, 'china_list') };
 		/* Overview END */
 
 		/* General START */

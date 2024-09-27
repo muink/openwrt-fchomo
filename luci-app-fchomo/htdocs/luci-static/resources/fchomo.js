@@ -208,33 +208,33 @@ return baseclass.extend({
 		return label ? title + ' » ' + label : addtitle;
 	},
 
-	loadProxyGroupLabel: function(self, preadds, uciconfig, ucisection) {
-		delete self.keylist;
-		delete self.vallist;
+	loadProxyGroupLabel: function(preadds, uciconfig, ucisection) {
+		delete this.keylist;
+		delete this.vallist;
 
 		preadds?.forEach((arr) => {
-			self.value.apply(self, arr);
+			this.value.apply(this, arr);
 		});
 		uci.sections(uciconfig, 'proxy_group', (res) => {
 			if (res.enabled !== '0')
-				self.value(res['.name'], res.label);
+				this.value(res['.name'], res.label);
 		});
 
-		return self.super('load', ucisection);
+		return this.super('load', ucisection);
 	},
 
-	loadRulesetLabel: function(self, behaviors, uciconfig, ucisection) {
-		delete self.keylist;
-		delete self.vallist;
+	loadRulesetLabel: function(behaviors, uciconfig, ucisection) {
+		delete this.keylist;
+		delete this.vallist;
 
-		self.value('', _('-- Please choose --'));
+		this.value('', _('-- Please choose --'));
 		uci.sections(uciconfig, 'ruleset', (res) => {
 			if (res.enabled !== '0')
 				if (behaviors ? behaviors.includes(res.behavior) : true)
-					self.value(res['.name'], res.label);
+					this.value(res['.name'], res.label);
 		});
 
-		return self.super('load', ucisection);
+		return this.super('load', ucisection);
 	},
 
 	renderSectionAdd: function(section, prefmt, LC, extra_class) {

@@ -240,7 +240,6 @@ return view.extend({
 			return frameEl;
 		}
 		o.placeholder = _('Content will not be verified, Please make sure you enter it correctly.');
-		o.rmempty = false;
 		o.load = function(section_id) {
 			return L.resolveDefault(hm.readFile('ruleset', section_id), '');
 		}
@@ -250,6 +249,7 @@ return view.extend({
 		o.remove = function(section_id, formvalue) {
 			return hm.writeFile('ruleset', section_id, '');
 		}
+		o.rmempty = false;
 		o.retain = true;
 		o.depends({'type': 'file', 'format': /^(text|yaml)$/});
 		o.modalonly = true;
@@ -259,6 +259,12 @@ return view.extend({
 		o.rmempty = false;
 		o.depends('type', 'http');
 		o.modalonly = true;
+
+		o = s.option(form.Value, 'interval', _('Update interval'),
+			_('In seconds. <code>259200</code> will be used if empty.'));
+		o.placeholder = '259200';
+		o.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
+		o.depends('type', 'http');
 
 		o = s.option(form.ListValue, 'proxy', _('Proxy group'),
 			_('Name of the Proxy group to download rule set.'));
@@ -271,12 +277,6 @@ return view.extend({
 			return hm.loadProxyGroupLabel.call(this, preadds, data[0], section_id);
 		}
 		//o.editable = true;
-		o.depends('type', 'http');
-
-		o = s.option(form.Value, 'interval', _('Update interval'),
-			_('In seconds. <code>259200</code> will be used if empty.'));
-		o.placeholder = '259200';
-		o.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
 		o.depends('type', 'http');
 
 		o = s.option(form.DummyValue, '_update');

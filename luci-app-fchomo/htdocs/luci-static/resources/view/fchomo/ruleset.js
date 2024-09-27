@@ -354,20 +354,29 @@ return view.extend({
 		o.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
 		o.depends('type', 'http');
 
-		o = s.option(form.Button, '_update');
-		o.inputtitle = _('🡇'); //🗘
-		o.inputstyle = 'apply';
-		o.onclick = function(ev, section_id) {
-			var type = uci.get(data[0], section_id, 'type');
-			var url = uci.get(data[0], section_id, 'url');
-			if (type === 'http') {
-				return hm.downloadFile('ruleset', section_id, url).then((res) => {
-					ui.addNotification(null, E('p', _('Download successful.')));
-				}).catch((e) => {
-					ui.addNotification(null, E('p', _('Download failed: %s').format(e)));
-				});
-			} else
-				return ui.addNotification(null, E('p', _('Unable to download unsupported type: %s').format(type)));
+		o = s.option(form.DummyValue, '_update');
+		o.cfgvalue = function(section_id) {
+			var type = uci.get(data[0], section_id, 'type'),
+			    url = uci.get(data[0], section_id, 'url');
+
+			var El = E([
+				E('button', {
+					class: 'cbi-button cbi-button-apply',
+					disabled: (type !== 'http') || null,
+					click: ui.createHandlerFn(this, function(section_id, type, url) {
+						if (type === 'http') {
+							return hm.downloadFile('ruleset', section_id, url).then((res) => {
+								ui.addNotification(null, E('p', _('Download successful.')));
+							}).catch((e) => {
+								ui.addNotification(null, E('p', _('Download failed: %s').format(e)));
+							});
+						} else
+							return ui.addNotification(null, E('p', _('Unable to download unsupported type: %s').format(type)));
+					}, section_id, type, url)
+				}, [ _('🡇') ]) //🗘
+			]);
+
+			return El;
 		};
 		o.editable = true;
 		o.modalonly = false;

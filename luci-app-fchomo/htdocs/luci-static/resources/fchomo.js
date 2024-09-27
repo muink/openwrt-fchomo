@@ -283,6 +283,48 @@ return baseclass.extend({
 			})
 	},
 
+	handleRemoveIdles: function(self, uciconfig, ucisection) {
+		let loaded = [];
+		uci.sections(uciconfig, ucisection, (section, sid) => loaded.push(sid));
+
+		return self.lsDir(ucisection).then((res) => {
+			let sectionEl = E('div', { class: 'cbi-section' }, []);
+
+			res.filter(e => !loaded.includes(e)).forEach((filename) => {
+				sectionEl.appendChild(E('div', { class: 'cbi-value' }, [
+					E('label', {
+						class: 'cbi-value-title',
+						id: 'rmidles.' + filename + '.label'
+					}, [ filename ]),
+					E('div', { class: 'cbi-value-field' }, [
+						E('button', {
+							class: 'cbi-button cbi-button-reset',
+							id: 'rmidles.' + filename + '.button',
+							click: ui.createHandlerFn(this, function(filename) {
+								return self.removeFile(ucisection, filename).then((res) => {
+									let node = document.getElementById('rmidles.' + filename + '.label');
+									node.innerHTML = '<s>%s</s>'.format(node.innerHTML);
+									node = document.getElementById('rmidles.' + filename + '.button');
+									node.classList.add('hidden');
+								});
+							}, filename)
+						}, [ _('Remove') ])
+					])
+				]));
+			});
+
+			ui.showModal(_('Remove idles'), [
+				sectionEl,
+				E('div', { class: 'right' }, [
+					E('button', {
+						class: 'btn cbi-button-action',
+						click: ui.hideModal
+					}, [ _('Complete') ])
+				])
+			]);
+		});
+	},
+
 	// thanks to homeproxy
 	validateUniqueValue: function(uciconfig, ucisection, ucioption, section_id, value) {
 		if (section_id) {

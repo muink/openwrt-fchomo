@@ -18,6 +18,7 @@ define Package/luci-app-fchomo/conffiles
 /etc/fchomo/provider/
 /etc/fchomo/ruleset/
 /etc/fchomo/resources/
+/etc/fchomo/templates/
 /etc/fchomo/resources.json
 /etc/fchomo/geoip.dat
 /etc/fchomo/geosite.dat

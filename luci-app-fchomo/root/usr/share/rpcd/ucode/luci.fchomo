@@ -15,7 +15,7 @@ function hasKernelModule(kmod) {
 
 const HM_DIR = '/etc/fchomo';
 const RUN_DIR = '/var/run/fchomo';
-const RES_TYPE = ['certs', 'provider', 'ruleset', 'templates'];
+const RES_TYPE = ['certs', 'provider', 'ruleset', 'resources', 'templates'];
 
 const methods = {
 	get_features: {

@@ -34,7 +34,7 @@ function parseRulesetLink(uri) {
 					behavior: behavior,
 					url: String.format('%s://%s', uri[0], fullpath),
 					interval: interval,
-					href: String.format('http://%s', fullpath)
+					href: hm.calcStringMD5(String.format('http://%s', fullpath))
 				};
 			}
 
@@ -54,9 +54,9 @@ function parseRulesetLink(uri) {
 					type: 'file',
 					format: format,
 					behavior: behavior,
-					href: String.format('file://%s%s', url.host, url.pathname)
+					href: hm.calcStringMD5(String.format('file://%s%s', url.host, url.pathname))
 				};
-				hm.writeFile('ruleset', hm.calcStringMD5(config.href), hm.decodeBase64Str(filler));
+				hm.writeFile('ruleset', config.href, hm.decodeBase64Str(filler));
 			}
 
 			break;
@@ -125,9 +125,8 @@ return view.extend({
 								input_links.forEach((l) => {
 									var config = parseRulesetLink(l);
 									if (config) {
-										var hrefHash = hm.calcStringMD5(config.href);
+										var sid = uci.add(data[0], 'ruleset', config.href);
 										config.href = null;
-										var sid = uci.add(data[0], 'ruleset', hrefHash);
 										Object.keys(config).forEach((k) => {
 											uci.set(data[0], sid, k, config[k] || '');
 										});

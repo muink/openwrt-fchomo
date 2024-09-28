@@ -53,6 +53,15 @@ return baseclass.extend({
 		'random'
 	],
 
+	ip_version: [
+		['', _('Default')],
+		['dual', _('Dual')],
+		['ipv4', _('IPv4 only')],
+		['ipv6', _('IPv6 only')],
+		['ipv4-prefer', _('Prefer IPv4')],
+		['ipv6-prefer', _('Prefer IPv6')]
+	],
+
 	// thanks to homeproxy
 	calcStringMD5: function(e) {
 		/* Thanks to https://stackoverflow.com/a/41602636 */

@@ -5,6 +5,7 @@
 'require view';
 
 'require fchomo as hm';
+'require tools.widgets as widgets';
 
 return view.extend({
 	load: function() {
@@ -168,28 +169,51 @@ return view.extend({
 		so.validate = L.bind(hm.validateJson, this);
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_up', _('Config item: up'),
-			_('Configuration items. ') +
-			_('For format see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
-				.format('https://wiki.metacubex.one/config/proxy-providers/#_2', _('Configuration Items')));
+		so = ss.taboption('field_override', form.DummyValue, '_config_items', null);
+		so.load = function() {
+			return '<a target="_blank" href="%s" rel="noreferrer noopener">%s</a>'
+				.format('https://wiki.metacubex.one/config/proxy-providers/#_2', _('Configuration Items'));
+		}
+		so.rawhtml = true;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_down', _('Config item: down'));
+		so = ss.taboption('field_override', form.Value, 'override_up', _('up'),
+			_('In Mbps.'));
+		so.datatype = 'uinteger';
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_udp', _('Config item: udp'));
+		so = ss.taboption('field_override', form.Value, 'override_down', _('down'),
+			_('In Mbps.'));
+		so.datatype = 'uinteger';
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_dialer_proxy', _('Config item: dialer-proxy'));
+		so = ss.taboption('field_override', form.Flag, 'override_skip_cert_verify', _('skip-cert-verify'));
+		so.default = so.disabled;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_interface_name', _('Config item: interface-name'));
+		so = ss.taboption('field_override', form.Flag, 'override_udp', _('udp'));
+		so.default = so.enabled;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_routing_mark', _('Config item: routing-mark'));
+		// dev: Features under development
+		so = ss.taboption('field_override', form.Value, 'override_dialer_proxy', _('dialer-proxy'));
+		so.readonly = true;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_ip_version', _('Config item: ip-version'));
+		so = ss.taboption('field_override', widgets.DeviceSelect, 'override_interface_name', _('interface-name'));
+		so.multiple = false;
+		so.noaliases = true;
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_routing_mark', _('routing-mark'));
+		so.datatype = 'uinteger';
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.ListValue, 'override_ip_version', _('ip-version'));
+		so.default = hm.ip_version[0][0];
+		hm.ip_version.forEach((res) => {
+			so.value(res[0], res[1]);
+		})
 		so.modalonly = true;
 		/* Health fields */
 		so = ss.taboption('field_health', form.Flag, 'health_enable', _('Enable'));

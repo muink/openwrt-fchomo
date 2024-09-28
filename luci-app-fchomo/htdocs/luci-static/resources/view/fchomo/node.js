@@ -178,6 +178,22 @@ return view.extend({
 		so.rawhtml = true;
 		so.modalonly = true;
 
+		so = ss.taboption('field_override', form.Flag, 'override_tfo', _('TFO'));
+		so.default = so.disabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Flag, 'override_mptcp', _('mptcp'));
+		so.default = so.disabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Flag, 'override_udp', _('udp'));
+		so.default = so.enabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Flag, 'override_uot', _('UoT'));
+		so.default = so.disabled;
+		so.modalonly = true;
+
 		so = ss.taboption('field_override', form.Value, 'override_up', _('up'),
 			_('In Mbps.'));
 		so.datatype = 'uinteger';
@@ -190,10 +206,6 @@ return view.extend({
 
 		so = ss.taboption('field_override', form.Flag, 'override_skip_cert_verify', _('skip-cert-verify'));
 		so.default = so.disabled;
-		so.modalonly = true;
-
-		so = ss.taboption('field_override', form.Flag, 'override_udp', _('udp'));
-		so.default = so.enabled;
 		so.modalonly = true;
 
 		// dev: Features under development
@@ -220,6 +232,7 @@ return view.extend({
 			so.value(res[0], res[1]);
 		})
 		so.modalonly = true;
+
 		/* Health fields */
 		so = ss.taboption('field_health', form.Flag, 'health_enable', _('Enable'));
 		so.default = so.enabled;

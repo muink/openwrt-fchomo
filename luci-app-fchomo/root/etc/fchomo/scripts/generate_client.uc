@@ -367,10 +367,13 @@ uci.foreach(uciconf, uciprov, (cfg) => {
 		["additional-suffix"]: cfg.override_suffix,
 		["proxy-name"]: isEmpty(cfg.override_replace) ? null : map(cfg.override_replace, (obj) => json(obj)),
 		// Configuration Items
+		tfo: strToBool(cfg.override_tfo) || false,
+		mptcp: strToBool(cfg.override_mptcp) || false,
+		udp: (cfg.override_udp === '0') ? false : true,
+		"udp-over-tcp": strToBool(cfg.override_uot) || false,
 		up: cfg.override_up ? cfg.override_up + ' Mbps' : null,
 		down: cfg.override_down ? cfg.override_down + ' Mbps' : null,
 		["skip-cert-verify"]: strToBool(cfg.override_skip_cert_verify) || false,
-		udp: (cfg.override_udp === '0') ? false : true,
 		// dev: Features under development
 		["dialer-proxy"]: null, //cfg.override_dialer_proxy,
 		["interface-name"]: cfg.override_interface_name,

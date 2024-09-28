@@ -246,6 +246,30 @@ return baseclass.extend({
 		return this.super('load', ucisection);
 	},
 
+	renderResDownload: function(self, restype, uciconfig, ucisection) {
+		var type = uci.get(uciconfig, ucisection, 'type'),
+			url = uci.get(uciconfig, ucisection, 'url');
+
+		var El = E([
+			E('button', {
+				class: 'cbi-button cbi-button-apply',
+				disabled: (type !== 'http') || null,
+				click: ui.createHandlerFn(this, function(ucisection, type, url) {
+					if (type === 'http') {
+						return self.downloadFile(restype, ucisection, url).then((res) => {
+							ui.addNotification(null, E('p', _('Download successful.')));
+						}).catch((e) => {
+							ui.addNotification(null, E('p', _('Download failed: %s').format(e)));
+						});
+					} else
+						return ui.addNotification(null, E('p', _('Unable to download unsupported type: %s').format(type)));
+				}, ucisection, type, url)
+			}, [ _('🡇') ]) //🗘
+		]);
+
+		return El;
+	},
+
 	renderSectionAdd: function(section, prefmt, LC, extra_class) {
 		var el = form.GridSection.prototype.renderSectionAdd.apply(section, [ extra_class ]),
 			nameEl = el.querySelector('.cbi-section-create-name');

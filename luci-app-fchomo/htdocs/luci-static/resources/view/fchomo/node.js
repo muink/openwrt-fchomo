@@ -268,6 +268,11 @@ return view.extend({
 			_('Exclude matched node types.'));
 		so.placeholder = 'ss|http';
 		so.modalonly = true;
+
+		so = ss.option(form.DummyValue, '_update');
+		so.cfgvalue = L.bind(hm.renderResDownload, o, hm, 'provider', data[0]);
+		so.editable = true;
+		so.modalonly = false;
 		/* Provider END */
 
 		return m.render();

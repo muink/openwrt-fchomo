@@ -335,6 +335,22 @@ return baseclass.extend({
 		return true;
 	},
 
+	validateJson: function(section_id, value) {
+		if (!value)
+			return true;
+
+		try {
+			var obj = JSON.parse(value.trim());
+			if (!obj)
+				return _('Expecting: %s').format(_('valid JSON format'));
+		}
+		catch(e) {
+			return _('Expecting: %s').format(_('valid JSON format'));
+		}
+
+		return true;
+	},
+
 	// thanks to homeproxy
 	validateUniqueValue: function(uciconfig, ucisection, ucioption, section_id, value) {
 		if (section_id) {

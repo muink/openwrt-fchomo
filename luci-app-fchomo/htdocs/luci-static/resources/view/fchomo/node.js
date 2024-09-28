@@ -153,6 +153,43 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Override fields */
+		so = ss.taboption('field_override', form.Value, 'override_prefix', _('Add prefix'));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_suffix', _('Add suffix'));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.DynamicList, 'override_replace', _('Replace name'),
+			_('Replace node name. ') +
+			_('For format see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
+				.format('https://wiki.metacubex.one/config/proxy-providers/#overrideproxy-name', _('override.proxy-name')));
+		so.placeholder = '{"pattern": "IPLC-(.*?)倍", "target": "iplc x $1"}';
+		so.validate = L.bind(hm.validateJson, this);
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_up', _('Config item: up'),
+			_('Configuration items. ') +
+			_('For format see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
+				.format('https://wiki.metacubex.one/config/proxy-providers/#_2', _('Configuration Items')));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_down', _('Config item: down'));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_udp', _('Config item: udp'));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_dialer_proxy', _('Config item: dialer-proxy'));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_interface_name', _('Config item: interface-name'));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_routing_mark', _('Config item: routing-mark'));
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', form.Value, 'override_ip_version', _('Config item: ip-version'));
+		so.modalonly = true;
 		/* Health fields */
 		so = ss.taboption('field_health', form.Flag, 'health_enable', _('Enable'));
 		so.default = so.enabled;

@@ -363,7 +363,7 @@ return baseclass.extend({
 			return true;
 
 		if (!value.match(/^(\d+)(s|m|h|d)?$/))
-			return _('Expecting: %s').format(_('/^(\d+)(s|m|h|d)?$/'));
+			return _('Expecting: %s').format(_('/^(\\d+)(s|m|h|d)?$/'));
 
 		return true;
 	},

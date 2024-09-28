@@ -91,7 +91,8 @@ return view.extend({
 		so.modalonly = false;
 
 		so = ss.taboption('field_general', form.TextValue, '_editer', _('Editer'),
-			_('Please type <a target="_blank" href="https://wiki.metacubex.one/config/proxy-providers/content/" rel="noreferrer noopener">Contents</a>.'));
+			_('Please type <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
+				.format('https://wiki.metacubex.one/config/proxy-providers/content/', _('Contents')));
 		so.renderWidget = function(/* ... */) {
 			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 
@@ -221,7 +222,9 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'health_expected_status', _('Health check expected status'),
-			_('Expected HTTP code. For format see <a target="_blank" href="https://wiki.metacubex.one/config/proxy-groups/#expected-status" rel="noreferrer noopener">Expected status</a>.'));
+			_('Expected HTTP code. ') +
+			_('For format see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
+				.format('https://wiki.metacubex.one/config/proxy-groups/#expected-status', _('Expected status')));
 		so.placeholder = '200/302/400-503';
 		so.modalonly = true;
 		/* Provider END */

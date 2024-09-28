@@ -251,6 +251,23 @@ return view.extend({
 				.format('https://wiki.metacubex.one/config/proxy-groups/#expected-status', _('Expected status')));
 		so.placeholder = '200/302/400-503';
 		so.modalonly = true;
+
+		/* General fields */
+		so = ss.taboption('field_general', form.DynamicList, 'filter', _('Node filter'),
+			_('Filter nodes that meet keywords or regexps.'));
+		so.placeholder = '(?i)港|hk|hongkong|hong kong';
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.DynamicList, 'exclude_filter', _('Node exclude filter'),
+			_('Exclude nodes that meet keywords or regexps.'));
+		so.default = '重置|到期|过期|剩余|套餐 海外用户|回国'
+		so.placeholder = 'xxx';
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.DynamicList, 'exclude_type', _('Node exclude type'),
+			_('Exclude matched node types.'));
+		so.placeholder = 'ss|http';
+		so.modalonly = true;
 		/* Provider END */
 
 		return m.render();

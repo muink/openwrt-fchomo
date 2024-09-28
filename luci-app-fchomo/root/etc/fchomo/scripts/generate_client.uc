@@ -33,6 +33,7 @@ const uciclient = 'client',
 const ucisniff = 'sniff',
       ucidnser = 'dns_server',
       ucidnspoli = 'dns_policy',
+      uciprov = 'provider',
       ucirule = 'ruleset';
 
 /* Hardcode options */
@@ -60,6 +61,16 @@ uci.foreach(uciconf, ucidnser, (cfg) => {
 /* UCI config END */
 
 /* Config helper START */
+function parse_filter(cfg) {
+	if (isEmpty(cfg))
+		return null;
+
+	if (type(cfg) === 'array')
+		return join('|', cfg);
+	else
+		return cfg;
+}
+
 function parse_time_duration(time) {
 	if (isEmpty(time))
 		return null;
@@ -327,6 +338,62 @@ if (!isEmpty(config.dns.fallback))
 /* Hosts */
 config.hosts = {};
 /* Hosts END */
+
+/* Provider START */
+/* Provider settings */
+config["proxy-providers"] = {};
+uci.foreach(uciconf, uciprov, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	/* General fields */
+	config["proxy-providers"][cfg['.name']] = {
+		type: cfg.type,
+		path: HM_DIR + '/provider/' + cfg['.name'],
+		url: cfg.url,
+		interval: (cfg.type === 'http') ? parse_time_duration(cfg.interval) || 86400 : null,
+		proxy: cfg.proxy,
+		header: cfg.header ? json(cfg.header) : null,
+		"health-check": {},
+		override: {},
+		filter: parse_filter(cfg.filter),
+		"exclude-filter": parse_filter(cfg.exclude_filter),
+		"exclude-type": parse_filter(cfg.exclude_type)
+	};
+
+	/* Override fields */
+	config["proxy-providers"][cfg['.name']].override = {
+		["additional-prefix"]: cfg.override_prefix,
+		["additional-suffix"]: cfg.override_suffix,
+		["proxy-name"]: isEmpty(cfg.override_replace) ? null : map(cfg.override_replace, (obj) => json(obj)),
+		// Configuration Items
+		up: cfg.override_up ? cfg.override_up + ' Mbps' : null,
+		down: cfg.override_down ? cfg.override_down + ' Mbps' : null,
+		["skip-cert-verify"]: strToBool(cfg.override_skip_cert_verify) || false,
+		udp: (cfg.override_udp === '0') ? false : true,
+		// dev: Features under development
+		["dialer-proxy"]: null, //cfg.override_dialer_proxy,
+		["interface-name"]: cfg.override_interface_name,
+		// dev: Features under development
+		["routing-mark"]: strToInt(cfg.override_routing_mark),
+		["ip-version"]: cfg.override_ip_version
+	};
+
+	/* Health fields */
+	if (cfg.health_enable === '0') {
+		config["proxy-providers"][cfg['.name']]["health-check"] = null;
+	} else {
+		config["proxy-providers"][cfg['.name']]["health-check"] = {
+			enable: true,
+			url: cfg.health_url,
+			interval: parse_time_duration(cfg.health_interval) || 600,
+			timeout: strToInt(cfg.health_timeout) || 5000,
+			lazy: (cfg.health_lazy === '0') ? false : null,
+			"expected-status": cfg.health_expected_status || '204'
+		};
+	}
+});
+/* Provider END */
 
 /* Rule set START */
 /* Rule set settings */

@@ -21,13 +21,13 @@ return view.extend({
 
 		s = m.section(form.NamedSection, 'client', 'fchomo');
 
-		/* Proxies START */
-		s.tab('proxies', _('Proxies'));
+		/* Proxy Node START */
+		s.tab('node', _('Proxy Node'));
 
-		/* Proxies */
-		o = s.taboption('proxies', form.SectionValue, '_proxies', form.GridSection, 'proxies', null);
+		/* Proxy Node */
+		o = s.taboption('node', form.SectionValue, '_node', form.GridSection, 'node', null);
 		ss = o.subsection;
-		/* Proxies END */
+		/* Proxy Node END */
 
 		/* Provider START */
 		s.tab('provider', _('Provider'));
@@ -150,7 +150,8 @@ return view.extend({
 
 			return frameEl;
 		}
-		so.placeholder = 'User-Agent:\n- "Clash/v1.18.0"\n- "mihomo/1.18.3"\n# Accept:\n# - ' + "'" + 'application/vnd.github.v3.raw' + "'" + '\n# Authorization:\n# - ' + "'" + 'token 1231231' + "'";
+		so.placeholder = '{\n  "User-Agent": [\n    "Clash/v1.18.0",\n    "mihomo/1.18.3"\n  ],\n  "Accept": [\n    //"application/vnd.github.v3.raw"\n  ],\n  "Authorization": [\n    //"token 1231231"\n  ]\n}';
+		so.validate = L.bind(hm.validateJson, this);
 		so.depends('type', 'http');
 		so.modalonly = true;
 
@@ -200,12 +201,16 @@ return view.extend({
 		so.readonly = true;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', widgets.DeviceSelect, 'override_interface_name', _('interface-name'));
+		so = ss.taboption('field_override', widgets.DeviceSelect, 'override_interface_name', _('interface-name'),
+			_('Bind outbound interface.</br>') +
+			_('Priority: Proxy Node > Proxy Group > Global.'));
 		so.multiple = false;
 		so.noaliases = true;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Value, 'override_routing_mark', _('routing-mark'));
+		// dev: Features under development
+		so = ss.taboption('field_override', form.Value, 'override_routing_mark', _('routing-mark'),
+			_('Priority: Proxy Node > Proxy Group > Global.'));
 		so.datatype = 'uinteger';
 		so.modalonly = true;
 
@@ -246,7 +251,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'health_expected_status', _('Health check expected status'),
-			_('Expected HTTP code. ') +
+			_('Expected HTTP code. <code>204</code> will be used if empty. ') +
 			_('For format see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
 				.format('https://wiki.metacubex.one/config/proxy-groups/#expected-status', _('Expected status')));
 		so.placeholder = '200/302/400-503';

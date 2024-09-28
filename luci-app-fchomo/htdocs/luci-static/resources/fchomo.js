@@ -54,8 +54,8 @@ return baseclass.extend({
 	],
 
 	ip_version: [
-		['', _('Default')],
-		['dual', _('Dual')],
+		['', _('Keep default')],
+		['dual', _('Dual stack')],
 		['ipv4', _('IPv4 only')],
 		['ipv6', _('IPv6 only')],
 		['ipv4-prefer', _('Prefer IPv4')],

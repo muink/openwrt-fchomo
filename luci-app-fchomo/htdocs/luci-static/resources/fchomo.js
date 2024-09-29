@@ -41,6 +41,15 @@ return baseclass.extend({
 		['https://www.youtube.com', _('YouTube')]
 	],
 
+	ip_version: [
+		['', _('Keep default')],
+		['dual', _('Dual stack')],
+		['ipv4', _('IPv4 only')],
+		['ipv6', _('IPv6 only')],
+		['ipv4-prefer', _('Prefer IPv4')],
+		['ipv6-prefer', _('Prefer IPv6')]
+	],
+
 	tls_client_fingerprints: [
 		'chrome',
 		'firefox',
@@ -51,15 +60,6 @@ return baseclass.extend({
 		'360',
 		'qq',
 		'random'
-	],
-
-	ip_version: [
-		['', _('Keep default')],
-		['dual', _('Dual stack')],
-		['ipv4', _('IPv4 only')],
-		['ipv6', _('IPv6 only')],
-		['ipv4-prefer', _('Prefer IPv4')],
-		['ipv6-prefer', _('Prefer IPv6')]
 	],
 
 	// thanks to homeproxy

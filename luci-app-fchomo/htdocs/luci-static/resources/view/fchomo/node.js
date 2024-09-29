@@ -230,7 +230,7 @@ return view.extend({
 		so = ss.taboption('field_override', form.ListValue, 'override_ip_version', _('ip-version'));
 		so.default = hm.ip_version[0][0];
 		hm.ip_version.forEach((res) => {
-			so.value(res[0], res[1]);
+			so.value.apply(so, res);
 		})
 		so.modalonly = true;
 

@@ -250,7 +250,7 @@ return view.extend({
 		so = ss.option(form.ListValue, '_dashboard_version', _('Dashboard version'));
 		so.default = hm.dashrepos[0][0];
 		hm.dashrepos.forEach((repo) => {
-			so.value(repo[0], repo[1]);
+			so.value.apply(so, repo);
 		})
 		so.renderWidget = function(/* ... */) {
 			var El = form.ListValue.prototype.renderWidget.apply(this, arguments);

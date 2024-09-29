@@ -214,12 +214,7 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
-			var preadds = [
-				['', _('RULES')],
-				['DIRECT', _('DIRECT')]
-			];
-
-			hm.loadProxyGroupLabel.call(this, preadds, data[0], section_id);
+			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.dns, data[0], section_id);
 
 			return new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('detour');
 		}

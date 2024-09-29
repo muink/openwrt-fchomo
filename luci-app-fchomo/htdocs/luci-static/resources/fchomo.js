@@ -50,6 +50,24 @@ return baseclass.extend({
 		['ipv6-prefer', _('Prefer IPv6')]
 	],
 
+	preset_outbound: {
+		full: [
+			['DIRECT'],
+			['REJECT'],
+			['REJECT-DROP'],
+			['PASS'],
+			['COMPATIBLE']
+		],
+		direct: [
+			['', _('null')],
+			['DIRECT']
+		],
+		dns: [
+			['', 'RULES'],
+			['DIRECT']
+		]
+	},
+
 	tls_client_fingerprints: [
 		'chrome',
 		'firefox',

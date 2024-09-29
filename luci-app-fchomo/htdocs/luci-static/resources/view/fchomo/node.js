@@ -132,12 +132,7 @@ return view.extend({
 		so = ss.taboption('field_general', form.ListValue, 'proxy', _('Proxy group'),
 			_('Name of the Proxy group to download provider.'));
 		so.load = function(section_id) {
-			var preadds = [
-				['', _('null')],
-				['DIRECT', _('DIRECT')]
-			];
-
-			return hm.loadProxyGroupLabel.call(this, preadds, data[0], section_id);
+			return hm.loadProxyGroupLabel.call(this, hm.preset_outbound.direct, data[0], section_id);
 		}
 		//o.editable = true;
 		so.depends('type', 'http');

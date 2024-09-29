@@ -106,12 +106,8 @@ return view.extend({
 		so.load = function(section_id) {
 			return L.resolveDefault(hm.readFile('provider', section_id), '');
 		}
-		so.write = function(section_id, formvalue) {
-			return hm.writeFile('provider', section_id, formvalue);
-		}
-		so.remove = function(section_id, formvalue) {
-			return hm.writeFile('provider', section_id, '');
-		}
+		so.write = L.bind(hm.writeFile, so, 'provider');
+		so.remove = L.bind(hm.writeFile, so, 'provider');
 		so.rmempty = false;
 		so.retain = true;
 		so.depends('type', 'file');

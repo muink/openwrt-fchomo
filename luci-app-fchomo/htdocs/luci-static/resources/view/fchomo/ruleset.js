@@ -244,12 +244,8 @@ return view.extend({
 		o.load = function(section_id) {
 			return L.resolveDefault(hm.readFile('ruleset', section_id), '');
 		}
-		o.write = function(section_id, formvalue) {
-			return hm.writeFile('ruleset', section_id, formvalue);
-		}
-		o.remove = function(section_id, formvalue) {
-			return hm.writeFile('ruleset', section_id, '');
-		}
+		o.write = L.bind(hm.writeFile, o, 'ruleset');
+		o.remove = L.bind(hm.writeFile, o, 'ruleset');
 		o.rmempty = false;
 		o.retain = true;
 		o.depends({'type': 'file', 'format': /^(text|yaml)$/});

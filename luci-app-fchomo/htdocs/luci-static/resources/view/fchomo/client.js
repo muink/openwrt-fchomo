@@ -129,12 +129,8 @@ return view.extend({
 		so.editable = true;
 
 		so = ss.option(form.DummyValue, 'entry', _('Entry'));
-		so.write = function(/* ... */) {
-			return form.AbstractValue.prototype.write.apply(this, arguments);
-		}
-		so.remove = function(/* ... */) {
-			return form.AbstractValue.prototype.remove.apply(this, arguments);
-		}
+		so.write = L.bind(form.AbstractValue.prototype.write, so);
+		so.remove = L.bind(form.AbstractValue.prototype.remove, so);
 		so.editable = true;
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
@@ -221,12 +217,8 @@ return view.extend({
 		so.editable = true;
 
 		so = ss.option(form.DummyValue, 'address', _('Address'));
-		so.write = function(/* ... */) {
-			return form.AbstractValue.prototype.write.apply(this, arguments);
-		}
-		so.remove = function(/* ... */) {
-			return form.AbstractValue.prototype.remove.apply(this, arguments);
-		}
+		so.write = L.bind(form.AbstractValue.prototype.write, so);
+		so.remove = L.bind(form.AbstractValue.prototype.remove, so);
 		so.editable = true;
 
 		so = ss.option(form.Value, 'addr', _('Address'));
@@ -295,7 +287,7 @@ return view.extend({
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('ecs', value).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
 		so.modalonly = true;
@@ -312,7 +304,7 @@ return view.extend({
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('ecs-override', flagToStr(value)).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
 		so.depends({'ecs': /.+/});

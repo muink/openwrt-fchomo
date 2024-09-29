@@ -269,9 +269,7 @@ return view.extend({
 
 		o = s.option(form.ListValue, 'proxy', _('Proxy group'),
 			_('Name of the Proxy group to download rule set.'));
-		o.load = function(section_id) {
-			return hm.loadProxyGroupLabel.call(this, hm.preset_outbound.direct, data[0], section_id);
-		}
+		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct, data[0]);
 		//o.editable = true;
 		o.depends('type', 'http');
 

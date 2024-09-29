@@ -103,6 +103,45 @@ return view.extend({
 
 		s = m.section(form.NamedSection, 'client', 'fchomo');
 
+		/* Routing rules START */
+		s.tab('rules', _('Routing rule'));
+
+		/* Routing rules */
+		o = s.taboption('rules', form.SectionValue, '_rules', form.GridSection, 'rules', null);
+		ss = o.subsection;
+		var prefmt = { 'prefix': '', 'suffix': '_host' };
+		ss.addremove = true;
+		ss.rowcolors = true;
+		ss.sortable = true;
+		ss.nodescriptions = true;
+		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('Routing rule'), _('Add a routing rule'), data[0]);
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, this, ss, prefmt, false);
+		ss.handleAdd = L.bind(hm.handleAdd, this, ss, prefmt);
+
+		so = ss.option(form.Value, 'label', _('Label'));
+		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'rules', 'label');
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so.default = so.enabled;
+		so.editable = true;
+
+		so = ss.option(form.DummyValue, 'entry', _('Entry'));
+		so.write = function(/* ... */) {
+			return form.AbstractValue.prototype.write.apply(this, arguments);
+		}
+		so.remove = function(/* ... */) {
+			return form.AbstractValue.prototype.remove.apply(this, arguments);
+		}
+		so.editable = true;
+
+		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
+		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.full, data[0]);
+		so.editable = true;
+		/* Routing rules END */
+
 		/* DNS settings START */
 		s.tab('dns', _('DNS settings'));
 

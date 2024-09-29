@@ -68,6 +68,50 @@ return baseclass.extend({
 		]
 	},
 
+	rules_type: [
+		['DOMAIN'],
+		['DOMAIN-SUFFIX'],
+		['DOMAIN-KEYWORD'],
+		['DOMAIN-REGEX'],
+		['GEOSITE'],
+
+		['IP-CIDR'],
+		['IP-CIDR6'],
+		['IP-SUFFIX'],
+		//['IP-ASN'],
+		['GEOIP'],
+
+		['SRC-GEOIP'],
+		//['SRC-IP-ASN'],
+		['SRC-IP-CIDR'],
+		['SRC-IP-SUFFIX'],
+
+		['DST-PORT'],
+		['SRC-PORT'],
+
+		//['IN-PORT'],
+		//['IN-TYPE'],
+		//['IN-USER'],
+		//['IN-NAME'],
+
+		['PROCESS-PATH'],
+		['PROCESS-PATH-REGEX'],
+		['PROCESS-NAME'],
+		['PROCESS-NAME-REGEX'],
+		//['UID'],
+
+		['NETWORK'],
+		//['DSCP'],
+
+		['RULE-SET'],
+		['AND'],
+		['OR'],
+		['NOT'],
+		['SUB-RULE'],
+
+		//['MATCH']
+	],
+
 	tls_client_fingerprints: [
 		'chrome',
 		'firefox',

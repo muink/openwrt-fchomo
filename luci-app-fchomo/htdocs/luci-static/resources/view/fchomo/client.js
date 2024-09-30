@@ -195,6 +195,29 @@ return view.extend({
 		so.load = function(section_id) {
 			return new RulesEntry(uci.get(data[0], section_id, 'entry')).type;
 		}
+		so.validate = function(section_id, value) {
+			// params only available for types other than
+			// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/config/config.go#L1050
+			if (['NOT', 'OR', 'AND', 'SUB-RULE'].includes(value) || value.match(/\bREGEX\b/)) {
+				var UIEl = this.section.getUIElement(section_id, 'entry');
+
+				var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve').setParam('src').toString();
+
+				UIEl.node.previousSibling.innerText = newvalue;
+				UIEl.setValue(newvalue);
+
+				['no-resolve', 'src'].forEach((opt) => {
+					let UIEl = this.section.getUIElement(section_id, opt);
+					UIEl.setValue('');
+					UIEl.node.querySelector('input').disabled = 'true';
+				});
+			} else {
+				this.section.getUIElement(section_id, 'no-resolve').node.querySelector('input').disabled = null;
+				this.section.getUIElement(section_id, 'src').node.querySelector('input').disabled = null;
+			}
+
+			return true;
+		}
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
@@ -277,7 +300,7 @@ return view.extend({
 		so.write = function() {};
 		so.editable = true;
 
-		so = ss.option(form.Flag, 'no_resolve', _('no-resolve'));
+		so = ss.option(form.Flag, 'no-resolve', _('no-resolve'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
 			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).getParam('no-resolve'));

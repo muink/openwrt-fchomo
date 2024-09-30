@@ -146,6 +146,8 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Override fields */
+		// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/adapter/provider/parser.go#L30
+
 		so = ss.taboption('field_override', form.Value, 'override_prefix', _('Add prefix'));
 		so.modalonly = true;
 
@@ -172,11 +174,11 @@ return view.extend({
 		so.default = so.disabled;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Flag, 'override_mptcp', _('mptcp'));
+		so = ss.taboption('field_override', form.Flag, 'override_mptcp', _('mpTCP'));
 		so.default = so.disabled;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Flag, 'override_udp', _('udp'));
+		so = ss.taboption('field_override', form.Flag, 'override_udp', _('UDP'));
 		so.default = so.enabled;
 		so.modalonly = true;
 

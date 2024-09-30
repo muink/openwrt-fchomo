@@ -207,6 +207,56 @@ return view.extend({
 		so.rmempty = false;
 		so.modalonly = true;
 
+		// common factor
+		var initFactor = function(uciconfig) {
+			this.load = function(section_id) {
+				return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).factor;
+			}
+			this.onchange = function(ev, section_id, value) {
+				var UIEl = this.section.getUIElement(section_id, 'entry');
+
+				var newvalue = new RulesEntry(UIEl.getValue()).setKey('factor', value).toString();
+
+				UIEl.node.previousSibling.innerText = newvalue;
+				return UIEl.setValue(newvalue);
+			}
+			this.write = function() {};
+			this.rmempty = false;
+			this.modalonly = true;
+		}
+
+		so = ss.option(form.Value, 'general', _('Factor'));
+		so.depends({type: /\bDOMAIN\b/});
+		so.depends({type: /\bGEO(SITE|IP)\b/});
+		so.depends({type: /\bPROCESS\b/});
+		initFactor.call(so, data[0]);
+
+		so = ss.option(form.Value, 'ip', _('Factor'));
+		so.datatype = 'cidr';
+		so.depends({type: /\bIP\b/});
+		initFactor.call(so, data[0]);
+
+		so = ss.option(form.Value, 'port', _('Factor'));
+		so.datatype = 'or(port, portrange)';
+		so.depends({type: /\bPORT\b/});
+		initFactor.call(so, data[0]);
+
+		so = ss.option(form.ListValue, 'l4', _('Factor'));
+		so.value('udp', _('UDP'));
+		so.value('tcp', _('TCP'));
+		so.depends('type', 'NETWORK');
+		initFactor.call(so, data[0]);
+
+		so = ss.option(form.ListValue, 'rule_set', _('Factor'));
+		so.value('');
+		so.depends('type', 'RULE-SET');
+		initFactor.call(so, data[0]);
+		so.load = function(section_id) {
+			hm.loadRulesetLabel.call(this, null, data[0], section_id);
+
+			return new RulesEntry(uci.get(data[0], section_id, 'entry')).factor;
+		}
+
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
 			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, data[0], section_id);

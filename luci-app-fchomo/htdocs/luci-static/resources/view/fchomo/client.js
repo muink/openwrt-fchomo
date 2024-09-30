@@ -59,8 +59,53 @@ class DNSAddress {
 		return this.addr + (this.params.size === 0 ? '' : '#' +
 			['detour', 'h3', 'ecs', 'ecs-override'].map((k) => {
 				return this.params.has(k) ? '%s=%s'.format(k, encodeURI(this.params.get(k))) : null;
-			}).filter(v => v).join('&').replace(/^detour=/, '')
+			}).filter(v => v).join('&')
 		);
+	}
+}
+
+class RulesEntry {
+	constructor(entry) {
+		this.rawentry = entry || '';
+		this.rawparams = this.rawentry.split(',');
+		this.type = this.rawparams.shift() || '';
+		this.factor = this.rawparams.shift() || '';
+		this.detour = this.rawparams.shift() || '';
+		this.params = {};
+		if (this.rawparams.length > 0) {
+			this.rawparams.forEach((k) => {
+				this.params[k] = 'true';
+			});
+		}
+		this.rawparams = this.rawparams.join(',');
+	}
+
+	getParam(param) {
+		return this.params[param] || null;
+	}
+
+	setParam(param, value) {
+		if (value) {
+			this.params[param] = value;
+		} else
+			this.params[param] = null;
+
+		return this
+	}
+
+	delParam(param) {
+		if (param) {
+			delete this.params[param];
+		} else
+			throw 'illegal param'
+
+		return this
+	}
+
+	toString() {
+		return [this.type, this.factor, this.detour].concat(
+			['no-resolve', 'src'].filter(k => this.params[k])
+		).join(',');
 	}
 }
 
@@ -136,6 +181,38 @@ return view.extend({
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.full, data[0]);
 		so.editable = true;
+
+		so = ss.option(form.Flag, 'no_resolve', _('no-resolve'));
+		so.default = so.disabled;
+		so.load = function(section_id) {
+			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).getParam('no-resolve'));
+		}
+		so.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value)).toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			UIEl.setValue(newvalue);
+		}
+		so.write = function() {};
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'src', _('src'));
+		so.default = so.disabled;
+		so.load = function(section_id) {
+			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).getParam('src'));
+		}
+		so.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value)).toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			UIEl.setValue(newvalue);
+		}
+		so.write = function() {};
+		so.modalonly = true;
 		/* Routing rules END */
 
 		/* DNS settings START */

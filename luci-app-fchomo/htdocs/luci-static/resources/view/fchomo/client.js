@@ -174,9 +174,32 @@ return view.extend({
 		so.editable = true;
 
 		so = ss.option(form.DummyValue, 'entry', _('Entry'));
+		so.load = function(section_id) {
+			return form.DummyValue.prototype.load.call(this, section_id) || hm.rules_type[0][0];
+		}
 		so.write = L.bind(form.AbstractValue.prototype.write, so);
 		so.remove = L.bind(form.AbstractValue.prototype.remove, so);
 		so.editable = true;
+
+		so = ss.option(form.ListValue, 'type', _('Type'));
+		so.default = hm.rules_type[0][0];
+		hm.rules_type.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.load = function(section_id) {
+			return new RulesEntry(uci.get(data[0], section_id, 'entry')).type;
+		}
+		so.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = ('N' + UIEl.getValue()).replace(/^[^,]+/, value);
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			return UIEl.setValue(newvalue);
+		}
+		so.write = function() {};
+		so.rmempty = false;
+		so.modalonly = true;
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.full, data[0]);

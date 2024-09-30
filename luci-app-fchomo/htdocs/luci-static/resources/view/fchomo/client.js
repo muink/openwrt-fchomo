@@ -80,6 +80,12 @@ class RulesEntry {
 		this.rawparams = this.rawparams.join(',');
 	}
 
+	setKey(key, value) {
+		this[key] = value;
+
+		return this
+	}
+
 	getParam(param) {
 		return this.params[param] || null;
 	}
@@ -175,7 +181,7 @@ return view.extend({
 
 		so = ss.option(form.DummyValue, 'entry', _('Entry'));
 		so.load = function(section_id) {
-			return form.DummyValue.prototype.load.call(this, section_id) || hm.rules_type[0][0];
+			return form.DummyValue.prototype.load.call(this, section_id) || '%s,%s,%s'.format(hm.rules_type[0][0], '', hm.preset_outbound.full[0][0]);
 		}
 		so.write = L.bind(form.AbstractValue.prototype.write, so);
 		so.remove = L.bind(form.AbstractValue.prototype.remove, so);
@@ -202,7 +208,20 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
-		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.full, data[0]);
+		so.load = function(section_id) {
+			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, data[0], section_id);
+
+			return new RulesEntry(uci.get(data[0], section_id, 'entry')).detour;
+		}
+		so.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setKey('detour', value).toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			return UIEl.setValue(newvalue);
+		}
+		so.write = function() {};
 		so.editable = true;
 
 		so = ss.option(form.Flag, 'no_resolve', _('no-resolve'));

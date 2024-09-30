@@ -257,6 +257,9 @@ return view.extend({
 			return new RulesEntry(uci.get(data[0], section_id, 'entry')).factor;
 		}
 
+		// dev: Features under development
+		// AND/OR/NOT/SUB-RULE
+
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
 			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, data[0], section_id);

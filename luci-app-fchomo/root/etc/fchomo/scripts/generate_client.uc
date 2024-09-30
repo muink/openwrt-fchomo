@@ -8,7 +8,7 @@ import { cursor } from 'uci';
 import {
 	isEmpty, strToBool, strToInt,
 	removeBlankAttrs,
-	HM_DIR, RUN_DIR
+	HM_DIR, RUN_DIR, PRESET_OUTBOUND
 } from 'fchomo';
 
 /* UCI config START */
@@ -34,7 +34,8 @@ const ucisniff = 'sniff',
       ucidnser = 'dns_server',
       ucidnspoli = 'dns_policy',
       uciprov = 'provider',
-      ucirule = 'ruleset';
+      ucirule = 'ruleset',
+	  ucirout = 'rules';
 
 /* Hardcode options */
 const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
@@ -93,6 +94,17 @@ function parse_time_duration(time) {
 	return seconds;
 }
 
+// dev: Features under development
+function get_proxygroup(cfg) {
+	if (isEmpty(cfg))
+		return null;
+
+	if (cfg in PRESET_OUTBOUND)
+		return cfg;
+
+	return cfg + ' get lable';
+}
+
 function get_nameserver(cfg) {
 	if (isEmpty(cfg))
 		return [];
@@ -108,7 +120,10 @@ function get_nameserver(cfg) {
 		} else if (k === 'default-dns') {
 			push(servers, '114.114.114.114#DIRECT');
 		} else
-			push(servers, dnsservers[k]?.address);
+			// dev: Features under development
+			push(servers, replace(dnsservers[k]?.address || '', /#detour=([^&]+)/, (m, c1) => {
+				return '#' + get_proxygroup(c1);
+			}));
 	}
 
 	return servers;
@@ -416,5 +431,22 @@ uci.foreach(uciconf, ucirule, (cfg) => {
 	};
 });
 /* Rule set END */
+
+/* Rules START */
+/* Rules settings */
+config.rules = [];
+uci.foreach(uciconf, ucirout, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	push(config.rules, function(arr) {
+			arr[2] = get_proxygroup(arr[2]);
+			return join(',', arr);
+		}(split(cfg.entry, ','))
+	);
+});
+// dev: Features under development
+push(config.rules, 'MATCH,' + 'default proxy group');
+/* Rules END */
 
 printf('%.J\n', config);

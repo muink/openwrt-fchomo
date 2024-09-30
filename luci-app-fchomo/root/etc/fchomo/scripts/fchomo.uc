@@ -5,6 +5,13 @@ import { mkstemp } from 'fs';
 /* Global variables START */
 export const HM_DIR = '/etc/fchomo';
 export const RUN_DIR = '/var/run/fchomo';
+export const PRESET_OUTBOUND = [
+	'DIRECT',
+	'REJECT',
+	'REJECT-DROP',
+	'PASS',
+	'COMPATIBLE'
+];
 /* Global variables END */
 
 /* String helper start */

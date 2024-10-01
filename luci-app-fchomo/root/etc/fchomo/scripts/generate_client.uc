@@ -5,6 +5,8 @@
 import { readfile, writefile } from 'fs';
 import { cursor } from 'uci';
 
+import { urldecode, urlencode } from 'luci.http';
+
 import {
 	isEmpty, strToBool, strToInt,
 	removeBlankAttrs,
@@ -94,7 +96,6 @@ function parse_time_duration(time) {
 	return seconds;
 }
 
-// dev: Features under development
 function get_proxygroup(cfg) {
 	if (isEmpty(cfg))
 		return null;
@@ -102,7 +103,11 @@ function get_proxygroup(cfg) {
 	if (cfg in PRESET_OUTBOUND)
 		return cfg;
 
-	return cfg + ' get lable';
+	const label = uci.get(uciconf, cfg, 'label');
+	if (isEmpty(label))
+		die(sprintf("%s's label is missing, please check your configuration.", cfg));
+	else
+		return label;
 }
 
 function get_nameserver(cfg) {
@@ -120,9 +125,8 @@ function get_nameserver(cfg) {
 		} else if (k === 'default-dns') {
 			push(servers, '114.114.114.114#DIRECT');
 		} else
-			// dev: Features under development
 			push(servers, replace(dnsservers[k]?.address || '', /#detour=([^&]+)/, (m, c1) => {
-				return '#' + get_proxygroup(c1);
+				return '#' + urlencode(get_proxygroup(c1));
 			}));
 	}
 
@@ -367,7 +371,7 @@ uci.foreach(uciconf, uciprov, (cfg) => {
 		path: HM_DIR + '/provider/' + cfg['.name'],
 		url: cfg.url,
 		interval: (cfg.type === 'http') ? parse_time_duration(cfg.interval) || 86400 : null,
-		proxy: cfg.proxy,
+		proxy: get_proxygroup(cfg.proxy),
 		header: cfg.header ? json(cfg.header) : null,
 		"health-check": {},
 		override: {},
@@ -427,26 +431,25 @@ uci.foreach(uciconf, ucirule, (cfg) => {
 		path: HM_DIR + '/ruleset/' + cfg['.name'],
 		url: cfg.url,
 		interval: (cfg.type === 'http') ? parse_time_duration(cfg.interval) || 259200 : null,
-		proxy: cfg.proxy
+		proxy: get_proxygroup(cfg.proxy)
 	};
 });
 /* Rule set END */
 
-/* Rules START */
-/* Rules settings */
+/* Routing rules START */
+/* Routing rules */
 config.rules = [];
 uci.foreach(uciconf, ucirout, (cfg) => {
 	if (cfg.enabled === '0')
 		return null;
 
 	push(config.rules, function(arr) {
-			arr[2] = get_proxygroup(arr[2]);
+			arr[2] = replace(get_proxygroup(arr[2]), ',', '\\u2c');
 			return join(',', arr);
 		}(split(cfg.entry, ','))
 	);
 });
-// dev: Features under development
-push(config.rules, 'MATCH,' + 'default proxy group');
-/* Rules END */
+push(config.rules, 'MATCH,' + replace(get_proxygroup(uci.get(uciconf, uciclient, 'default_proxy')), ',', '\\u2c'));
+/* Routing rules END */
 
 printf('%.J\n', config);

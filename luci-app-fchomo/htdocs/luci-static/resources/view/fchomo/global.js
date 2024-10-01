@@ -67,7 +67,7 @@ function renderStatus(ElId, isRunning, instance) {
 	return E([
 		E('button', {
 			'class': 'cbi-button cbi-button-apply',
-			'click': ui.createHandlerFn(this, hm.handleReload, null, null, instance)
+			'click': ui.createHandlerFn(this, hm.handleReload, instance, null, null)
 		}, [ _('Reload') ]),
 		updateStatus(E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning),
 		E('a', {
@@ -179,7 +179,7 @@ return view.extend({
 		so = ss.option(form.Button, '_reload', _('Reload All'));
 		so.inputtitle = _('Reload');
 		so.inputstyle = 'apply';
-		so.onclick = L.bind(hm.handleReload, this);
+		so.onclick = L.bind(hm.handleReload, so, null);
 
 		so = ss.option(form.DummyValue, '_conn_check', _('Connection check'));
 		so.cfgvalue = function() {

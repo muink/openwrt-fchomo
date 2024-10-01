@@ -369,7 +369,7 @@ return baseclass.extend({
 		return form.GridSection.prototype.handleAdd.apply(section, [ ev, prefix + name + suffix ]);
 	},
 
-	handleReload: function(ev, section_id, instance) {
+	handleReload: function(instance, ev, section_id) {
 		var instance = instance || '';
 		return fs.exec('/etc/init.d/fchomo', ['reload', instance])
 			.then((res) => { return window.location = window.location.href.split('#')[0] })

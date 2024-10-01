@@ -199,7 +199,7 @@ return view.extend({
 		/* General fields */
 		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'rules', 'label');
+		so.validate = L.bind(hm.validateUniqueValue, this, data[0], so.section, so.option);
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Flag, 'enabled', _('Enable'));
@@ -359,7 +359,7 @@ return view.extend({
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'rules', 'label');
+		so.validate = L.bind(hm.validateUniqueValue, this, data[0], so.section, so.option);
 		so.modalonly = true;
 
 		so = ss.option(form.Flag, 'enabled', _('Enable'));
@@ -591,7 +591,7 @@ return view.extend({
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'dns_server', 'label');
+		so.validate = L.bind(hm.validateUniqueValue, this, data[0], so.section, so.option);
 		so.modalonly = true;
 
 		so = ss.option(form.Flag, 'enabled', _('Enable'));

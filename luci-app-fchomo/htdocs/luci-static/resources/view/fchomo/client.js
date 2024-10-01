@@ -1,12 +1,11 @@
 'use strict';
 'require form';
 'require poll';
-'require rpc';
 'require uci';
-'require ui';
 'require view';
 
 'require fchomo as hm';
+'require tools.widgets as widgets';
 
 function loadDNSServerLabel(uciconfig, ucisection) {
 	delete this.keylist;
@@ -169,10 +168,10 @@ return view.extend({
 
 		s = m.section(form.NamedSection, 'client', 'fchomo');
 
-		/* Proxy group START */
-		s.tab('group', _('Proxy group'));
+		/* Proxy Group START */
+		s.tab('group', _('Proxy Group'));
 
-		/* Switch */
+		/* Client switch */
 		o = s.taboption('group', form.Button, '_reload_client', _('Quick Reload'));
 		o.inputtitle = _('Reload');
 		o.inputstyle = 'apply';
@@ -180,7 +179,167 @@ return view.extend({
 
 		o = s.taboption('group', form.ListValue, 'default_proxy', _('Default outbound'));
 		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct, data[0]);
-		/* Proxy group END */
+
+		/* Proxy Group */
+		o = s.taboption('group', form.SectionValue, '_group', form.GridSection, 'proxy_group', null);
+		ss = o.subsection;
+		ss.addremove = true;
+		ss.rowcolors = true;
+		ss.sortable = true;
+		ss.nodescriptions = true;
+		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('Proxy Group'), _('Add a proxy group'), data[0]);
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, this, ss, {}, true);
+		ss.handleAdd = L.bind(hm.handleAdd, this, ss, {});
+
+		ss.tab('field_general', _('General fields'));
+		ss.tab('field_override', _('Override fields'));
+		ss.tab('field_health', _('Health fields'));
+
+		/* General fields */
+		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
+		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'rules', 'label');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'enabled', _('Enable'));
+		so.default = so.enabled;
+		so.editable = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'type', _('Type'));
+		so.default = hm.proxy_group_type[0][0];
+		hm.proxy_group_type.forEach((res) => {
+			so.value.apply(so, res);
+		})
+
+		// dev: Features under development
+		so = ss.taboption('field_general', form.MultiValue, 'proxies', _('Node'));
+		so.value('', _('-- Please choose --'));
+		so.readonly = true;
+		so.editable = true;
+
+		so = ss.taboption('field_general', form.MultiValue, 'use', _('Provider'));
+		so.value('', _('-- Please choose --'));
+		so.editable = true;
+
+		/* Override fields */
+		so = ss.taboption('field_override', form.Flag, 'disable_udp', _('Disable UDP'));
+		so.default = so.disabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_override', widgets.DeviceSelect, 'interface_name', _('interface-name'),
+			_('Bind outbound interface.</br>') +
+			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.multiple = false;
+		so.noaliases = true;
+		so.modalonly = true;
+
+		// dev: Features under development
+		so = ss.taboption('field_override', form.Value, 'routing_mark', _('routing-mark'),
+			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.datatype = 'uinteger';
+		so.modalonly = true;
+
+		/* Health fields */
+		/* Url-test/Fallback/Load-balance */
+		so = ss.taboption('field_health', form.Value, 'url', _('Health check URL'));
+		so.default = hm.health_checkurls[0][0];
+		hm.health_checkurls.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.validate = L.bind(hm.validateUrl, this);
+		so.depends({type: 'select', '!reverse': true});
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'interval', _('Health check interval'),
+			_('In seconds. <code>600</code> will be used if empty.'));
+		so.placeholder = '600';
+		so.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
+		so.depends({type: 'select', '!reverse': true});
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'timeout', _('Health check timeout'),
+			_('In millisecond. <code>5000</code> will be used if empty.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '5000';
+		so.depends({type: 'select', '!reverse': true});
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Flag, 'lazy', _('Lazy'),
+			_('No testing is performed when this provider node is not in use.'));
+		so.default = so.enabled;
+		so.depends({type: 'select', '!reverse': true});
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'expected_status', _('Health check expected status'),
+			_('Expected HTTP code. <code>204</code> will be used if empty. ') +
+			_('For format see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
+				.format('https://wiki.metacubex.one/config/proxy-groups/#expected-status', _('Expected status')));
+		so.placeholder = '200/302/400-503';
+		so.depends({type: 'select', '!reverse': true});
+		so.modalonly = true;
+
+		so = ss.taboption('field_health', form.Value, 'max_failed_times', _('Max count of failures'),
+			_('Exceeding this triggers a forced health check. <code>5</code> will be used if empty.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '5';
+		so.depends({type: 'select', '!reverse': true});
+		so.modalonly = true;
+
+		/* Url-test fields */
+		so = ss.taboption('field_general', form.Value, 'tolerance', _('Node switch tolerance'),
+			_('In millisecond. <code>150</code> will be used if empty.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '150';
+		so.depends('type', 'url-test');
+		so.modalonly = true;
+
+		/* Load-balance fields */
+		so = ss.taboption('field_general', form.ListValue, 'strategy', _('Strategy'));
+		so.default = hm.load_balance_strategy[0][0];
+		hm.load_balance_strategy.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.depends('type', 'load-balance');
+		so.modalonly = true;
+
+		/* General fields */
+		// dev: Features under development
+		so = ss.taboption('field_general', form.Flag, 'include_all', _('Include all'),
+			_('Includes all Proxy Node and Provider.'));
+		so.default = so.disabled;
+		so.readonly = true;
+		so.modalonly = true;
+
+		// dev: Features under development
+		so = ss.taboption('field_general', form.Flag, 'include_all_proxies', _('Include all node'),
+			_('Includes all Proxy Node.'));
+		so.default = so.disabled;
+		so.readonly = true;
+		so.modalonly = true;
+
+		// dev: Features under development
+		so = ss.taboption('field_general', form.Flag, 'include_all_providers', _('Include all provider'),
+			_('Includes all Provider.'));
+		so.default = so.disabled;
+		so.readonly = true;
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.DynamicList, 'filter', _('Node filter'),
+			_('Filter nodes that meet keywords or regexps.'));
+		so.placeholder = '(?i)港|hk|hongkong|hong kong';
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.DynamicList, 'exclude_filter', _('Node exclude filter'),
+			_('Exclude nodes that meet keywords or regexps.'));
+		so.placeholder = 'xxx';
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.DynamicList, 'exclude_type', _('Node exclude type'),
+			_('Exclude matched node types.'));
+		so.placeholder = 'ss|http';
+		so.modalonly = true;
+		/* Proxy Group END */
 
 		/* Routing rules START */
 		s.tab('rules', _('Routing rule'));

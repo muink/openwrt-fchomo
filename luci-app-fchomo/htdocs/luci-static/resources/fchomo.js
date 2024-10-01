@@ -41,6 +41,11 @@ return baseclass.extend({
 		['https://www.youtube.com', _('YouTube')]
 	],
 
+	health_checkurls: [
+		['https://cp.cloudflare.com'],
+		['https://www.gstatic.com/generate_204']
+	],
+
 	ip_version: [
 		['', _('Keep default')],
 		['dual', _('Dual stack')],
@@ -48,6 +53,12 @@ return baseclass.extend({
 		['ipv6', _('IPv6 only')],
 		['ipv4-prefer', _('Prefer IPv4')],
 		['ipv6-prefer', _('Prefer IPv6')]
+	],
+
+	load_balance_strategy: [
+		['round-robin', _('Simple round-robin all nodes')],
+		['consistent-hashing', _('Same TLD requests. Same node')],
+		['sticky-sessions', _('sticky-sessions')]
 	],
 
 	preset_outbound: {
@@ -67,6 +78,14 @@ return baseclass.extend({
 			['DIRECT']
 		]
 	},
+
+	proxy_group_type: [
+		['select', _('Select')],
+		['fallback', _('Fallback')],
+		['url-test', _('URL test')],
+		['load-balance', _('Load balance')],
+		//['relay', _('Relay')], // Deprecated
+	],
 
 	rules_type: [
 		['DOMAIN'],
@@ -507,6 +526,9 @@ return baseclass.extend({
 	},
 
 	validateUrl: function(section_id, value) {
+		if (!value)
+			return true;
+
 		try {
 			var url = new URL(value);
 			if (!url.hostname)

@@ -231,9 +231,10 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'health_url', _('Health check URL'));
-		so.value('https://cp.cloudflare.com');
-		so.value('https://www.gstatic.com/generate_204');
-		so.default = 'https://cp.cloudflare.com';
+		so.default = hm.health_checkurls[0][0];
+		hm.health_checkurls.forEach((res) => {
+			so.value.apply(so, res);
+		})
 		so.validate = L.bind(hm.validateUrl, this);
 		so.retain = true;
 		so.modalonly = true;

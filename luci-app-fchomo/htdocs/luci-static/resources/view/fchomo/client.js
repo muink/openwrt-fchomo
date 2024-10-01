@@ -11,7 +11,7 @@ function loadDNSServerLabel(uciconfig, ucisection) {
 	delete this.keylist;
 	delete this.vallist;
 
-	this.value('default-dns', _('Default DNS (114)'));
+	this.value('default-dns', _('Default DNS (issued by WAN)'));
 	this.value('system-dns', _('System DNS'));
 	this.value('block-dns', _('Block DNS queries'));
 	uci.sections(uciconfig, 'dns_server', (res) => {

@@ -3,6 +3,7 @@
 'use strict';
 
 import { readfile, writefile } from 'fs';
+import { connect } from 'ubus';
 import { cursor } from 'uci';
 
 import { urldecode, urlencode } from 'luci.http';
@@ -12,6 +13,8 @@ import {
 	removeBlankAttrs,
 	HM_DIR, RUN_DIR, PRESET_OUTBOUND
 } from 'fchomo';
+
+const ubus = connect();
 
 /* UCI config START */
 const uci = cursor();
@@ -49,6 +52,11 @@ const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
 	  redirect_gate_mark = 2023,
 	  redirect_pass_mark = 2024,
       posh = 'c2luZ2JveA';
+
+/* WAN DNS server array */
+let wan_dns = ubus.call('network.interface', 'status', {'interface': 'wan'})?.['dns-server'];
+if (length(wan_dns) === 0)
+	wan_dns = ['223.5.5.5'];
 
 /* All DNS server object */
 const dnsservers = {};
@@ -124,7 +132,9 @@ function get_nameserver(cfg) {
 		if (k === 'system-dns') {
 			push(servers, 'system');
 		} else if (k === 'default-dns') {
-			push(servers, '114.114.114.114#DIRECT');
+			map(wan_dns, (dns) => {
+				push(servers, dns + '#DIRECT');
+			});
 		} else
 			push(servers, replace(dnsservers[k]?.address || '', /#detour=([^&]+)/, (m, c1) => {
 				return '#' + urlencode(get_proxygroup(c1));

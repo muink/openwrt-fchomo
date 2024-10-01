@@ -52,7 +52,14 @@ const methods = {
 		call: function(req) {
 			if (req.args?.instance) {
 				const instance = req.args?.instance;
-				const config = json(trim(readfile(`${RUN_DIR}/${instance}.json`)) || '{}');
+				let config;
+
+				const fd = popen(`yq -oj '.[] |= with(select(type == "!!map"); del(.)) |= with(select(type == "!!seq"); del(.))' ${RUN_DIR}/${instance}.yaml`);
+				if (fd) {
+					config = json(trim(fd.read('all')) || '{}');
+
+					fd.close();
+				}
 
 				return {
 					http: config['external-controller'],

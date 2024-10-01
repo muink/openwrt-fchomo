@@ -309,15 +309,19 @@ return baseclass.extend({
 	},
 
 	renderStatus: function(self, ElId, isRunning, instance, noGlobal) {
+		var visible = isRunning && (isRunning.http || isRunning.https);
+
 		return E([
 			E('button', {
 				'class': 'cbi-button cbi-button-apply' + (noGlobal ? ' hidden' : ''),
 				'click': ui.createHandlerFn(this, self.handleReload, instance)
 			}, [ _('Reload') ]),
-			self.updateStatus(self, E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning),
+			self.updateStatus(self, E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning ? true : false),
 			E('a', {
-				'class': 'cbi-button cbi-button-apply hidden',
-				'href': '',
+				'class': 'cbi-button cbi-button-apply %s'.format(visible ? '' : 'hidden'),
+				'href': !visible ? '' : 'http%s://%s:%s/'.format(isRunning.https ? 's' : '',
+						window.location.hostname,
+						isRunning.https ? isRunning.https.split(':').pop() : isRunning.http.split(':').pop()),
 				'target': '_blank',
 				'rel': 'noreferrer noopener'
 			}, [ _('Open Dashboard') ])

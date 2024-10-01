@@ -96,12 +96,16 @@ return view.extend({
 	load: function() {
 		return Promise.all([
 			uci.load('fchomo'),
-			hm.getFeatures()
+			hm.getFeatures(),
+			hm.getServiceStatus('mihomo-c'),
+			hm.getServiceStatus('mihomo-s')
 		]);
 	},
 
 	render: function(data) {
-		var features = data[1];
+		var features = data[1],
+		    CisRunning = data[2],
+		    SisRunning = data[3];
 
 		var m, s, o, ss, so;
 
@@ -123,7 +127,7 @@ return view.extend({
 		}
 
 		so = ss.option(form.DummyValue, '_client_status', _('Client status'));
-		so.cfgvalue = function() { return hm.renderStatus(hm, '_client_bar', false, 'mihomo-c') }
+		so.cfgvalue = function() { return hm.renderStatus(hm, '_client_bar', CisRunning, 'mihomo-c') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-c').then((isRunning) => {
 				hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning, 'mihomo-c');
@@ -131,7 +135,7 @@ return view.extend({
 		})
 
 		so = ss.option(form.DummyValue, '_server_status', _('Server status'));
-		so.cfgvalue = function() { return hm.renderStatus(hm, '_server_bar', false, 'mihomo-s') }
+		so.cfgvalue = function() { return hm.renderStatus(hm, '_server_bar', SisRunning, 'mihomo-s') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-s').then((isRunning) => {
 				hm.updateStatus(hm, document.getElementById('_server_bar'), isRunning, 'mihomo-s');

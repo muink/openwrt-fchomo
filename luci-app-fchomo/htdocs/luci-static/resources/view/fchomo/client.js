@@ -152,6 +152,21 @@ return view.extend({
 
 		m = new form.Map('fchomo', _('Mihomo client'));
 
+		s = m.section(form.TypedSection);
+		s.render = function () {
+			poll.add(function () {
+				return hm.getServiceStatus('mihomo-c').then((isRunning) => {
+					hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning, 'mihomo-c', true);
+				});
+			});
+
+			return E('div', { class: 'cbi-section' }, [
+				E('p', [
+					hm.renderStatus(hm, '_client_bar', false, 'mihomo-c', true)
+				])
+			]);
+		}
+
 		s = m.section(form.NamedSection, 'client', 'fchomo');
 
 		/* Proxy group START */

@@ -63,44 +63,6 @@ function handleResUpdate(type, repo) {
 	});
 }
 
-function renderStatus(ElId, isRunning, instance) {
-	return E([
-		E('button', {
-			'class': 'cbi-button cbi-button-apply',
-			'click': ui.createHandlerFn(this, hm.handleReload, instance, null, null)
-		}, [ _('Reload') ]),
-		updateStatus(E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning),
-		E('a', {
-			'class': 'cbi-button cbi-button-apply hidden',
-			'href': '',
-			'target': '_blank',
-			'rel': 'noreferrer noopener'
-		}, [ _('Open Dashboard') ])
-	]);
-}
-
-function updateStatus(El, isRunning, instance) {
-	if (El) {
-		El.style.color = isRunning ? 'green' : 'red';
-		El.innerHTML = '&ensp;%s&ensp;'.format(isRunning ? _('Running') : _('Not Running'));
-		/* Dashboard button */
-		if (El.nextSibling?.localName === 'a')
-			hm.getClashAPI(instance).then((res) => {
-				let visible = isRunning && (res.http || res.https);
-				if (visible) {
-					El.nextSibling.classList.remove('hidden');
-				} else
-					El.nextSibling.classList.add('hidden');
-				if (visible)
-					El.nextSibling.href = 'http%s://%s:%s/'.format(res.https ? 's' : '',
-						window.location.hostname,
-						res.https ? res.https.split(':').pop() : res.http.split(':').pop());
-			});
-	}
-
-	return El;
-}
-
 function renderResVersion(El, type, repo) {
 	return L.resolveDefault(callResVersion(type, repo), {}).then((res) => {
 		var resEl = E([
@@ -161,18 +123,18 @@ return view.extend({
 		}
 
 		so = ss.option(form.DummyValue, '_client_status', _('Client status'));
-		so.cfgvalue = function() { return renderStatus('_client_bar', false, 'mihomo-c') }
+		so.cfgvalue = function() { return hm.renderStatus(hm, '_client_bar', false, 'mihomo-c') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-c').then((isRunning) => {
-				updateStatus(document.getElementById('_client_bar'), isRunning, 'mihomo-c');
+				hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning, 'mihomo-c');
 			});
 		})
 
 		so = ss.option(form.DummyValue, '_server_status', _('Server status'));
-		so.cfgvalue = function() { return renderStatus('_server_bar', false, 'mihomo-s') }
+		so.cfgvalue = function() { return hm.renderStatus(hm, '_server_bar', false, 'mihomo-s') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-s').then((isRunning) => {
-				updateStatus(document.getElementById('_server_bar'), isRunning, 'mihomo-s');
+				hm.updateStatus(hm, document.getElementById('_server_bar'), isRunning, 'mihomo-s');
 			});
 		})
 

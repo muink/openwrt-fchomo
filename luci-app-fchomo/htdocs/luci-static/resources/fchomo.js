@@ -308,6 +308,43 @@ return baseclass.extend({
 		return this.super('load', ucisection);
 	},
 
+	renderStatus: function(self, ElId, isRunning, instance, noGlobal) {
+		return E([
+			E('button', {
+				'class': 'cbi-button cbi-button-apply' + (noGlobal ? ' hidden' : ''),
+				'click': ui.createHandlerFn(this, self.handleReload, instance)
+			}, [ _('Reload') ]),
+			self.updateStatus(self, E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning),
+			E('a', {
+				'class': 'cbi-button cbi-button-apply hidden',
+				'href': '',
+				'target': '_blank',
+				'rel': 'noreferrer noopener'
+			}, [ _('Open Dashboard') ])
+		]);
+	},
+	updateStatus: function(self, El, isRunning, instance, noGlobal) {
+		if (El) {
+			El.style.color = isRunning ? 'green' : 'red';
+			El.innerHTML = '&ensp;%s%s&ensp;'.format(noGlobal ? instance + ' ' : '', isRunning ? _('Running') : _('Not Running'));
+			/* Dashboard button */
+			if (El.nextSibling?.localName === 'a')
+				self.getClashAPI(instance).then((res) => {
+					let visible = isRunning && (res.http || res.https);
+					if (visible) {
+						El.nextSibling.classList.remove('hidden');
+					} else
+						El.nextSibling.classList.add('hidden');
+					if (visible)
+						El.nextSibling.href = 'http%s://%s:%s/'.format(res.https ? 's' : '',
+							window.location.hostname,
+							res.https ? res.https.split(':').pop() : res.http.split(':').pop());
+				});
+		}
+
+		return El;
+	},
+
 	renderResDownload: function(self, restype, uciconfig, ucisection) {
 		var type = uci.get(uciconfig, ucisection, 'type'),
 			url = uci.get(uciconfig, ucisection, 'url');

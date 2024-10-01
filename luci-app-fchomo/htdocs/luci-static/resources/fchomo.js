@@ -313,6 +313,19 @@ return baseclass.extend({
 		return this.super('load', ucisection);
 	},
 
+	loadProviderLabel: function(uciconfig, ucisection) {
+		delete this.keylist;
+		delete this.vallist;
+
+		this.value('', _('-- Please choose --'));
+		uci.sections(uciconfig, 'provider', (res) => {
+			if (res.enabled !== '0')
+				this.value(res['.name'], res.label);
+		});
+
+		return this.super('load', ucisection);
+	},
+
 	loadRulesetLabel: function(behaviors, uciconfig, ucisection) {
 		delete this.keylist;
 		delete this.vallist;

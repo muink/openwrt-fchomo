@@ -219,7 +219,7 @@ return view.extend({
 		so.editable = true;
 
 		so = ss.taboption('field_general', form.MultiValue, 'use', _('Provider'));
-		so.value('', _('-- Please choose --'));
+		so.load = L.bind(hm.loadProviderLabel, so, data[0]);
 		so.editable = true;
 
 		/* Override fields */

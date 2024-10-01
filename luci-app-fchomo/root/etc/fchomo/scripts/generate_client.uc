@@ -35,6 +35,7 @@ const uciclient = 'client',
 const ucisniff = 'sniff',
       ucidnser = 'dns_server',
       ucidnspoli = 'dns_policy',
+      ucipgroup = 'proxy_group',
       uciprov = 'provider',
       ucirule = 'ruleset',
 	  ucirout = 'rules';
@@ -357,6 +358,45 @@ if (!isEmpty(config.dns.fallback))
 /* Hosts */
 config.hosts = {};
 /* Hosts END */
+
+/* Proxy Group START */
+/* Proxy Group */
+config["proxy-groups"] = [];
+uci.foreach(uciconf, ucipgroup, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	push(config["proxy-groups"], {
+		name: cfg.label,
+		type: cfg.type,
+		proxies: cfg.proxies,
+		use: cfg.use,
+		// Url-test fields
+		tolerance: (cfg.type === 'url-test') ? strToInt(cfg.tolerance) || 150 : null,
+		// Load-balance fields
+		strategy: cfg.strategy,
+		// Override fields
+		"disable-udp": strToBool(cfg.disable_udp) || false,
+		["interface-name"]: cfg.interface_name,
+		// dev: Features under development
+		["routing-mark"]: strToInt(cfg.routing_mark),
+		// Health fields
+		url: cfg.url,
+		interval: cfg.url ? parse_time_duration(cfg.interval) || 600 : null,
+		timeout: cfg.url ? strToInt(cfg.timeout) || 5000 : null,
+		lazy: (cfg.lazy === '0') ? false : null,
+		"expected-status": cfg.url ? cfg.expected_status || '204' : null,
+		"max-failed-times": cfg.url ? strToInt(cfg.max_failed_times) || 5 : null,
+		// General fields
+		"include-all": strToBool(cfg.include_all),
+		"include-all-proxies": strToBool(cfg.include_all_proxies),
+		"include-all-providers": strToBool(cfg.include_all_providers),
+		filter: parse_filter(cfg.filter),
+		"exclude-filter": parse_filter(cfg.exclude_filter),
+		"exclude-type": parse_filter(cfg.exclude_type)
+	});
+});
+/* Proxy Group END */
 
 /* Provider START */
 /* Provider settings */

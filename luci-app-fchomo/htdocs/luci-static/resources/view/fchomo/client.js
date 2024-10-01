@@ -154,6 +154,19 @@ return view.extend({
 
 		s = m.section(form.NamedSection, 'client', 'fchomo');
 
+		/* Proxy group START */
+		s.tab('group', _('Proxy group'));
+
+		/* Switch */
+		o = s.taboption('group', form.Button, '_reload_client', _('Quick Reload'));
+		o.inputtitle = _('Reload');
+		o.inputstyle = 'apply';
+		o.onclick = L.bind(hm.handleReload, so, 'mihomo-c');
+
+		o = s.taboption('group', form.ListValue, 'default_proxy', _('Default outbound'));
+		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct, data[0]);
+		/* Proxy group END */
+
 		/* Routing rules START */
 		s.tab('rules', _('Routing rule'));
 

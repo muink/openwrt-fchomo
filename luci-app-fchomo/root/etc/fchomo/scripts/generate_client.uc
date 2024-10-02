@@ -502,4 +502,4 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 push(config.rules, 'MATCH,' + get_proxygroup(uci.get(uciconf, uciclient, 'default_proxy')));
 /* Routing rules END */
 
-printf('%.J\n', config);
+printf('%.J\n', removeBlankAttrs(config));

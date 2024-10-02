@@ -19,7 +19,7 @@ return view.extend({
 
 		m = new form.Map('fchomo', _('Edit node'));
 
-		s = m.section(form.NamedSection, 'client', 'fchomo');
+		s = m.section(form.NamedSection, 'global', 'fchomo');
 
 		/* Proxy Node START */
 		s.tab('node', _('Proxy Node'));

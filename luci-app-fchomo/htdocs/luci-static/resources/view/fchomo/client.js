@@ -166,7 +166,7 @@ return view.extend({
 			]);
 		}
 
-		s = m.section(form.NamedSection, 'client', 'fchomo');
+		s = m.section(form.NamedSection, 'global', 'fchomo');
 
 		/* Proxy Group START */
 		s.tab('group', _('Proxy Group'));

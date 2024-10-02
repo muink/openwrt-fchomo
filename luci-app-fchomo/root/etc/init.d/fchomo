@@ -24,10 +24,10 @@ log() {
 
 start_service() {
 	local default_proxy
-	config_get default_proxy "client" "default_proxy" ""
+	config_get default_proxy "global" "default_proxy" ""
 
 	local server_enabled
-	config_get_bool server_enabled "server" "enabled" "0"
+	config_get_bool server_enabled "global" "server_enabled" "0"
 
 	if [ -z "$default_proxy" ] && [ "$server_enabled" = "0" ]; then
 		return 1

@@ -30,10 +30,8 @@ const uciglobal = 'global',
       ucitls = 'tls',
       uciapi = 'api',
       ucisniffer = 'sniffer',
+      ucidns = 'dns',
       uciexpr = 'experimental';
-
-const uciclient = 'client',
-      ucidns = 'dns';
 
 const ucisniff = 'sniff',
       ucidnser = 'dns_server',
@@ -41,7 +39,7 @@ const ucisniff = 'sniff',
       ucipgroup = 'proxy_group',
       uciprov = 'provider',
       ucirule = 'ruleset',
-	  ucirout = 'rules';
+      ucirout = 'rules';
 
 /* Hardcode options */
 const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
@@ -49,8 +47,8 @@ const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
       tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',
       route_table_id = strToInt(uci.get(uciconf, ucifchm, 'route_table_id')) || 2022,
       route_rule_pref = strToInt(uci.get(uciconf, ucifchm, 'route_rule_pref')) || 9000,
-	  redirect_gate_mark = 2023,
-	  redirect_pass_mark = 2024,
+      redirect_gate_mark = 2023,
+      redirect_pass_mark = 2024,
       posh = 'c2luZ2JveA';
 
 /* WAN DNS server array */
@@ -492,7 +490,7 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 		}(split(cfg.entry, ','))
 	);
 });
-push(config.rules, 'MATCH,' + get_proxygroup(uci.get(uciconf, uciclient, 'default_proxy')));
+push(config.rules, 'MATCH,' + get_proxygroup(uci.get(uciconf, uciglobal, 'default_proxy')));
 /* Routing rules END */
 
 printf('%.J\n', removeBlankAttrs(config));

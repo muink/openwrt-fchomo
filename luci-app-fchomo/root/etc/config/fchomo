@@ -39,13 +39,11 @@ config fchomo 'api'
 config fchomo 'sniffer'
 	list skip_domain 'Mijia Cloud'
 
-config fchomo 'experimental'
-
-config fchomo 'client'
-
 config fchomo 'dns'
 	option port '7753'
 	option fallback_filter_geoip_code 'cn'
+
+config fchomo 'experimental'
 
 config sniff
 	option protocol 'HTTP'

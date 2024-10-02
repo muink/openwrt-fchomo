@@ -199,7 +199,12 @@ return view.extend({
 		/* General fields */
 		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		so.validate = L.bind(hm.validateUniqueValue, this, data[0], so.section, so.option);
+		so.validate = function(section_id, value) {
+			if (value.match(/[,]/))
+				return _('Expecting: %s').format(_('not included ","'));
+
+			return hm.validateUniqueValue(this, data[0], this.section, this.opton, section_id, value);
+		}
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Flag, 'enabled', _('Enable'));

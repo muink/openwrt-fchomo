@@ -494,12 +494,12 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 		return null;
 
 	push(config.rules, function(arr) {
-			arr[2] = replace(get_proxygroup(arr[2]), ',', '\\u2c');
+			arr[2] = get_proxygroup(arr[2]);
 			return join(',', arr);
 		}(split(cfg.entry, ','))
 	);
 });
-push(config.rules, 'MATCH,' + replace(get_proxygroup(uci.get(uciconf, uciclient, 'default_proxy')), ',', '\\u2c'));
+push(config.rules, 'MATCH,' + get_proxygroup(uci.get(uciconf, uciclient, 'default_proxy')));
 /* Routing rules END */
 
 printf('%.J\n', config);

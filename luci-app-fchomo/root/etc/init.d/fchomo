@@ -36,6 +36,21 @@ start_service() {
 
 	if [ -n "$default_proxy" ]; then
 	if [ -z "$1" -o "$1" = "mihomo-c" ]; then
+		# Generate/Validate client config
+		ucode -S "$HM_DIR/scripts/generate_client.uc" 2>>"$LOG_PATH" | yq -Poy | yq \
+			'.sniffer["force-domain"][] style="double"
+			| .sniffer["skip-domain"][] style="double"
+			| with(.dns["nameserver-policy"] | keys; .. style="double")
+			| .dns["fallback-filter"].domain[] style="double"' > "$RUN_DIR/mihomo-c.yaml"
+
+		if [ ! -e "$RUN_DIR/mihomo-c.yaml" ]; then
+			log "Error: failed to generate client configuration."
+			return 1
+		elif ! "$PROG" -t -d "$HM_DIR" -f "$RUN_DIR/mihomo-c.yaml" 2>>"$LOG_PATH"; then
+			log "Error: wrong client configuration detected."
+			return 1
+		fi
+		echo > "$RUN_DIR/mihomo-c.log"
 	fi
 	fi
 

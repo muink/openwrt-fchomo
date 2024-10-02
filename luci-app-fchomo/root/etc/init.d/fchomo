@@ -11,6 +11,7 @@ CONF="fchomo"
 PROG="/usr/bin/mihomo"
 
 HM_DIR="/etc/fchomo"
+TEMPS_DIR="$HM_DIR/templates"
 RUN_DIR="/var/run/fchomo"
 LOG_PATH="$RUN_DIR/fchomo.log"
 DNSMASQ_DIR="/tmp/dnsmasq.d/dnsmasq-fchomo.d"
@@ -41,7 +42,9 @@ start_service() {
 			'.sniffer["force-domain"][] style="double"
 			| .sniffer["skip-domain"][] style="double"
 			| with(.dns["nameserver-policy"] | keys; .. style="double")
-			| .dns["fallback-filter"].domain[] style="double"' > "$RUN_DIR/mihomo-c.yaml"
+			| .dns["fallback-filter"].domain[] style="double"' \
+		> "$RUN_DIR/mihomo-c.yaml"
+		yq eval-all -i '. as $item ireduce ({}; . * $item )' "$RUN_DIR/mihomo-c.yaml" "$TEMPS_DIR/"*.yaml
 
 		if [ ! -e "$RUN_DIR/mihomo-c.yaml" ]; then
 			log "Error: failed to generate client configuration."

@@ -34,8 +34,17 @@ tail -n +$(( $p +1 )) $DOCNAME.html
 popd
 minify "$PKG_BUILD_DIR"/buildin.html | base64 | tr -d '\n' > "$PKG_BUILD_DIR"/base64
 sed -i "s|'cmxzdHBsYWNlaG9sZGVy'|'$(cat "$PKG_BUILD_DIR"/base64)'|" "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js
-base64 "$CURDIR"/docs/img/$SHARKNAME | tr -d '\n' > "$PKG_BUILD_DIR"/base64
-sed -i "s|'c2hhcmstdGFpa28uZ2lm'|'$(cat "$PKG_BUILD_DIR"/base64)'|" "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js
+# shaka
+echo -n "'" > "$PKG_BUILD_DIR"/base64
+base64 "$CURDIR"/docs/img/$SHARKNAME | tr -d '\n' >> "$PKG_BUILD_DIR"/base64
+echo "'" >> "$PKG_BUILD_DIR"/base64
+p=$(sed -n "/'c2hhcmstdGFpa28uZ2lm'/=" "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js)
+{
+head -n$(( $p -1 )) "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js
+cat "$PKG_BUILD_DIR"/base64
+tail -n +$(( $p +1 )) "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js
+} > "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js.new
+mv -f "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js.new "$PKG_BUILD_DIR"/htdocs/luci-static/resources/fchomo.js
 
 if [ -d "$CURDIR/.git" ]; then
 	config="$CURDIR/.git/config"

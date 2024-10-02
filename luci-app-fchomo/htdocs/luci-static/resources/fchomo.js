@@ -8,7 +8,10 @@
 
 var rulesetdoc = 'data:text/html;base64,' + 'cmxzdHBsYWNlaG9sZGVy';
 
-var sharktaikogif = 'data:image/gif;base64,' + 'c2hhcmstdGFpa28uZ2lm';
+var sharktaikogif = function() {
+	return 'data:image/gif;base64,' +
+'c2hhcmstdGFpa28uZ2lm'
+}()
 
 return baseclass.extend({
 	rulesetdoc: rulesetdoc,

@@ -534,7 +534,7 @@ return view.extend({
 
 		so = ss.option(form.Value, 'port', _('Listen port'));
 		so.datatype = 'port'
-		so.placeholder = '7753';
+		so.placeholder = '7853';
 		so.rmempty = false;
 
 		so = ss.option(form.Flag, 'ipv6', _('IPv6 support'));

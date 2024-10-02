@@ -331,22 +331,22 @@ return view.extend({
 
 		so = ss.option(form.Value, 'mixed_port', _('Mixed port'));
 		so.datatype = 'port'
-		so.placeholder = '7790';
+		so.placeholder = '7890';
 		so.rmempty = false;
 
 		so = ss.option(form.Value, 'redir_port', _('Redir port'));
 		so.datatype = 'port'
-		so.placeholder = '7791';
+		so.placeholder = '7891';
 		so.rmempty = false;
 
 		so = ss.option(form.Value, 'tproxy_port', _('Tproxy port'));
 		so.datatype = 'port'
-		so.placeholder = '7792';
+		so.placeholder = '7892';
 		so.rmempty = false;
 
 		so = ss.option(form.Value, 'tunnel_port', _('DNS port'));
 		so.datatype = 'port'
-		so.placeholder = '7793';
+		so.placeholder = '7893';
 		so.rmempty = false;
 
 		so = ss.option(form.ListValue, 'proxy_mode', _('Proxy mode'));

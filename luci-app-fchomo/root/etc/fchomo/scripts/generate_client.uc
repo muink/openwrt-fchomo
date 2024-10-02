@@ -237,7 +237,7 @@ config.listeners = [];
 push(config.listeners, {
 	name: 'dns-in',
 	type: 'tunnel',
-	port: strToInt(uci.get(uciconf, uciinbound, 'tunnel_port')) || '7793',
+	port: strToInt(uci.get(uciconf, uciinbound, 'tunnel_port')) || '7893',
 	listen: '::',
 	network: ['tcp', 'udp'],
 	target: '1.1.1.1:53'
@@ -245,7 +245,7 @@ push(config.listeners, {
 push(config.listeners, {
 	name: 'mixed-in',
 	type: 'mixed',
-	port: strToInt(uci.get(uciconf, uciinbound, 'mixed_port')) || '7790',
+	port: strToInt(uci.get(uciconf, uciinbound, 'mixed_port')) || '7890',
 	listen: '::',
 	udp: true
 });
@@ -253,14 +253,14 @@ if (match(proxy_mode, /redir/))
 	push(config.listeners, {
 		name: 'redir-in',
 		type: 'redir',
-		port: strToInt(uci.get(uciconf, uciinbound, 'redir_port')) || '7791',
+		port: strToInt(uci.get(uciconf, uciinbound, 'redir_port')) || '7891',
 		listen: '::'
 	});
 if (match(proxy_mode, /tproxy/))
 	push(config.listeners, {
 		name: 'tproxy-in',
 		type: 'tproxy',
-		port: strToInt(uci.get(uciconf, uciinbound, 'tproxy_port')) || '7792',
+		port: strToInt(uci.get(uciconf, uciinbound, 'tproxy_port')) || '7892',
 		listen: '::',
 		udp: true
 	});
@@ -310,7 +310,7 @@ if (match(proxy_mode, /tun/))
 config.dns = {
 	enable: true,
 	"prefer-h3": false,
-	listen: '[::]:' + (uci.get(uciconf, ucidns, 'port') || '7753'),
+	listen: '[::]:' + (uci.get(uciconf, ucidns, 'port') || '7853'),
 	ipv6: (uci.get(uciconf, ucidns, 'ipv6') === '0') ? false : true,
 	"enhanced-mode": 'redir-host',
 	"use-hosts": true,

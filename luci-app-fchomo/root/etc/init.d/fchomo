@@ -54,6 +54,16 @@ start_service() {
 			return 1
 		fi
 		echo > "$RUN_DIR/mihomo-c.log"
+
+		# Deploy Clash API Dashboard
+		local dashboard_repo
+		config_get dashboard_repo "api" "dashboard_repo" ""
+
+		if [ -n "$dashboard_repo" ]; then
+			rm -rf "$RUN_DIR/ui"
+			tar -xzf "$HM_DIR/resources/$(echo "$dashboard_repo" | sed 's|\W|_|g').tgz" -C "$RUN_DIR/"
+			mv "$RUN_DIR/"*-gh-pages/ "$RUN_DIR/ui/"
+		fi
 	fi
 	fi
 

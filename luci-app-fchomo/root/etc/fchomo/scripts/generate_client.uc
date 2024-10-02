@@ -182,13 +182,6 @@ config.tls = {
 /* API START */
 const api_port = uci.get(uciconf, uciapi, 'external_controller_port');
 const api_tls_port = uci.get(uciconf, uciapi, 'external_controller_tls_port');
-const dashboard_repo = uci.get(uciconf, uciapi, 'dashboard_repo');
-if (dashboard_repo) {
-	system('rm -rf ' + RUN_DIR + '/ui');
-	const dashpkg = HM_DIR + '/resources/' + lc(replace(dashboard_repo, /\W/g, '_')) + '.tgz';
-	system('tar -xzf ' + dashpkg + ' -C ' + RUN_DIR + '/');
-	system('mv ' + RUN_DIR + '/*-gh-pages/ ' + RUN_DIR + '/ui/');
-};
 /* API settings */
 config["external-controller"] = api_port ? '[::]:' + api_port : null;
 config["external-controller-tls"] = api_tls_port ? '[::]:' + api_tls_port : null;

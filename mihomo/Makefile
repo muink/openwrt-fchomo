@@ -33,7 +33,7 @@ define Package/mihomo
   TITLE:=Another Mihomo Kernel.
   URL:=https://wiki.metacubex.one
   DEPENDS:=$(GO_ARCH_DEPENDS)
-  USERID:=mihomo=7790:mihomo=7790
+  USERID:=mihomo=7890:mihomo=7890
 endef
 
 define Build/Prepare
@@ -42,15 +42,12 @@ define Build/Prepare
 	rm -f $(PKG_BUILD_DIR)/rules/logic_test/logic_test.go
 endef
 
-define Package/$(PKG_NAME)/install
+define Package/mihomo/install
 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
 	$(CURDIR)/.prepare.sh $(VERSION) $(CURDIR) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)
 
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME) $(1)/usr/bin/
-
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./uci-defaults $(1)/etc/uci-defaults/99_$(PKG_NAME)
 endef
 
 $(eval $(call GoBinPackage,mihomo))

@@ -254,7 +254,7 @@ return view.extend({
 		hm.health_checkurls.forEach((res) => {
 			so.value.apply(so, res);
 		})
-		so.validate = L.bind(hm.validateUrl, this);
+		so.validate = L.bind(hm.validateUrl, so);
 		so.depends({type: 'select', '!reverse': true});
 		so.modalonly = true;
 

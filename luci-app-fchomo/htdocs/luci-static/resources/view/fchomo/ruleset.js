@@ -252,7 +252,7 @@ return view.extend({
 		o.modalonly = true;
 
 		o = s.option(form.Value, 'url', _('Rule set URL'));
-		o.validate = L.bind(hm.validateUrl, this);
+		o.validate = L.bind(hm.validateUrl, o);
 		o.rmempty = false;
 		o.depends('type', 'http');
 		o.modalonly = true;

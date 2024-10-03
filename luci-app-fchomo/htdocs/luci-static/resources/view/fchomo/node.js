@@ -114,7 +114,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Value, 'url', _('Provider URL'));
-		so.validate = L.bind(hm.validateUrl, this);
+		so.validate = L.bind(hm.validateUrl, so);
 		so.rmempty = false;
 		so.depends('type', 'http');
 		so.modalonly = true;
@@ -141,7 +141,7 @@ return view.extend({
 			return frameEl;
 		}
 		so.placeholder = '{\n  "User-Agent": [\n    "Clash/v1.18.0",\n    "mihomo/1.18.3"\n  ],\n  "Accept": [\n    //"application/vnd.github.v3.raw"\n  ],\n  "Authorization": [\n    //"token 1231231"\n  ]\n}';
-		so.validate = L.bind(hm.validateJson, this);
+		so.validate = L.bind(hm.validateJson, so);
 		so.depends('type', 'http');
 		so.modalonly = true;
 
@@ -159,7 +159,7 @@ return view.extend({
 			_('For format see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
 				.format('https://wiki.metacubex.one/config/proxy-providers/#overrideproxy-name', _('override.proxy-name')));
 		so.placeholder = '{"pattern": "IPLC-(.*?)倍", "target": "iplc x $1"}';
-		so.validate = L.bind(hm.validateJson, this);
+		so.validate = L.bind(hm.validateJson, so);
 		so.modalonly = true;
 
 		so = ss.taboption('field_override', form.DummyValue, '_config_items', null);
@@ -235,7 +235,7 @@ return view.extend({
 		hm.health_checkurls.forEach((res) => {
 			so.value.apply(so, res);
 		})
-		so.validate = L.bind(hm.validateUrl, this);
+		so.validate = L.bind(hm.validateUrl, so);
 		so.retain = true;
 		so.modalonly = true;
 

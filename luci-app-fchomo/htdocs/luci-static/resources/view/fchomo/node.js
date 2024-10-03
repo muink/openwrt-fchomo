@@ -281,7 +281,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.option(form.DummyValue, '_update');
-		so.cfgvalue = L.bind(hm.renderResDownload, o, hm, 'provider', data[0]);
+		so.cfgvalue = L.bind(hm.renderResDownload, so, hm);
 		so.editable = true;
 		so.modalonly = false;
 		/* Provider END */

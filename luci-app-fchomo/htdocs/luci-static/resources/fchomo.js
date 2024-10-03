@@ -394,24 +394,25 @@ return baseclass.extend({
 			String.format(self.dashrepos_urlparams[repo] || '', host, port, secret)
 	},
 
-	renderResDownload: function(self, restype, uciconfig, ucisection) {
-		var type = uci.get(uciconfig, ucisection, 'type'),
-			url = uci.get(uciconfig, ucisection, 'url');
+	renderResDownload: function(self, section_id) {
+		var section_type = this.section.sectiontype;
+		var type = uci.get(this.config, section_id, 'type'),
+			url = uci.get(this.config, section_id, 'url');
 
 		var El = E([
 			E('button', {
 				class: 'cbi-button cbi-button-apply',
 				disabled: (type !== 'http') || null,
-				click: ui.createHandlerFn(this, function(ucisection, type, url) {
+				click: ui.createHandlerFn(this, function(section_id, type, url) {
 					if (type === 'http') {
-						return self.downloadFile(restype, ucisection, url).then((res) => {
+						return self.downloadFile(section_type, section_id, url).then((res) => {
 							ui.addNotification(null, E('p', _('Download successful.')));
 						}).catch((e) => {
 							ui.addNotification(null, E('p', _('Download failed: %s').format(e)));
 						});
 					} else
 						return ui.addNotification(null, E('p', _('Unable to download unsupported type: %s').format(type)));
-				}, ucisection, type, url)
+				}, section_id, type, url)
 			}, [ _('🡇') ]) //🗘
 		]);
 

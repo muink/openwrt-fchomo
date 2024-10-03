@@ -270,7 +270,7 @@ return view.extend({
 		o.depends('type', 'http');
 
 		o = s.option(form.DummyValue, '_update');
-		o.cfgvalue = L.bind(hm.renderResDownload, o, hm, 'ruleset', data[0]);
+		o.cfgvalue = L.bind(hm.renderResDownload, o, hm);
 		o.editable = true;
 		o.modalonly = false;
 		/* Rule set END */

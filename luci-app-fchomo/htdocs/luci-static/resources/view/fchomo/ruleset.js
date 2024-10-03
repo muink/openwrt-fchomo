@@ -154,7 +154,7 @@ return view.extend({
 			])
 		}
 		s.renderSectionAdd = function(/* ... */) {
-			var el = hm.renderSectionAdd.apply(this, [s, prefmt, false].concat(Array.prototype.slice.call(arguments)));
+			var el = hm.renderSectionAdd.apply(this, [prefmt, false].concat(Array.prototype.slice.call(arguments)));
 
 			el.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',

@@ -45,7 +45,7 @@ return view.extend({
 		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
 		/* Remove idle files start */
 		ss.renderSectionAdd = function(/* ... */) {
-			var el = hm.renderSectionAdd.apply(this, [ss, prefmt, false].concat(Array.prototype.slice.call(arguments)));
+			var el = hm.renderSectionAdd.apply(this, [prefmt, false].concat(Array.prototype.slice.call(arguments)));
 
 			el.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',

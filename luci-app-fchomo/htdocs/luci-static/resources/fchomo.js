@@ -418,12 +418,11 @@ return baseclass.extend({
 		return El;
 	},
 
-	renderSectionAdd: function(section, prefmt, LC, extra_class) {
-		var el = form.GridSection.prototype.renderSectionAdd.apply(section, [ extra_class ]),
+	renderSectionAdd: function(prefmt, LC, extra_class) {
+		var el = form.GridSection.prototype.renderSectionAdd.apply(this, [ extra_class ]),
 			nameEl = el.querySelector('.cbi-section-create-name');
 		ui.addValidator(nameEl, 'uciname', true, (v) => {
 			var button = el.querySelector('.cbi-section-create > .cbi-button-add');
-			var uciconfig = section.uciconfig || section.map.config;
 			var prefix = prefmt?.prefix ? prefmt.prefix : '',
 				suffix = prefmt?.suffix ? prefmt.suffix : '';
 
@@ -433,12 +432,12 @@ return baseclass.extend({
 			} else if (LC && (v !== v.toLowerCase())) {
 				button.disabled = true;
 				return _('Expecting: %s').format(_('Lowercase only'));
-			} else if (uci.get(uciconfig, v)) {
+			} else if (uci.get(this.config, v)) {
 				button.disabled = true;
 				return _('Expecting: %s').format(_('unique UCI identifier'));
-			} else if (uci.get(uciconfig, prefix + v + suffix)) {
+			} else if (uci.get(this.config, prefix + v + suffix)) {
 				button.disabled = true;
-				return _('Expecting: %s').format(_('unique label'));
+				return _('Expecting: %s').format(_('unique identifier'));
 			} else {
 				button.disabled = null;
 				return true;

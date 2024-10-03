@@ -122,7 +122,7 @@ return view.extend({
 		so = ss.taboption('field_general', form.Value, 'interval', _('Update interval'),
 			_('In seconds. <code>86400</code> will be used if empty.'));
 		so.placeholder = '86400';
-		so.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
+		so.validate = L.bind(hm.validateTimeDuration, so);
 		so.depends('type', 'http');
 
 		so = ss.taboption('field_general', form.ListValue, 'proxy', _('Proxy group'),
@@ -242,7 +242,7 @@ return view.extend({
 		so = ss.taboption('field_health', form.Value, 'health_interval', _('Health check interval'),
 			_('In seconds. <code>600</code> will be used if empty.'));
 		so.placeholder = '600';
-		so.validate = L.bind(hm.validateTimeDuration, this, data[0], this.section, this.option);
+		so.validate = L.bind(hm.validateTimeDuration, so);
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'health_timeout', _('Health check timeout'),

@@ -506,7 +506,7 @@ return baseclass.extend({
 		});
 	},
 
-	validateTimeDuration: function(uciconfig, ucisection, ucioption, section_id, value) {
+	validateTimeDuration: function(section_id, value) {
 		if (!value)
 			return true;
 

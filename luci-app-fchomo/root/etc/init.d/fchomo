@@ -29,7 +29,7 @@ start_service() {
 	local server_enabled
 	config_get_bool server_enabled "global" "server_enabled" "0"
 
-	if [ -z "$default_proxy" ] && [ "$server_enabled" = "0" ]; then
+	if [ -z "$default_proxy" -a "$server_enabled" = "0" ]; then
 		return 1
 	fi
 
@@ -167,4 +167,8 @@ reload_service() {
 
 	stop  "$@"
 	start "$@"
+}
+
+service_triggers() {
+	procd_add_reload_trigger "$CONF" 'network'
 }

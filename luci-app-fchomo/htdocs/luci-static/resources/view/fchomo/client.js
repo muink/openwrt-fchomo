@@ -177,7 +177,7 @@ return view.extend({
 		o = s.taboption('group', form.Button, '_reload_client', _('Quick Reload'));
 		o.inputtitle = _('Reload');
 		o.inputstyle = 'apply';
-		o.onclick = L.bind(hm.handleReload, so, 'mihomo-c');
+		o.onclick = L.bind(hm.handleReload, o, 'mihomo-c');
 
 		o = s.taboption('group', form.ListValue, 'default_proxy', _('Default outbound'));
 		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct);

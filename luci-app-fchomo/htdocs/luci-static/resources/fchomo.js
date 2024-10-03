@@ -68,6 +68,22 @@ return baseclass.extend({
 		['sticky-sessions', _('sticky-sessions')]
 	],
 
+	outbound_type: [
+		['http', _('HTTP')],
+		['socks5', _('SOCKS5')],
+		['ss', _('Shadowsocks')],
+		//['ssr', _('ShadowsocksR')], // Deprecated
+		['snell', _('Snell')],
+		['vmess', _('VMess')],
+		['vless', _('VLESS')],
+		['trojan', _('Trojan')],
+		['hysteria', _('Hysteria')],
+		['hysteria2', _('Hysteria2')],
+		['tuic', _('TUIC')],
+		['wireguard', _('WireGuard')],
+		['ssh', _('SSH')]
+	],
+
 	preset_outbound: {
 		full: [
 			['DIRECT'],

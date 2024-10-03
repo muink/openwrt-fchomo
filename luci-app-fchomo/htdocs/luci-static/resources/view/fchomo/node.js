@@ -28,6 +28,25 @@ return view.extend({
 		o = s.taboption('node', form.SectionValue, '_node', form.GridSection, 'node', null);
 		ss = o.subsection;
 		var prefmt = { 'prefix': 'node_', 'suffix': '' };
+		ss.addremove = true;
+		ss.rowcolors = true;
+		ss.sortable = true;
+		ss.nodescriptions = true;
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('Node'), _('Add a Node'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
+		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, true);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
+
+		so = ss.option(form.Value, 'label', _('Label'));
+		so.load = L.bind(hm.loadDefaultLabel, so);
+		so.validate = L.bind(hm.validateUniqueValue, so);
+		so.modalonly = true;
+
+		so = ss.option(form.ListValue, 'type', _('Type'));
+		so.default = hm.outbound_type[0][0];
+		hm.outbound_type.forEach((res) => {
+			so.value.apply(so, res);
+		})
 		/* Proxy Node END */
 
 		/* Provider START */

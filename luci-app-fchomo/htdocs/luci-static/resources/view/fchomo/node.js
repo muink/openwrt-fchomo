@@ -50,7 +50,7 @@ return view.extend({
 			el.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
 				'title': _('Remove idles'),
-				'click': ui.createHandlerFn(this, hm.handleRemoveIdles, hm, data[0], 'provider')
+				'click': ui.createHandlerFn(this, hm.handleRemoveIdles, hm)
 			}, [ _('Remove idles') ]));
 
 			return el;

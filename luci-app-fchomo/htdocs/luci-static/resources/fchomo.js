@@ -464,11 +464,13 @@ return baseclass.extend({
 			})
 	},
 
-	handleRemoveIdles: function(self, uciconfig, ucisection) {
-		let loaded = [];
-		uci.sections(uciconfig, ucisection, (section, sid) => loaded.push(sid));
+	handleRemoveIdles: function(self) {
+		var section_type = this.sectiontype;
 
-		return self.lsDir(ucisection).then((res) => {
+		let loaded = [];
+		uci.sections(this.config, section_type, (section, sid) => loaded.push(sid));
+
+		return self.lsDir(section_type).then((res) => {
 			let sectionEl = E('div', { class: 'cbi-section' }, []);
 
 			res.filter(e => !loaded.includes(e)).forEach((filename) => {
@@ -482,7 +484,7 @@ return baseclass.extend({
 							class: 'cbi-button cbi-button-negative important',
 							id: 'rmidles.' + filename + '.button',
 							click: ui.createHandlerFn(this, function(filename) {
-								return self.removeFile(ucisection, filename).then((res) => {
+								return self.removeFile(section_type, filename).then((res) => {
 									let node = document.getElementById('rmidles.' + filename + '.label');
 									node.innerHTML = '<s>%s</s>'.format(node.innerHTML);
 									node = document.getElementById('rmidles.' + filename + '.button');

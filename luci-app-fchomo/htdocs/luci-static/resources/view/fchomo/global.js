@@ -415,10 +415,10 @@ return view.extend({
 		ss = o.subsection;
 
 		so = ss.option(form.ListValue, 'global_client_fingerprint', _('Global client fingerprint'));
-		so.default = hm.tls_client_fingerprints[0];
+		so.default = hm.tls_client_fingerprints[0][0];
 		hm.tls_client_fingerprints.forEach((res) => {
-			so.value(res);
-		});
+			so.value.apply(so, res);
+		})
 
 		so = ss.option(form.Value, 'tls_cert_path', _('API TLS certificate path'));
 		so.datatype = 'file';

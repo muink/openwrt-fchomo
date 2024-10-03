@@ -139,15 +139,15 @@ return baseclass.extend({
 	],
 
 	tls_client_fingerprints: [
-		'chrome',
-		'firefox',
-		'safari',
-		'iOS',
-		'android',
-		'edge',
-		'360',
-		'qq',
-		'random'
+		['chrome'],
+		['firefox'],
+		['safari'],
+		['iOS'],
+		['android'],
+		['edge'],
+		['360'],
+		['qq'],
+		['random']
 	],
 
 	// thanks to homeproxy

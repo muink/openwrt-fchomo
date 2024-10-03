@@ -175,7 +175,7 @@ return view.extend({
 
 		o = s.option(form.Value, 'label', _('Label'));
 		o.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		o.validate = L.bind(hm.validateUniqueValue, this, data[0], o.section, o.option);
+		o.validate = L.bind(hm.validateUniqueValue, o);
 		o.modalonly = true;
 
 		o = s.option(form.Flag, 'enabled', _('Enable'));

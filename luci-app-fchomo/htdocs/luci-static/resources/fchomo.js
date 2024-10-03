@@ -532,21 +532,18 @@ return baseclass.extend({
 		return true;
 	},
 
-	// thanks to homeproxy
-	validateUniqueValue: function(uciconfig, ucisection, ucioption, section_id, value) {
-		if (section_id) {
-			if (!value)
-				return _('Expecting: %s').format(_('non-empty value'));
+	validateUniqueValue: function(section_id, value) {
+		if (!value)
+			return _('Expecting: %s').format(_('non-empty value'));
 
-			var duplicate = false;
-			uci.sections(uciconfig, ucisection, (res) => {
-				if (res['.name'] !== section_id)
-					if (res[ucioption] === value)
-						duplicate = true
-			});
-			if (duplicate)
-				return _('Expecting: %s').format(_('unique value'));
-		}
+		var duplicate = false;
+		uci.sections(this.config, this.section.sectiontype, (res) => {
+			if (res['.name'] !== section_id)
+				if (res[this.option] === value)
+					duplicate = true
+		});
+		if (duplicate)
+			return _('Expecting: %s').format(_('unique value'));
 
 		return true;
 	},

@@ -205,7 +205,7 @@ return view.extend({
 			if (value.match(/[,]/))
 				return _('Expecting: %s').format(_('not included ","'));
 
-			return hm.validateUniqueValue(this, data[0], this.section, this.opton, section_id, value);
+			return hm.validateUniqueValue.call(this, section_id, value);
 		}
 		so.modalonly = true;
 
@@ -366,7 +366,7 @@ return view.extend({
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		so.validate = L.bind(hm.validateUniqueValue, this, data[0], so.section, so.option);
+		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 
 		so = ss.option(form.Flag, 'enabled', _('Enable'));
@@ -598,7 +598,7 @@ return view.extend({
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		so.validate = L.bind(hm.validateUniqueValue, this, data[0], so.section, so.option);
+		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 
 		so = ss.option(form.Flag, 'enabled', _('Enable'));
@@ -739,7 +739,7 @@ return view.extend({
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
-		so.validate = L.bind(hm.validateUniqueValue, this, data[0], 'dns_policy', 'label');
+		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 
 		so = ss.option(form.Flag, 'enabled', _('Enable'));

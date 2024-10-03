@@ -93,8 +93,8 @@ return view.extend({
 		s.rowcolors = true;
 		s.sortable = true;
 		s.nodescriptions = true;
-		s.modaltitle = L.bind(hm.loadModalTitle, this, _('Rule set'), _('Add a rule set'), data[0]);
-		s.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		s.modaltitle = L.bind(hm.loadModalTitle, s, _('Rule set'), _('Add a rule set'));
+		s.sectiontitle = L.bind(hm.loadDefaultLabel, s);
 		/* Import rule-set links and Remove idle files start */
 		s.handleLinkImport = function() {
 			var textarea = new ui.Textarea('', {
@@ -174,7 +174,7 @@ return view.extend({
 		/* Import rule-set links and Remove idle files end */
 
 		o = s.option(form.Value, 'label', _('Label'));
-		o.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		o.load = L.bind(hm.loadDefaultLabel, o);
 		o.validate = L.bind(hm.validateUniqueValue, o);
 		o.modalonly = true;
 

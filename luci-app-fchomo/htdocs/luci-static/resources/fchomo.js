@@ -289,19 +289,19 @@ return baseclass.extend({
 	},
 
 	// thanks to homeproxy
-	loadDefaultLabel: function(uciconfig, ucisection) {
-		var label = uci.get(uciconfig, ucisection, 'label');
+	loadDefaultLabel: function(section_id) {
+		var label = uci.get(this.config, section_id, 'label');
 		if (label) {
 			return label;
 		} else {
-			uci.set(uciconfig, ucisection, 'label', ucisection);
-			return ucisection;
+			uci.set(this.config, section_id, 'label', section_id);
+			return section_id;
 		}
 	},
 
 	// thanks to homeproxy
-	loadModalTitle: function(title, addtitle, uciconfig, ucisection) {
-		var label = uci.get(uciconfig, ucisection, 'label');
+	loadModalTitle: function(title, addtitle, section_id) {
+		var label = uci.get(this.config, section_id, 'label');
 		return label ? title + ' » ' + label : addtitle;
 	},
 

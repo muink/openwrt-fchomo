@@ -189,8 +189,8 @@ return view.extend({
 		ss.rowcolors = true;
 		ss.sortable = true;
 		ss.nodescriptions = true;
-		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('Proxy Group'), _('Add a proxy group'), data[0]);
-		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('Proxy Group'), _('Add a proxy group'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, {}, true);
 		ss.handleAdd = L.bind(hm.handleAdd, ss, {});
 
@@ -200,7 +200,7 @@ return view.extend({
 
 		/* General fields */
 		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
-		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.load = L.bind(hm.loadDefaultLabel, so);
 		so.validate = function(section_id, value) {
 			if (value.match(/[,]/))
 				return _('Expecting: %s').format(_('not included ","'));
@@ -359,13 +359,13 @@ return view.extend({
 		ss.rowcolors = true;
 		ss.sortable = true;
 		ss.nodescriptions = true;
-		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('Routing rule'), _('Add a routing rule'), data[0]);
-		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('Routing rule'), _('Add a routing rule'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, false);
 		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		so = ss.option(form.Value, 'label', _('Label'));
-		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.load = L.bind(hm.loadDefaultLabel, so);
 		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 
@@ -591,13 +591,13 @@ return view.extend({
 		ss.rowcolors = true;
 		ss.sortable = true;
 		ss.nodescriptions = true;
-		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('DNS server'), _('Add a DNS server'), data[0]);
-		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('DNS server'), _('Add a DNS server'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, true);
 		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		so = ss.option(form.Value, 'label', _('Label'));
-		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.load = L.bind(hm.loadDefaultLabel, so);
 		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 
@@ -732,13 +732,13 @@ return view.extend({
 		ss.rowcolors = true;
 		ss.sortable = true;
 		ss.nodescriptions = true;
-		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('DNS policy'), _('Add a DNS policy'), data[0]);
-		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('DNS policy'), _('Add a DNS policy'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, false);
 		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		so = ss.option(form.Value, 'label', _('Label'));
-		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.load = L.bind(hm.loadDefaultLabel, so);
 		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 

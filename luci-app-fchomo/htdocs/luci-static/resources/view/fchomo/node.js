@@ -41,8 +41,8 @@ return view.extend({
 		ss.rowcolors = true;
 		ss.sortable = true;
 		ss.nodescriptions = true;
-		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('Provider'), _('Add a provider'), data[0]);
-		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('Provider'), _('Add a provider'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
 		/* Remove idle files start */
 		ss.renderSectionAdd = function(/* ... */) {
 			var el = hm.renderSectionAdd.apply(this, [prefmt, false].concat(Array.prototype.slice.call(arguments)));
@@ -64,7 +64,7 @@ return view.extend({
 
 		/* General fields */
 		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
-		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
+		so.load = L.bind(hm.loadDefaultLabel, so);
 		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 

@@ -60,8 +60,7 @@ start_service() {
 		local dashboard_repo
 		config_get dashboard_repo "api" "dashboard_repo" ""
 
-		if [ -n "$dashboard_repo" ]; then
-			rm -rf "$RUN_DIR/ui"
+		if [ -n "$dashboard_repo" -a ! -d "$RUN_DIR/ui" ]; then
 			tar -xzf "$HM_DIR/resources/$(echo "$dashboard_repo" | sed 's|\W|_|g').tgz" -C "$RUN_DIR/"
 			mv "$RUN_DIR/"*-gh-pages/ "$RUN_DIR/ui/"
 		fi
@@ -132,12 +131,17 @@ stop_client() {
 	rm -rf "$DNSMASQ_DIR/../dnsmasq-fchomo.conf" "$DNSMASQ_DIR"
 	/etc/init.d/dnsmasq reload >/dev/null 2>&1
 
+	# Remove Clash API Dashboard
+	rm -rf "$RUN_DIR/ui"
+
+	# Remove client config
 	rm -f "$RUN_DIR/mihomo-c.yaml" "$RUN_DIR/mihomo-c.log"
 
 	log "Service mihomo-c stopped."
 }
 
 stop_server() {
+	# Remove server config
 	rm -f "$RUN_DIR/mihomo-s.yaml" "$RUN_DIR/mihomo-s.log"
 
 	log "Service mihomo-s stopped."

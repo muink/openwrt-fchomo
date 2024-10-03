@@ -180,7 +180,7 @@ return view.extend({
 		o.onclick = L.bind(hm.handleReload, so, 'mihomo-c');
 
 		o = s.taboption('group', form.ListValue, 'default_proxy', _('Default outbound'));
-		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct, data[0]);
+		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct);
 
 		/* Proxy Group */
 		o = s.taboption('group', form.SectionValue, '_group', form.GridSection, 'proxy_group', null);
@@ -226,7 +226,7 @@ return view.extend({
 		so.editable = true;
 
 		so = ss.taboption('field_general', form.MultiValue, 'use', _('Provider'));
-		so.load = L.bind(hm.loadProviderLabel, so, data[0]);
+		so.load = L.bind(hm.loadProviderLabel, so);
 		so.editable = true;
 
 		/* Override fields */
@@ -469,7 +469,7 @@ return view.extend({
 		so.depends('type', 'RULE-SET');
 		initFactor.call(so, data[0]);
 		so.load = function(section_id) {
-			hm.loadRulesetLabel.call(this, null, data[0], section_id);
+			hm.loadRulesetLabel.call(this, null, section_id);
 
 			return new RulesEntry(uci.get(data[0], section_id, 'entry')).factor;
 		}
@@ -479,7 +479,7 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
-			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, data[0], section_id);
+			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, section_id);
 
 			return new RulesEntry(uci.get(data[0], section_id, 'entry')).detour;
 		}
@@ -655,7 +655,7 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
-			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.dns, data[0], section_id);
+			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.dns, section_id);
 
 			return new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('detour');
 		}
@@ -765,7 +765,7 @@ return view.extend({
 		so = ss.option(form.MultiValue, 'rule_set', _('Rule set'),
 			_('Match rule set.'));
 		so.value('');
-		so.load = L.bind(hm.loadRulesetLabel, so, ['domain', 'classical'], data[0]);
+		so.load = L.bind(hm.loadRulesetLabel, so, ['domain', 'classical']);
 		so.depends('type', 'rule_set');
 		so.modalonly = true;
 

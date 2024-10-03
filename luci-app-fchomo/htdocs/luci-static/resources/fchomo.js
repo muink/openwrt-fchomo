@@ -305,46 +305,46 @@ return baseclass.extend({
 		return label ? title + ' » ' + label : addtitle;
 	},
 
-	loadProxyGroupLabel: function(preadds, uciconfig, ucisection) {
+	loadProxyGroupLabel: function(preadds, section_id) {
 		delete this.keylist;
 		delete this.vallist;
 
 		preadds?.forEach((arr) => {
 			this.value.apply(this, arr);
 		});
-		uci.sections(uciconfig, 'proxy_group', (res) => {
+		uci.sections(this.config, 'proxy_group', (res) => {
 			if (res.enabled !== '0')
 				this.value(res['.name'], res.label);
 		});
 
-		return this.super('load', ucisection);
+		return this.super('load', section_id);
 	},
 
-	loadProviderLabel: function(uciconfig, ucisection) {
+	loadProviderLabel: function(section_id) {
 		delete this.keylist;
 		delete this.vallist;
 
 		this.value('', _('-- Please choose --'));
-		uci.sections(uciconfig, 'provider', (res) => {
+		uci.sections(this.config, 'provider', (res) => {
 			if (res.enabled !== '0')
 				this.value(res['.name'], res.label);
 		});
 
-		return this.super('load', ucisection);
+		return this.super('load', section_id);
 	},
 
-	loadRulesetLabel: function(behaviors, uciconfig, ucisection) {
+	loadRulesetLabel: function(behaviors, section_id) {
 		delete this.keylist;
 		delete this.vallist;
 
 		this.value('', _('-- Please choose --'));
-		uci.sections(uciconfig, 'ruleset', (res) => {
+		uci.sections(this.config, 'ruleset', (res) => {
 			if (res.enabled !== '0')
 				if (behaviors ? behaviors.includes(res.behavior) : true)
 					this.value(res['.name'], res.label);
 		});
 
-		return this.super('load', ucisection);
+		return this.super('load', section_id);
 	},
 
 	renderStatus: function(self, ElId, isRunning, instance, noGlobal) {

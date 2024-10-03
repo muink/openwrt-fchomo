@@ -94,13 +94,13 @@ return view.extend({
 		s = m.section(form.NamedSection, 'config', 'fchomo');
 
 		o = s.option(form.DummyValue, '_fchomo_logview');
-		o.render = L.bind(getRuntimeLog, this, _('FullCombo Mihomo'), 'fchomo');
+		o.render = L.bind(getRuntimeLog, o, _('FullCombo Mihomo'), 'fchomo');
 
 		o = s.option(form.DummyValue, '_mihomo-c_logview');
-		o.render = L.bind(getRuntimeLog, this, _('Mihomo client'), 'mihomo-c');
+		o.render = L.bind(getRuntimeLog, o, _('Mihomo client'), 'mihomo-c');
 
 		o = s.option(form.DummyValue, '_mihomo-s_logview');
-		o.render = L.bind(getRuntimeLog, this, _('Mihomo server'), 'mihomo-s');
+		o.render = L.bind(getRuntimeLog, o, _('Mihomo server'), 'mihomo-s');
 
 		return m.render();
 	},

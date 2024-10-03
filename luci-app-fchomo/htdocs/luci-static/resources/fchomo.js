@@ -352,7 +352,7 @@ return baseclass.extend({
 			self.updateStatus(self, E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning ? true : false),
 			E('a', {
 				'class': 'cbi-button cbi-button-apply %s'.format(visible ? '' : 'hidden'),
-				'href': !visible ? '' : 'http%s://%s:%s/'.format(isRunning.https ? 's' : '',
+				'href': !visible ? '' : 'http%s://%s:%s/ui/'.format(isRunning.https ? 's' : '',
 						window.location.hostname,
 						isRunning.https ? isRunning.https.split(':').pop() : isRunning.http.split(':').pop()),
 				'target': '_blank',
@@ -373,7 +373,7 @@ return baseclass.extend({
 					} else
 						El.nextSibling.classList.add('hidden');
 					if (visible)
-						El.nextSibling.href = 'http%s://%s:%s/'.format(res.https ? 's' : '',
+						El.nextSibling.href = 'http%s://%s:%s/ui/'.format(res.https ? 's' : '',
 							window.location.hostname,
 							res.https ? res.https.split(':').pop() : res.http.split(':').pop());
 				});

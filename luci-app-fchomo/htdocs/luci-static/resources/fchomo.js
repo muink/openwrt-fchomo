@@ -448,11 +448,11 @@ return baseclass.extend({
 		return el;
 	},
 
-	handleAdd: function(section, prefmt, ev, name) {
+	handleAdd: function(prefmt, ev, name) {
 		var prefix = prefmt?.prefix ? prefmt.prefix : '',
 			suffix = prefmt?.suffix ? prefmt.suffix : '';
 
-		return form.GridSection.prototype.handleAdd.apply(section, [ ev, prefix + name + suffix ]);
+		return form.GridSection.prototype.handleAdd.apply(this, [ ev, prefix + name + suffix ]);
 	},
 
 	handleReload: function(instance, ev, section_id) {

@@ -170,7 +170,7 @@ return view.extend({
 
 			return el;
 		}
-		s.handleAdd = L.bind(hm.handleAdd, this, s, prefmt);
+		s.handleAdd = L.bind(hm.handleAdd, s, prefmt);
 		/* Import rule-set links and Remove idle files end */
 
 		o = s.option(form.Value, 'label', _('Label'));

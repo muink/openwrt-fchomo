@@ -55,7 +55,7 @@ return view.extend({
 
 			return el;
 		}
-		ss.handleAdd = L.bind(hm.handleAdd, this, ss, prefmt);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 		/* Remove idle files end */
 
 		ss.tab('field_general', _('General fields'));

@@ -192,7 +192,7 @@ return view.extend({
 		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('Proxy Group'), _('Add a proxy group'), data[0]);
 		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, this, ss, {}, true);
-		ss.handleAdd = L.bind(hm.handleAdd, this, ss, {});
+		ss.handleAdd = L.bind(hm.handleAdd, ss, {});
 
 		ss.tab('field_general', _('General fields'));
 		ss.tab('field_override', _('Override fields'));
@@ -362,7 +362,7 @@ return view.extend({
 		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('Routing rule'), _('Add a routing rule'), data[0]);
 		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, this, ss, prefmt, false);
-		ss.handleAdd = L.bind(hm.handleAdd, this, ss, prefmt);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
@@ -594,7 +594,7 @@ return view.extend({
 		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('DNS server'), _('Add a DNS server'), data[0]);
 		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, this, ss, prefmt, true);
-		ss.handleAdd = L.bind(hm.handleAdd, this, ss, prefmt);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);
@@ -735,7 +735,7 @@ return view.extend({
 		ss.modaltitle = L.bind(hm.loadModalTitle, this, _('DNS policy'), _('Add a DNS policy'), data[0]);
 		ss.sectiontitle = L.bind(hm.loadDefaultLabel, this, data[0]);
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, this, ss, prefmt, false);
-		ss.handleAdd = L.bind(hm.handleAdd, this, ss, prefmt);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		so = ss.option(form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, this, data[0]);

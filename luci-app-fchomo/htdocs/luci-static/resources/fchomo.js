@@ -34,6 +34,12 @@ return baseclass.extend({
 		['metacubex/razord-meta', _('razord-meta')]
 	],
 
+	dashrepos_urlparams: {
+		'metacubex/metacubexd':  '#/setup' + '?hostname=%s&port=%s&secret=%s',
+		'metacubex/yacd-meta':   '?hostname=%s&port=%s&secret=%s',
+		'metacubex/razord-meta': '?host=%s&port=%s&secret=%s'
+	},
+
 	checkurls: [
 		['https://www.baidu.com', _('Baidu')],
 		['https://s1.music.126.net/style/favicon.ico', _('163Music')],
@@ -352,9 +358,7 @@ return baseclass.extend({
 			self.updateStatus(self, E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning ? true : false),
 			E('a', {
 				'class': 'cbi-button cbi-button-apply %s'.format(visible ? '' : 'hidden'),
-				'href': !visible ? '' : 'http%s://%s:%s/ui/'.format(isRunning.https ? 's' : '',
-						window.location.hostname,
-						isRunning.https ? isRunning.https.split(':').pop() : isRunning.http.split(':').pop()),
+				'href': visible ? self.getDashURL(self, isRunning) : '',
 				'target': '_blank',
 				'rel': 'noreferrer noopener'
 			}, [ _('Open Dashboard') ])
@@ -372,14 +376,22 @@ return baseclass.extend({
 						El.nextSibling.classList.remove('hidden');
 					} else
 						El.nextSibling.classList.add('hidden');
-					if (visible)
-						El.nextSibling.href = 'http%s://%s:%s/ui/'.format(res.https ? 's' : '',
-							window.location.hostname,
-							res.https ? res.https.split(':').pop() : res.http.split(':').pop());
+
+					El.nextSibling.href = visible ? self.getDashURL(self, Object.assign(res, isRunning)) : '';
 				});
 		}
 
 		return El;
+	},
+	getDashURL: function(self, isRunning) {
+		var tls = isRunning.https ? 's' : '',
+			host = window.location.hostname,
+			port = isRunning.https ? isRunning.https.split(':').pop() : isRunning.http.split(':').pop(),
+			secret = isRunning.secret,
+			repo = isRunning.dashboard_repo;
+
+		return 'http%s://%s:%s/ui/'.format(tls, host, port) +
+			String.format(self.dashrepos_urlparams[repo] || '', host, port, secret)
 	},
 
 	renderResDownload: function(self, restype, uciconfig, ucisection) {

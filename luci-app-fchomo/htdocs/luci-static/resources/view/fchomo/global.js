@@ -111,6 +111,8 @@ return view.extend({
 		    SisRunning = data[4],
 		    SclashAPI = data[5];
 
+		var dashboard_repo = uci.get(data[0], 'api', 'dashboard_repo');
+
 		var m, s, o, ss, so;
 
 		m = new form.Map('fchomo', _('FullCombo Mihomo'),
@@ -131,18 +133,18 @@ return view.extend({
 		}
 
 		so = ss.option(form.DummyValue, '_client_status', _('Client status'));
-		so.cfgvalue = function() { return hm.renderStatus(hm, '_client_bar', CisRunning ? CclashAPI : false, 'mihomo-c') }
+		so.cfgvalue = function() { return hm.renderStatus(hm, '_client_bar', CisRunning ? { ...CclashAPI, dashboard_repo: dashboard_repo } : false, 'mihomo-c') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-c').then((isRunning) => {
-				hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning, 'mihomo-c');
+				hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-c');
 			});
 		})
 
 		so = ss.option(form.DummyValue, '_server_status', _('Server status'));
-		so.cfgvalue = function() { return hm.renderStatus(hm, '_server_bar', SisRunning ? SclashAPI : false, 'mihomo-s') }
+		so.cfgvalue = function() { return hm.renderStatus(hm, '_server_bar', SisRunning ? { ...SclashAPI, dashboard_repo: dashboard_repo } : false, 'mihomo-s') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-s').then((isRunning) => {
-				hm.updateStatus(hm, document.getElementById('_server_bar'), isRunning, 'mihomo-s');
+				hm.updateStatus(hm, document.getElementById('_server_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-s');
 			});
 		})
 

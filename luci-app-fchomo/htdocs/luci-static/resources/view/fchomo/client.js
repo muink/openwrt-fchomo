@@ -147,6 +147,8 @@ return view.extend({
 	},
 
 	render: function(data) {
+		var dashboard_repo = uci.get(data[0], 'api', 'dashboard_repo');
+
 		var m, s, o, ss, so;
 
 		m = new form.Map('fchomo', _('Mihomo client'));
@@ -155,7 +157,7 @@ return view.extend({
 		s.render = function () {
 			poll.add(function () {
 				return hm.getServiceStatus('mihomo-c').then((isRunning) => {
-					hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning, 'mihomo-c', true);
+					hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-c', true);
 				});
 			});
 

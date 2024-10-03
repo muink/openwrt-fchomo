@@ -508,6 +508,13 @@ return baseclass.extend({
 		});
 	},
 
+	textvalue2Value: function(section_id) {
+		var cval = this.cfgvalue(section_id);
+		var i = this.keylist.indexOf(cval);
+
+		return this.vallist[i];
+	},
+
 	validateTimeDuration: function(section_id, value) {
 		if (!value)
 			return true;

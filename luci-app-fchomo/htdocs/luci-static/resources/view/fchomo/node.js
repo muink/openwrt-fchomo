@@ -128,6 +128,7 @@ return view.extend({
 		so = ss.taboption('field_general', form.ListValue, 'proxy', _('Proxy group'),
 			_('Name of the Proxy group to download provider.'));
 		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.direct);
+		so.textvalue = L.bind(hm.textvalue2Value, so);
 		//o.editable = true;
 		so.depends('type', 'http');
 

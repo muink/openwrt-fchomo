@@ -235,14 +235,6 @@ const proxy_mode = uci.get(uciconf, uciinbound, 'proxy_mode') || 'redir_tproxy';
 /* Listen ports */
 config.listeners = [];
 push(config.listeners, {
-	name: 'dns-in',
-	type: 'tunnel',
-	port: strToInt(uci.get(uciconf, uciinbound, 'tunnel_port')) || '7893',
-	listen: '::',
-	network: ['tcp', 'udp'],
-	target: '1.1.1.1:53'
-});
-push(config.listeners, {
 	name: 'mixed-in',
 	type: 'mixed',
 	port: strToInt(uci.get(uciconf, uciinbound, 'mixed_port')) || '7890',
@@ -264,6 +256,14 @@ if (match(proxy_mode, /tproxy/))
 		listen: '::',
 		udp: true
 	});
+push(config.listeners, {
+	name: 'dns-in',
+	type: 'tunnel',
+	port: strToInt(uci.get(uciconf, uciinbound, 'tunnel_port')) || '7893',
+	listen: '::',
+	network: ['tcp', 'udp'],
+	target: '1.1.1.1:53'
+});
 /* Tun settings */
 if (match(proxy_mode, /tun/))
 	push(config.listeners, {
@@ -359,6 +359,24 @@ if (!isEmpty(config.dns.fallback))
 /* Hosts */
 config.hosts = {};
 /* Hosts END */
+
+/* Proxy Node START */
+/* Proxy Node */
+config.proxies = [
+	/*{
+		name: 'direct-out',
+		type: 'direct',
+		udp: true,
+		"ip-version": undefined,
+		"interface-name": undefined,
+		"routing-mark": undefined
+	},*/
+	{
+		name: 'dns-out',
+		type: 'dns'
+	}
+];
+/* Proxy Node END */
 
 /* Proxy Group START */
 /* Proxy Group */
@@ -479,7 +497,10 @@ uci.foreach(uciconf, ucirule, (cfg) => {
 
 /* Routing rules START */
 /* Routing rules */
-config.rules = [];
+config.rules = [
+	"IN-NAME,dns-in,dns-out",
+	"DST-PORT,53,dns-out"
+];
 uci.foreach(uciconf, ucirout, (cfg) => {
 	if (cfg.enabled === '0')
 		return null;

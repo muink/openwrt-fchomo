@@ -50,7 +50,7 @@ start_service() {
 		if [ ! -e "$RUN_DIR/mihomo-c.yaml" ]; then
 			log "Error: failed to generate client configuration."
 			return 1
-		elif ! "$PROG" -t -d "$HM_DIR" -f "$RUN_DIR/mihomo-c.yaml" 2>>"$LOG_PATH"; then
+		elif ! "$PROG" -t -d "$HM_DIR" -f "$RUN_DIR/mihomo-c.yaml" >/dev/null 2>>"$LOG_PATH"; then
 			log "Error: wrong client configuration detected."
 			return 1
 		fi

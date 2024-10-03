@@ -458,7 +458,7 @@ return baseclass.extend({
 	handleReload: function(instance, ev, section_id) {
 		var instance = instance || '';
 		return fs.exec('/etc/init.d/fchomo', ['reload', instance])
-			.then((res) => { return window.location = window.location.href.split('#')[0] })
+			.then((res) => { /* return window.location = window.location.href.split('#')[0] */ })
 			.catch((e) => {
 				ui.addNotification(null, E('p', _('Failed to execute "/etc/init.d/fchomo %s %s" reason: %s').format('reload', instance, e)))
 			})

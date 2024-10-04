@@ -180,6 +180,7 @@ return view.extend({
 		o.onclick = L.bind(hm.handleReload, o, 'mihomo-c');
 
 		o = s.taboption('group', form.ListValue, 'default_proxy', _('Default outbound'));
+		o.ucisection = 'routing';
 		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct);
 
 		/* Proxy Group */

@@ -23,7 +23,8 @@ const uciconf = 'fchomo';
 uci.load(uciconf);
 
 const ucifchm = 'config',
-      ucires = 'resources';
+      ucires = 'resources',
+      uciroute = 'routing';
 
 const uciglobal = 'global',
       uciinbound = 'inbound',
@@ -42,8 +43,8 @@ const ucisniff = 'sniff',
       ucirout = 'rules';
 
 /* Hardcode options */
-const listen_interfaces = uci.get(uciconf, ucifchm, 'listen_interfaces'),
-      bind_interface = uci.get(uciconf, ucifchm, 'bind_interface'),
+const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces'),
+      bind_interface = uci.get(uciconf, uciroute, 'bind_interface'),
       tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
       tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',
       tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',
@@ -517,7 +518,7 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 		}(split(cfg.entry, ','))
 	);
 });
-push(config.rules, 'MATCH,' + get_proxygroup(uci.get(uciconf, uciglobal, 'default_proxy')));
+push(config.rules, 'MATCH,' + get_proxygroup(uci.get(uciconf, uciroute, 'default_proxy')));
 /* Routing rules END */
 
 printf('%.J\n', removeBlankAttrs(config));

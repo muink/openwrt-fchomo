@@ -547,12 +547,14 @@ return view.extend({
 			_('Only process traffic from specific interfaces. Leave empty for all.'));
 		so.multiple = true;
 		so.noaliases = true;
+		so.ucisection = 'routing';
 
 		so = ss.taboption('interface', widgets.DeviceSelect, 'bind_interface', _('Bind interface'),
 			_('Bind outbound traffic to specific interface. Leave empty to auto detect.</br>') +
 			_('Priority: Proxy Node > Proxy Group > Global.'));
 		so.multiple = false;
 		so.noaliases = true;
+		so.ucisection = 'routing';
 
 		/* Routing control */
 		ss.tab('routing', _('Routing Control'));

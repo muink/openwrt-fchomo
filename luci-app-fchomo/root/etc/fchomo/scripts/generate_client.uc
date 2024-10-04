@@ -42,11 +42,11 @@ const ucisniff = 'sniff',
       ucirout = 'rules';
 
 /* Hardcode options */
-const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
+const listen_interfaces = uci.get(uciconf, ucifchm, 'listen_interfaces'),
+      bind_interface = uci.get(uciconf, ucifchm, 'bind_interface'),
+      tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
       tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',
       tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',
-      listen_interfaces = uci.get(uciconf, ucifchm, 'listen_interfaces'),
-      bind_interface = uci.get(uciconf, ucifchm, 'bind_interface'),
       route_table_id = strToInt(uci.get(uciconf, ucifchm, 'route_table_id')) || 2022,
       route_rule_pref = strToInt(uci.get(uciconf, ucifchm, 'route_rule_pref')) || 9000,
       redirect_gate_mark = strToInt(uci.get(uciconf, ucifchm, 'redirect_gate_mark')) || 2023,

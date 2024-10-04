@@ -515,16 +515,6 @@ return baseclass.extend({
 		return this.vallist[i];
 	},
 
-	validateTimeDuration: function(section_id, value) {
-		if (!value)
-			return true;
-
-		if (!value.match(/^(\d+)(s|m|h|d)?$/))
-			return _('Expecting: %s').format(_('/^(\\d+)(s|m|h|d)?$/'));
-
-		return true;
-	},
-
 	validateJson: function(section_id, value) {
 		if (!value)
 			return true;
@@ -537,6 +527,16 @@ return baseclass.extend({
 		catch(e) {
 			return _('Expecting: %s').format(_('valid JSON format'));
 		}
+
+		return true;
+	},
+
+	validateTimeDuration: function(section_id, value) {
+		if (!value)
+			return true;
+
+		if (!value.match(/^(\d+)(s|m|h|d)?$/))
+			return _('Expecting: %s').format(_('/^(\\d+)(s|m|h|d)?$/'));
 
 		return true;
 	},

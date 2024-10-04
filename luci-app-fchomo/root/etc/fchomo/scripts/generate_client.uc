@@ -43,9 +43,9 @@ const ucisniff = 'sniff',
       ucirout = 'rules';
 
 /* Hardcode options */
-const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces'),
-      bind_interface = uci.get(uciconf, uciroute, 'bind_interface'),
-      routing_port = uci.get(uciconf, uciroute, 'routing_port'),
+const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || null,
+      bind_interface = uci.get(uciconf, uciroute, 'bind_interface') || null,
+      routing_port = uci.get(uciconf, uciroute, 'routing_port') || null,
       common_port = uci.get(uciconf, ucifchm, 'common_port') || '20-21,22,53,80,110,143,443,465,853,873,993,995,8080,8443,9418',
       tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
       tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',

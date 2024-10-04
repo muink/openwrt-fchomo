@@ -557,30 +557,33 @@ return view.extend({
 		so.ucisection = 'routing';
 
 		/* Routing control */
-		ss.tab('routing', _('Routing Control'));
+		ss.tab('routing_control', _('Routing Control'));
 
-		so = ss.taboption('routing', form.Value, 'route_table_id', _('Routing table ID'));
+		/* Routing settings */
+		ss.tab('routing_settings', _('Routing settings'));
+
+		so = ss.taboption('routing_settings', form.Value, 'route_table_id', _('Routing table ID'));
 		so.datatype = 'uinteger'
 		so.placeholder = '2022';
 		so.rmempty = false;
 
-		so = ss.taboption('routing', form.Value, 'route_rule_pref', _('Routing rule priority'));
+		so = ss.taboption('routing_settings', form.Value, 'route_rule_pref', _('Routing rule priority'));
 		so.datatype = 'uinteger'
 		so.placeholder = '9000';
 		so.rmempty = false;
 
-		so = ss.taboption('routing', form.Value, 'self_mark', _('Routing mark'),
+		so = ss.taboption('routing_settings', form.Value, 'self_mark', _('Routing mark'),
 			_('Priority: Proxy Node > Proxy Group > Global.'));
 		so.datatype = 'uinteger'
 		so.placeholder = '200';
 		so.rmempty = false;
 
-		so = ss.taboption('routing', form.Value, 'tproxy_mark', _('Tproxy Fwmark'));
+		so = ss.taboption('routing_settings', form.Value, 'tproxy_mark', _('Tproxy Fwmark'));
 		so.datatype = 'uinteger'
 		so.placeholder = '201';
 		so.rmempty = false;
 
-		so = ss.taboption('routing', form.Value, 'tun_mark', _('Tun Fwmark'));
+		so = ss.taboption('routing_settings', form.Value, 'tun_mark', _('Tun Fwmark'));
 		so.datatype = 'uinteger'
 		so.placeholder = '202';
 		so.rmempty = false;

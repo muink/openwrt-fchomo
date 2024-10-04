@@ -559,26 +559,19 @@ return view.extend({
 		/* Routing control */
 		ss.tab('routing_control', _('Routing Control'));
 
-		so = ss.taboption('routing_control', form.Value, 'routing_port', _('Routing ports'),
+		so = ss.taboption('routing_control', form.Value, 'routing_tcpport', _('Routing TCP ports'),
 			_('Specify target ports to be proxied. Multiple ports must be separated by commas.'));
 		so.ucisection = 'routing';
 		so.value('', _('All ports'));
 		so.value('common', _('Common ports only (bypass P2P traffic)'));
-		so.validate = function(section_id, value) {
-			if (value && value !== 'common') {
+		so.validate = L.bind(hm.validateCommonPort, so);
 
-				var ports = [];
-				for (var i of value.split(',')) {
-					if (!stubValidator.apply('port', i) && !stubValidator.apply('portrange', i))
-						return _('Expecting: %s').format(_('valid port value'));
-					if (ports.includes(i))
-						return _('Port %s alrealy exists!').format(i);
-					ports = ports.concat(i);
-				}
-			}
-
-			return true;
-		}
+		so = ss.taboption('routing_control', form.Value, 'routing_udpport', _('Routing UDP ports'),
+			_('Specify target ports to be proxied. Multiple ports must be separated by commas.'));
+		so.ucisection = 'routing';
+		so.value('', _('All ports'));
+		so.value('common', _('Common ports only (bypass P2P traffic)'));
+		so.validate = L.bind(hm.validateCommonPort, so);
 
 		/* Routing settings */
 		ss.tab('routing_settings', _('Routing settings'));

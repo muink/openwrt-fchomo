@@ -515,6 +515,21 @@ return baseclass.extend({
 		return this.vallist[i];
 	},
 
+	validateCommonPort: function(section_id, value) {
+		if (value && value !== 'common') {
+			var ports = [];
+			for (var i of value.split(',')) {
+				if (!stubValidator.apply('port', i) && !stubValidator.apply('portrange', i))
+					return _('Expecting: %s').format(_('valid port value'));
+				if (ports.includes(i))
+					return _('Port %s alrealy exists!').format(i);
+				ports = ports.concat(i);
+			}
+		}
+
+		return true;
+	},
+
 	validateJson: function(section_id, value) {
 		if (!value)
 			return true;

@@ -559,6 +559,27 @@ return view.extend({
 		/* Routing control */
 		ss.tab('routing_control', _('Routing Control'));
 
+		so = ss.taboption('routing_control', form.Value, 'routing_port', _('Routing ports'),
+			_('Specify target ports to be proxied. Multiple ports must be separated by commas.'));
+		so.ucisection = 'routing';
+		so.value('', _('All ports'));
+		so.value('common', _('Common ports only (bypass P2P traffic)'));
+		so.validate = function(section_id, value) {
+			if (value && value !== 'common') {
+
+				var ports = [];
+				for (var i of value.split(',')) {
+					if (!stubValidator.apply('port', i) && !stubValidator.apply('portrange', i))
+						return _('Expecting: %s').format(_('valid port value'));
+					if (ports.includes(i))
+						return _('Port %s alrealy exists!').format(i);
+					ports = ports.concat(i);
+				}
+			}
+
+			return true;
+		}
+
 		/* Routing settings */
 		ss.tab('routing_settings', _('Routing settings'));
 

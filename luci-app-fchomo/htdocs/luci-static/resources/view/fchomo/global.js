@@ -571,6 +571,20 @@ return view.extend({
 		so.value('common_stun', _('Common and STUN ports'));
 		so.validate = L.bind(hm.validateCommonPort, so);
 
+		so = ss.taboption('routing_control', form.Flag, 'routing_gfw_ip', _('Routing GFW IP'),
+			_('Routing GFW IP traffic via firewall rules.'));
+		so.default = so.disabled;
+
+		so = ss.taboption('routing_control', form.Flag, 'routing_gfw_domain', _('Routing GFW Domain'),
+			_('Routing GFW Domain traffic via firewall rules.'));
+		so.default = so.disabled;
+		if (!features.hm_has_dnsmasq_full) {
+			so.description = _('To enable, you need to install <code>dnsmasq-full</code>');
+			so.readonly = true;
+			uci.set(data[0], so.section.section, so.option, '');
+			uci.save();
+		}
+
 		so = ss.taboption('routing_control', form.Flag, 'bypass_cn_ip', _('Bypass CN IP'),
 			_('Bypass mainland China IP traffic via firewall rules.'));
 		so.default = so.disabled;
@@ -619,8 +633,8 @@ return view.extend({
 		so.placeholder = '202';
 		so.rmempty = false;
 
-		/* Custom Direct list */
-		ss.tab('direct_list', _('Custom Direct List'));
+		/* Custom CN list */
+		ss.tab('direct_list', _('Custom CN List'));
 
 		so = ss.taboption('direct_list', form.TextValue, 'direct_list.yaml', null);
 		so.renderWidget = function(/* ... */) {
@@ -644,8 +658,8 @@ return view.extend({
 		}
 		so.rmempty = false;
 
-		/* Custom Routing list */
-		ss.tab('routing_list', _('Custom Routing List'));
+		/* Custom GFW list */
+		ss.tab('routing_list', _('Custom GFW List'));
 
 		so = ss.taboption('routing_list', form.TextValue, 'routing_list.yaml', null);
 		so.renderWidget = function(/* ... */) {

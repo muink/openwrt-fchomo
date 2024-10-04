@@ -537,7 +537,7 @@ return view.extend({
 		s.tab('control', _('Access Control'));
 
 		/* Access Control settings */
-		o = s.taboption('control', form.SectionValue, '_control', form.NamedSection, 'config', 'fchomo', null);
+		o = s.taboption('control', form.SectionValue, '_control', form.NamedSection, 'routing', 'fchomo', null);
 		ss = o.subsection;
 
 		/* Interface control */
@@ -547,62 +547,62 @@ return view.extend({
 			_('Only process traffic from specific interfaces. Leave empty for all.'));
 		so.multiple = true;
 		so.noaliases = true;
-		so.ucisection = 'routing';
 
 		so = ss.taboption('interface', widgets.DeviceSelect, 'bind_interface', _('Bind interface'),
 			_('Bind outbound traffic to specific interface. Leave empty to auto detect.</br>') +
 			_('Priority: Proxy Node > Proxy Group > Global.'));
 		so.multiple = false;
 		so.noaliases = true;
-		so.ucisection = 'routing';
 
 		/* Routing control */
 		ss.tab('routing_control', _('Routing Control'));
 
 		so = ss.taboption('routing_control', form.Value, 'routing_tcpport', _('Routing TCP ports'),
 			_('Specify target ports to be proxied. Multiple ports must be separated by commas.'));
-		so.ucisection = 'routing';
 		so.value('', _('All ports'));
 		so.value('common', _('Common ports only (bypass P2P traffic)'));
 		so.validate = L.bind(hm.validateCommonPort, so);
 
 		so = ss.taboption('routing_control', form.Value, 'routing_udpport', _('Routing UDP ports'),
 			_('Specify target ports to be proxied. Multiple ports must be separated by commas.'));
-		so.ucisection = 'routing';
 		so.value('', _('All ports'));
 		so.value('common', _('Common ports only (bypass P2P traffic)'));
 		so.validate = L.bind(hm.validateCommonPort, so);
 
 		so = ss.taboption('routing_control', form.Flag, 'bypass_cn_ip', _('Bypass CN IP'),
 			_('Bypass mainland China IP traffic via firewall rules.'));
-		so.ucisection = 'routing';
 		so.default = so.disabled;
 
 		/* Routing settings */
 		ss.tab('routing_settings', _('Routing settings'));
 
 		so = ss.taboption('routing_settings', form.Value, 'route_table_id', _('Routing table ID'));
+		so.ucisection = 'config';
 		so.datatype = 'uinteger'
 		so.placeholder = '2022';
 		so.rmempty = false;
 
 		so = ss.taboption('routing_settings', form.Value, 'route_rule_pref', _('Routing rule priority'));
+		so.ucisection = 'config';
 		so.datatype = 'uinteger'
 		so.placeholder = '9000';
 		so.rmempty = false;
 
 		so = ss.taboption('routing_settings', form.Value, 'self_mark', _('Routing mark'),
 			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.ucisection = 'config';
 		so.datatype = 'uinteger'
 		so.placeholder = '200';
 		so.rmempty = false;
 
 		so = ss.taboption('routing_settings', form.Value, 'tproxy_mark', _('Tproxy Fwmark'));
+		so.ucisection = 'config';
 		so.datatype = 'uinteger'
 		so.placeholder = '201';
 		so.rmempty = false;
 
 		so = ss.taboption('routing_settings', form.Value, 'tun_mark', _('Tun Fwmark'));
+		so.ucisection = 'config';
 		so.datatype = 'uinteger'
 		so.placeholder = '202';
 		so.rmempty = false;

@@ -7,6 +7,8 @@ config fchomo 'config'
 	option route_table_id '2022'
 	option route_rule_pref '9000'
 	option self_mark '200'
+	option tproxy_mark '201'
+	option tun_mark '202'
 
 config fchomo 'resources'
 	option auto_update '0'

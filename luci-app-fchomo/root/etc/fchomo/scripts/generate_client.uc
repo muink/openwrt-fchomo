@@ -49,9 +49,11 @@ const tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
       bind_interface = uci.get(uciconf, ucifchm, 'bind_interface'),
       route_table_id = strToInt(uci.get(uciconf, ucifchm, 'route_table_id')) || 2022,
       route_rule_pref = strToInt(uci.get(uciconf, ucifchm, 'route_rule_pref')) || 9000,
-      redirect_gate_mark = 2023,
-      redirect_pass_mark = 2024,
+      redirect_gate_mark = strToInt(uci.get(uciconf, ucifchm, 'redirect_gate_mark')) || 2023,
+      redirect_pass_mark = strToInt(uci.get(uciconf, ucifchm, 'redirect_pass_mark')) || 2024,
       self_mark = strToInt(uci.get(uciconf, ucifchm, 'self_mark')) || 200,
+      tproxy_mark = strToInt(uci.get(uciconf, ucifchm, 'tproxy_mark')) || 201,
+      tun_mark = strToInt(uci.get(uciconf, ucifchm, 'tun_mark')) || 202,
       posh = 'c2luZ2JveA';
 
 /* WAN DNS server array */

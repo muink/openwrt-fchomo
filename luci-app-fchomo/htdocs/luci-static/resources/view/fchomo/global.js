@@ -554,6 +554,40 @@ return view.extend({
 		so.multiple = false;
 		so.noaliases = true;
 
+		/* Routing settings */
+		ss.tab('routing_settings', _('Routing settings'));
+
+		so = ss.taboption('routing_settings', form.Value, 'route_table_id', _('Routing table ID'));
+		so.ucisection = 'config';
+		so.datatype = 'uinteger'
+		so.placeholder = '2022';
+		so.rmempty = false;
+
+		so = ss.taboption('routing_settings', form.Value, 'route_rule_pref', _('Routing rule priority'));
+		so.ucisection = 'config';
+		so.datatype = 'uinteger'
+		so.placeholder = '9000';
+		so.rmempty = false;
+
+		so = ss.taboption('routing_settings', form.Value, 'self_mark', _('Routing mark'),
+			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.ucisection = 'config';
+		so.datatype = 'uinteger'
+		so.placeholder = '200';
+		so.rmempty = false;
+
+		so = ss.taboption('routing_settings', form.Value, 'tproxy_mark', _('Tproxy Fwmark'));
+		so.ucisection = 'config';
+		so.datatype = 'uinteger'
+		so.placeholder = '201';
+		so.rmempty = false;
+
+		so = ss.taboption('routing_settings', form.Value, 'tun_mark', _('Tun Fwmark'));
+		so.ucisection = 'config';
+		so.datatype = 'uinteger'
+		so.placeholder = '202';
+		so.rmempty = false;
+
 		/* Routing control */
 		ss.tab('routing_control', _('Routing Control'));
 
@@ -598,40 +632,6 @@ return view.extend({
 			uci.set(data[0], so.section.section, so.option, '');
 			uci.save();
 		}
-
-		/* Routing settings */
-		ss.tab('routing_settings', _('Routing settings'));
-
-		so = ss.taboption('routing_settings', form.Value, 'route_table_id', _('Routing table ID'));
-		so.ucisection = 'config';
-		so.datatype = 'uinteger'
-		so.placeholder = '2022';
-		so.rmempty = false;
-
-		so = ss.taboption('routing_settings', form.Value, 'route_rule_pref', _('Routing rule priority'));
-		so.ucisection = 'config';
-		so.datatype = 'uinteger'
-		so.placeholder = '9000';
-		so.rmempty = false;
-
-		so = ss.taboption('routing_settings', form.Value, 'self_mark', _('Routing mark'),
-			_('Priority: Proxy Node > Proxy Group > Global.'));
-		so.ucisection = 'config';
-		so.datatype = 'uinteger'
-		so.placeholder = '200';
-		so.rmempty = false;
-
-		so = ss.taboption('routing_settings', form.Value, 'tproxy_mark', _('Tproxy Fwmark'));
-		so.ucisection = 'config';
-		so.datatype = 'uinteger'
-		so.placeholder = '201';
-		so.rmempty = false;
-
-		so = ss.taboption('routing_settings', form.Value, 'tun_mark', _('Tun Fwmark'));
-		so.ucisection = 'config';
-		so.datatype = 'uinteger'
-		so.placeholder = '202';
-		so.rmempty = false;
 
 		/* Custom CN list */
 		ss.tab('direct_list', _('Custom CN List'));

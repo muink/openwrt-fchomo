@@ -43,24 +43,26 @@ const ucisniff = 'sniff',
       ucirout = 'rules';
 
 /* Hardcode options */
+const common_tcpport = uci.get(uciconf, ucifchm, 'common_tcpport') || '20-21,22,53,80,110,143,443,465,853,873,993,995,8080,8443,9418',
+      common_udpport = uci.get(uciconf, ucifchm, 'common_udpport') || '20-21,22,53,80,110,143,443,853,993,995,8080,8443,9418',
+      tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
+      tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',
+      tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',
+      route_table_id = strToInt(uci.get(uciconf, ucifchm, 'route_table_id')) || 2022, // global.js
+      route_rule_pref = strToInt(uci.get(uciconf, ucifchm, 'route_rule_pref')) || 9000, // global.js
+      redirect_gate_mark = strToInt(uci.get(uciconf, ucifchm, 'redirect_gate_mark')) || 2023,
+      redirect_pass_mark = strToInt(uci.get(uciconf, ucifchm, 'redirect_pass_mark')) || 2024,
+      self_mark = strToInt(uci.get(uciconf, ucifchm, 'self_mark')) || 200, // global.js
+      tproxy_mark = strToInt(uci.get(uciconf, ucifchm, 'tproxy_mark')) || 201, // global.js
+      tun_mark = strToInt(uci.get(uciconf, ucifchm, 'tun_mark')) || 202, // global.js
+      posh = 'c2luZ2JveA'; // Yes. Is true.
+
 const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || null,
       bind_interface = uci.get(uciconf, uciroute, 'bind_interface') || null,
       routing_tcpport = uci.get(uciconf, uciroute, 'routing_tcpport') || null,
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
       bypass_cn_ip = strToBool(uci.get(uciconf, uciroute, 'bypass_cn_ip')),
-      common_tcpport = uci.get(uciconf, ucifchm, 'common_tcpport') || '20-21,22,53,80,110,143,443,465,853,873,993,995,8080,8443,9418',
-      common_udpport = uci.get(uciconf, ucifchm, 'common_udpport') || '20-21,22,53,80,110,143,443,853,993,995,8080,8443,9418',
-      tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
-      tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',
-      tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',
-      route_table_id = strToInt(uci.get(uciconf, ucifchm, 'route_table_id')) || 2022,
-      route_rule_pref = strToInt(uci.get(uciconf, ucifchm, 'route_rule_pref')) || 9000,
-      redirect_gate_mark = strToInt(uci.get(uciconf, ucifchm, 'redirect_gate_mark')) || 2023,
-      redirect_pass_mark = strToInt(uci.get(uciconf, ucifchm, 'redirect_pass_mark')) || 2024,
-      self_mark = strToInt(uci.get(uciconf, ucifchm, 'self_mark')) || 200,
-      tproxy_mark = strToInt(uci.get(uciconf, ucifchm, 'tproxy_mark')) || 201,
-      tun_mark = strToInt(uci.get(uciconf, ucifchm, 'tun_mark')) || 202,
-      posh = 'c2luZ2JveA';
+      something_routing_options = 'EOF';
 
 /* WAN DNS server array */
 let wan_dns = ubus.call('network.interface', 'status', {'interface': 'wan'})?.['dns-server'];

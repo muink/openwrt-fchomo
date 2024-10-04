@@ -573,6 +573,16 @@ return view.extend({
 			_('Bypass mainland China IP traffic via firewall rules.'));
 		so.default = so.disabled;
 
+		so = ss.taboption('routing_control', form.Flag, 'bypass_cn_domain', _('Bypass CN Domain'),
+			_('Bypass mainland China Domain traffic via firewall rules.'));
+		so.default = so.disabled;
+		if (!features.hm_has_dnsmasq_full) {
+			so.description = _('To enable, you need to install <code>dnsmasq-full</code>');
+			so.readonly = true;
+			uci.set(data[0], so.section.section, so.option, '');
+			uci.save();
+		}
+
 		/* Routing settings */
 		ss.tab('routing_settings', _('Routing settings'));
 

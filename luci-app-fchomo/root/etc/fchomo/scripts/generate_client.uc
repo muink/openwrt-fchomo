@@ -45,6 +45,7 @@ const ucisniff = 'sniff',
 /* Hardcode options */
 const common_tcpport = uci.get(uciconf, ucifchm, 'common_tcpport') || '20-21,22,53,80,110,143,443,465,853,873,993,995,8080,8443,9418',
       common_udpport = uci.get(uciconf, ucifchm, 'common_udpport') || '20-21,22,53,80,110,143,443,853,993,995,8080,8443,9418',
+      stun_port = uci.get(uciconf, ucifchm, 'stun_port') || '3478,19302',
       tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',
       tun_addr4 = uci.get(uciconf, ucifchm, 'tun_addr4') || '198.19.0.1/30',
       tun_addr6 = uci.get(uciconf, ucifchm, 'tun_addr6') || 'fdfe:dcba:9877::1/126',

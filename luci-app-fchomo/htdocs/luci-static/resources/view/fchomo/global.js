@@ -573,6 +573,11 @@ return view.extend({
 		so.value('common', _('Common ports only (bypass P2P traffic)'));
 		so.validate = L.bind(hm.validateCommonPort, so);
 
+		so = ss.taboption('routing_control', form.Flag, 'bypass_cn_ip', _('Bypass CN IP'),
+			_('Bypass mainland China IP traffic via firewall rules.'));
+		so.ucisection = 'routing';
+		so.default = so.disabled;
+
 		/* Routing settings */
 		ss.tab('routing_settings', _('Routing settings'));
 

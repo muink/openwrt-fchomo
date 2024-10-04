@@ -47,6 +47,7 @@ const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || nul
       bind_interface = uci.get(uciconf, uciroute, 'bind_interface') || null,
       routing_tcpport = uci.get(uciconf, uciroute, 'routing_tcpport') || null,
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
+      bypass_cn_ip = strToBool(uci.get(uciconf, uciroute, 'bypass_cn_ip')),
       common_tcpport = uci.get(uciconf, ucifchm, 'common_tcpport') || '20-21,22,53,80,110,143,443,465,853,873,993,995,8080,8443,9418',
       common_udpport = uci.get(uciconf, ucifchm, 'common_udpport') || '20-21,22,53,80,110,143,443,853,993,995,8080,8443,9418',
       tun_name = uci.get(uciconf, ucifchm, 'tun_name') || 'hmtun0',

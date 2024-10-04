@@ -618,6 +618,56 @@ return view.extend({
 		so.datatype = 'uinteger'
 		so.placeholder = '202';
 		so.rmempty = false;
+
+		/* Custom Direct list */
+		ss.tab('direct_list', _('Custom Direct List'));
+
+		so = ss.taboption('direct_list', form.TextValue, 'direct_list.yaml', null);
+		so.renderWidget = function(/* ... */) {
+			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+
+			frameEl.firstChild.style.fontFamily = hm.monospacefonts.join(',');
+
+			return frameEl;
+		}
+		so.rows = 20;
+		so.default = 'FQDN:\nIPCIDR:\nIPCIDR6:\n';
+		so.placeholder = "FQDN:\n- mask.icloud.com\n- mask-h2.icloud.com\n- mask.apple-dns.net\nIPCIDR:\n- '223.0.0.0/12'\nIPCIDR6:\n- '2400:3200::/32'\n";
+		so.load = function(section_id) {
+			return L.resolveDefault(hm.readFile('resources', this.option), '');
+		}
+		so.write = function(section_id, formvalue) {
+			return hm.writeFile('resources', this.option, formvalue);
+		}
+		so.remove = function(section_id) {
+			return hm.writeFile('resources', this.option);
+		}
+		so.rmempty = false;
+
+		/* Custom Routing list */
+		ss.tab('routing_list', _('Custom Routing List'));
+
+		so = ss.taboption('routing_list', form.TextValue, 'routing_list.yaml', null);
+		so.renderWidget = function(/* ... */) {
+			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+
+			frameEl.firstChild.style.fontFamily = hm.monospacefonts.join(',');
+
+			return frameEl;
+		}
+		so.rows = 20;
+		so.default = 'FQDN:\nIPCIDR:\nIPCIDR6:\n';
+		so.placeholder = "FQDN:\n- www.google.com\nIPCIDR:\n- '91.105.192.0/23'\nIPCIDR6:\n- '2001:67c:4e8::/48'\n";
+		so.load = function(section_id) {
+			return L.resolveDefault(hm.readFile('resources', this.option), '');
+		}
+		so.write = function(section_id, formvalue) {
+			return hm.writeFile('resources', this.option, formvalue);
+		}
+		so.remove = function(section_id) {
+			return hm.writeFile('resources', this.option);
+		}
+		so.rmempty = false;
 		/* ACL END */
 
 		return m.render();

@@ -37,7 +37,7 @@ const uciglobal = 'global',
 const ucisniff = 'sniff',
       ucidnser = 'dns_server',
       ucidnspoli = 'dns_policy',
-      ucipgroup = 'proxy_group',
+      ucipgrp = 'proxy_group',
       uciprov = 'provider',
       ucirule = 'ruleset',
       ucirout = 'rules';
@@ -397,7 +397,7 @@ config.proxies = [
 /* Proxy Group START */
 /* Proxy Group */
 config["proxy-groups"] = [];
-uci.foreach(uciconf, ucipgroup, (cfg) => {
+uci.foreach(uciconf, ucipgrp, (cfg) => {
 	if (cfg.enabled === '0')
 		return null;
 

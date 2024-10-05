@@ -67,6 +67,7 @@ const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || nul
       lan_proxy_ipv4_ips = uci.get(uciconf, uciroute, 'lan_proxy_ipv4_ips') || null,
       lan_proxy_ipv6_ips = uci.get(uciconf, uciroute, 'lan_proxy_ipv6_ips') || null,
       lan_proxy_mac_addrs = uci.get(uciconf, uciroute, 'lan_proxy_mac_addrs') || null,
+      proxy_router = (uci.get(uciconf, uciroute, 'proxy_router') === '0') ? null : true,
       routing_tcpport = uci.get(uciconf, uciroute, 'routing_tcpport') || null,
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
       routing_mode = uci.get(uciconf, uciroute, 'routing_mode') || null,

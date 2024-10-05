@@ -615,6 +615,9 @@ return view.extend({
 		so = fwtool.addMACOption(ss, 'access_control', 'lan_proxy_mac_addrs', _('Proxy MAC-s'), null, hosts);
 		so.depends('lan_filter', 'white_list');
 
+		so = ss.taboption('access_control', form.Flag, 'proxy_router', _('Proxy routerself'));
+		so.default = so.enabled;
+
 		/* Routing control */
 		ss.tab('routing_control', _('Routing Control'));
 

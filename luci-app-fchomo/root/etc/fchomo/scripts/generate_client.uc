@@ -69,7 +69,7 @@ const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || nul
       lan_proxy_mac_addrs = uci.get(uciconf, uciroute, 'lan_proxy_mac_addrs') || null,
       routing_tcpport = uci.get(uciconf, uciroute, 'routing_tcpport') || null,
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
-      routing_mode = uci.get(uciconf, uciroute, 'routing_mode') || 'bypass_cn',
+      routing_mode = uci.get(uciconf, uciroute, 'routing_mode') || null,
       handle_domain = strToBool(uci.get(uciconf, uciroute, 'handle_domain')),
       something_routing_options = 'EOF';
 

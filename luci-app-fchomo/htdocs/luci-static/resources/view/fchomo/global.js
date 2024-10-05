@@ -634,9 +634,9 @@ return view.extend({
 
 		so = ss.taboption('routing_control', form.ListValue, 'routing_mode', _('Routing mode'),
 			_('Traffic routing mode via firewall rules.'));
+		so.value('', _('All allowed'));
 		so.value('bypass_cn', _('Bypass CN'));
 		so.value('routing_gfw', _('Routing GFW'));
-		so.default = 'bypass_cn';
 
 		so = ss.taboption('routing_control', form.Flag, 'handle_domain', _('Handle domain'),
 			_('Routing mode will be handle domain.'));
@@ -647,6 +647,8 @@ return view.extend({
 			uci.set(data[0], so.section.section, so.option, '');
 			uci.save();
 		}
+		so.depends('routing_mode', 'bypass_cn');
+		so.depends('routing_mode', 'routing_gfw');
 
 		/* Custom CN list */
 		ss.tab('direct_list', _('Custom CN List'));

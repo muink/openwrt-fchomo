@@ -1155,7 +1155,7 @@ msgstr "路由控制"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:642
 msgid "Routing GFW"
-msgstr "路由 GFW"
+msgstr "路由 GFW 流量"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:245
 #: htdocs/luci-static/resources/view/fchomo/global.js:573

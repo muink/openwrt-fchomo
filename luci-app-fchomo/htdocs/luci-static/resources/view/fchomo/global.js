@@ -605,26 +605,14 @@ return view.extend({
 		so.value('common_stun', _('Common and STUN ports'));
 		so.validate = L.bind(hm.validateCommonPort, so);
 
-		so = ss.taboption('routing_control', form.Flag, 'routing_gfw_ip', _('Routing GFW IP'),
-			_('Routing GFW IP traffic via firewall rules.'));
-		so.default = so.disabled;
+		so = ss.taboption('routing_control', form.ListValue, 'routing_mode', _('Routing mode'),
+			_('Traffic routing mode via firewall rules.'));
+		so.value('bypass_cn', _('Bypass CN'));
+		so.value('routing_gfw', _('Routing GFW'));
+		so.default = 'bypass_cn';
 
-		so = ss.taboption('routing_control', form.Flag, 'routing_gfw_domain', _('Routing GFW Domain'),
-			_('Routing GFW Domain traffic via firewall rules.'));
-		so.default = so.disabled;
-		if (!features.hm_has_dnsmasq_full) {
-			so.description = _('To enable, you need to install <code>dnsmasq-full</code>');
-			so.readonly = true;
-			uci.set(data[0], so.section.section, so.option, '');
-			uci.save();
-		}
-
-		so = ss.taboption('routing_control', form.Flag, 'bypass_cn_ip', _('Bypass CN IP'),
-			_('Bypass mainland China IP traffic via firewall rules.'));
-		so.default = so.disabled;
-
-		so = ss.taboption('routing_control', form.Flag, 'bypass_cn_domain', _('Bypass CN Domain'),
-			_('Bypass mainland China Domain traffic via firewall rules.'));
+		so = ss.taboption('routing_control', form.Flag, 'handle_domain', _('Handle domain'),
+			_('Routing mode will be handle domain.'));
 		so.default = so.disabled;
 		if (!features.hm_has_dnsmasq_full) {
 			so.description = _('To enable, you need to install <code>dnsmasq-full</code>');

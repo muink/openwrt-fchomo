@@ -21,6 +21,7 @@ config fchomo 'resources'
 config fchomo 'routing'
 	option routing_tcpport 'common'
 	option routing_udpport 'common'
+	option routing_mode 'bypass_cn'
 
 config fchomo 'global'
 	option mode 'rule'

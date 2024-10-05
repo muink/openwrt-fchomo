@@ -62,10 +62,8 @@ const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || nul
       bind_interface = uci.get(uciconf, uciroute, 'bind_interface') || null,
       routing_tcpport = uci.get(uciconf, uciroute, 'routing_tcpport') || null,
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
-      routing_gfw_ip = strToBool(uci.get(uciconf, uciroute, 'routing_gfw_ip')),
-      routing_gfw_domain = strToBool(uci.get(uciconf, uciroute, 'routing_gfw_domain')),
-      bypass_cn_ip = strToBool(uci.get(uciconf, uciroute, 'bypass_cn_ip')),
-      bypass_cn_domain = strToBool(uci.get(uciconf, uciroute, 'bypass_cn_domain')),
+      routing_mode = uci.get(uciconf, uciroute, 'routing_mode') || 'bypass_cn',
+      handle_domain = strToBool(uci.get(uciconf, uciroute, 'handle_domain')),
       something_routing_options = 'EOF';
 
 /* WAN DNS server array */

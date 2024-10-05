@@ -71,10 +71,10 @@ log() {
 
 start_service() {
 	local default_proxy
-	config_get default_proxy "global" "default_proxy" ""
+	config_get default_proxy "routing" "default_proxy" ""
 
 	local server_enabled
-	config_get_bool server_enabled "global" "server_enabled" "0"
+	config_get_bool server_enabled "routing" "server_enabled" "0"
 
 	if [ -z "$default_proxy" -a "$server_enabled" = "0" ]; then
 		return 1

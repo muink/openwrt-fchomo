@@ -18,6 +18,53 @@ DNSMASQ_DIR="/tmp/dnsmasq.d/dnsmasq-fchomo.d"
 
 config_load "$CONF"
 
+# define global var: DEF_WAN DEF_WAN6 NIC_* NIC6_*
+define_nic() {
+	local dev sub addr
+	# get all active NICs
+	for dev in $(ls /sys/class/net/); do
+		#ipv4
+		sub=$(ip -o -4 addr|sed -En "s|.*${dev}\s+inet\s+([0-9\./]+).*|\1|gp")
+		eval "NIC_${dev//[[:punct:]]/_}=\"\$sub\""
+		#ipv6
+		sub=$(ip -o -6 addr|sed -En "s|.*${dev}\s+inet6\s+([A-Za-z0-9\./:]+).*|\1|gp")
+		# ref: https://github.com/openwrt/openwrt/blob/main/package/base-files/files/lib/functions/network.sh#L53 #network_get_subnet6()
+		for _ in $sub; do
+			for addr in $sub; do
+				case "$addr" in fe[8ab]?:*|f[cd]??:*)
+					continue
+				esac
+				sub=$addr; break
+			done
+			# Attempt to return first non-fe80::/10 range
+			for addr in $sub; do
+				case "$addr" in fe[8ab]?:*)
+					continue
+				esac
+				sub=$addr; break
+			done
+			# Return first item
+			for addr in $sub; do
+				sub=$addr; break
+			done
+		done
+		eval "NIC6_${dev//[[:punct:]]/_}=\"\$sub\""
+	done
+	# get default gateway 0.0.0.0/::
+	network_find_wan DEF_WAN true
+	network_find_wan6 DEF_WAN6 true
+
+	return 0
+}
+define_nic
+
+load_interfaces() {
+	local bind_ifname
+	config_get bind_ifname "$1" "bind_interface"
+
+	interfaces=" $(uci -q show network|grep "device='$bind_ifname'"|cut -f2 -d'.') $interfaces"
+}
+
 log() {
 	echo -e "$(date "+%Y-%m-%d %H:%M:%S") [DAEMON] $*" >> "$LOG_PATH"
 }
@@ -88,6 +135,19 @@ start_service() {
 
 		procd_set_param command /bin/sh
 		procd_append_param command -c "'$PROG' -d '$HM_DIR' -f '$RUN_DIR/mihomo-c.yaml' >> '$RUN_DIR/mihomo-c.log' 2>&1"
+
+		# Only supports `Global`` and does not support `Proxy Group` and `Proxy Node`
+		local bind_ifname
+		config_get_bool bind_ifname "routing" "bind_interface"
+
+		if [ -n "$bind_ifname" ]; then
+			procd_append_param netdev "$bind_ifname"
+		else
+			local ifname
+			network_get_device ifname "$DEF_WAN" && procd_append_param netdev "$ifname"
+			network_get_device ifname "$DEF_WAN6" && procd_append_param netdev "$ifname"
+		fi
+		procd_set_param netdev "br-lan"
 
 		#procd_set_param capabilities "/etc/capabilities/fchomo.json"
 		#procd_set_param user mihomo
@@ -171,4 +231,25 @@ reload_service() {
 
 service_triggers() {
 	procd_add_reload_trigger "$CONF" 'network'
+
+	local interfaces
+
+	# Only supports `Global`` and does not support `Proxy Group` and `Proxy Node`
+	load_interfaces 'routing'
+	[ -n "$interfaces" ] && {
+		for n in $interfaces; do
+			procd_add_reload_interface_trigger $n
+		done
+	} || {
+		for n in $DEF_WAN $DEF_WAN6; do
+			procd_add_reload_interface_trigger $n
+		done
+	}
+
+	interfaces=$(uci show network|grep "device='br-lan'"|cut -f2 -d'.')
+	[ -n "$interfaces" ] && {
+		for n in $interfaces; do
+			procd_add_reload_interface_trigger $n
+		done
+	}
 }

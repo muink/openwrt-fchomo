@@ -1,5 +1,6 @@
 'use strict';
 'require form';
+'require network';
 'require poll';
 'require rpc';
 'require uci';
@@ -7,6 +8,7 @@
 'require view';
 
 'require fchomo as hm';
+'require tools.firewall as fwtool';
 'require tools.widgets as widgets';
 
 var callResVersion = rpc.declare({
@@ -98,6 +100,7 @@ return view.extend({
 		return Promise.all([
 			uci.load('fchomo'),
 			hm.getFeatures(),
+			network.getHostHints(),
 			hm.getServiceStatus('mihomo-c'),
 			hm.getClashAPI('mihomo-c'),
 			hm.getServiceStatus('mihomo-s'),
@@ -107,10 +110,11 @@ return view.extend({
 
 	render: function(data) {
 		var features = data[1],
-		    CisRunning = data[2],
-		    CclashAPI = data[3],
-		    SisRunning = data[4],
-		    SclashAPI = data[5];
+		    hosts = data[2]?.hosts,
+		    CisRunning = data[3],
+		    CclashAPI = data[4],
+		    SisRunning = data[5],
+		    SclashAPI = data[6];
 
 		var dashboard_repo = uci.get(data[0], 'api', 'dashboard_repo');
 
@@ -587,6 +591,32 @@ return view.extend({
 		so.datatype = 'uinteger'
 		so.placeholder = '202';
 		so.rmempty = false;
+
+		/* Access control */
+		ss.tab('access_control', _('Access Control'));
+
+		so = ss.taboption('access_control', form.ListValue, 'lan_filter', _('Users filter mode'));
+		so.value('', _('All allowed'));
+		so.value('white_list', _('White list'));
+		so.value('black_list', _('Black list'));
+
+		so = fwtool.addIPOption(ss, 'access_control', 'lan_direct_ipv4_ips', _('Direct IPv4 IP-s'), null, 'ipv4', hosts, true);
+		so.depends('lan_filter', 'black_list');
+
+		so = fwtool.addIPOption(ss, 'access_control', 'lan_direct_ipv6_ips', _('Direct IPv6 IP-s'), null, 'ipv6', hosts, true);
+		so.depends({'lan_filter': 'black_list', 'fchomo.global.ipv6': '1'});
+
+		so = fwtool.addMACOption(ss, 'access_control', 'lan_direct_mac_addrs', _('Direct MAC-s'), null, hosts);
+		so.depends('lan_filter', 'black_list');
+
+		so = fwtool.addIPOption(ss, 'access_control', 'lan_proxy_ipv4_ips', _('Proxy IPv4 IP-s'), null, 'ipv4', hosts, true);
+		so.depends('lan_filter', 'white_list');
+
+		so = fwtool.addIPOption(ss, 'access_control', 'lan_proxy_ipv6_ips', _('Proxy IPv6 IP-s'), null, 'ipv6', hosts, true);
+		so.depends({'lan_filter': 'white_list', 'fchomo.global.ipv6': '1'});
+
+		so = fwtool.addMACOption(ss, 'access_control', 'lan_proxy_mac_addrs', _('Proxy MAC-s'), null, hosts);
+		so.depends('lan_filter', 'white_list');
 
 		/* Routing control */
 		ss.tab('routing_control', _('Routing Control'));

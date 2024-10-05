@@ -102,12 +102,12 @@ msgid "Address"
 msgstr "地址"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:596
-#: htdocs/luci-static/resources/view/fchomo/global.js:637
+#: htdocs/luci-static/resources/view/fchomo/global.js:640
 msgid "All allowed"
 msgstr "允许所有"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:623
-#: htdocs/luci-static/resources/view/fchomo/global.js:630
+#: htdocs/luci-static/resources/view/fchomo/global.js:626
+#: htdocs/luci-static/resources/view/fchomo/global.js:633
 msgid "All ports"
 msgstr "所有端口"
 
@@ -184,7 +184,7 @@ msgstr "启动 DNS 服务器"
 msgid "Boot DNS server (Node)"
 msgstr "启动 DNS 服务器 (节点)"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:638
+#: htdocs/luci-static/resources/view/fchomo/global.js:641
 msgid "Bypass CN"
 msgstr "绕过 CN 流量"
 
@@ -228,13 +228,13 @@ msgstr "客户端状态"
 msgid "Collecting data..."
 msgstr "收集数据中..."
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:625
-#: htdocs/luci-static/resources/view/fchomo/global.js:632
+#: htdocs/luci-static/resources/view/fchomo/global.js:628
+#: htdocs/luci-static/resources/view/fchomo/global.js:635
 msgid "Common and STUN ports"
 msgstr "常用端口和 STUN 端口"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:624
-#: htdocs/luci-static/resources/view/fchomo/global.js:631
+#: htdocs/luci-static/resources/view/fchomo/global.js:627
+#: htdocs/luci-static/resources/view/fchomo/global.js:634
 msgid "Common ports only (bypass P2P traffic)"
 msgstr "仅常用端口（绕过 P2P 流量）"
 
@@ -272,11 +272,11 @@ msgstr "核心版本"
 msgid "Cron expression"
 msgstr "Cron 表达式"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:654
+#: htdocs/luci-static/resources/view/fchomo/global.js:657
 msgid "Custom CN List"
 msgstr "自定义 CN 列表"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:679
+#: htdocs/luci-static/resources/view/fchomo/global.js:682
 msgid "Custom GFW List"
 msgstr "自定义 GFW 列表"
 
@@ -617,7 +617,7 @@ msgstr ""
 msgid "HTTP/3"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:641
+#: htdocs/luci-static/resources/view/fchomo/global.js:644
 msgid "Handle domain"
 msgstr "处理域名"
 
@@ -1078,6 +1078,10 @@ msgstr "策略组"
 msgid "Proxy mode"
 msgstr "代理模式"
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:618
+msgid "Proxy routerself"
+msgstr "代理路由器自身"
+
 #: htdocs/luci-static/resources/view/fchomo/client.js:177
 msgid "Quick Reload"
 msgstr "快速重载"
@@ -1145,11 +1149,11 @@ msgstr "替换节点名称"
 msgid "Resources management"
 msgstr "资源管理"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:619
+#: htdocs/luci-static/resources/view/fchomo/global.js:622
 msgid "Routing Control"
 msgstr "路由控制"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:639
+#: htdocs/luci-static/resources/view/fchomo/global.js:642
 msgid "Routing GFW"
 msgstr "路由 GFW"
 
@@ -1159,16 +1163,16 @@ msgstr "路由 GFW"
 msgid "Routing mark"
 msgstr "路由标记"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:635
+#: htdocs/luci-static/resources/view/fchomo/global.js:638
 msgid "Routing mode"
 msgstr "路由模式"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:642
+#: htdocs/luci-static/resources/view/fchomo/global.js:645
 msgid "Routing mode will be handle domain."
 msgstr "路由模式将处理域名。"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:621
-#: htdocs/luci-static/resources/view/fchomo/global.js:628
+#: htdocs/luci-static/resources/view/fchomo/global.js:624
+#: htdocs/luci-static/resources/view/fchomo/global.js:631
 msgid "Routing ports"
 msgstr "路由端口"
 
@@ -1279,8 +1283,8 @@ msgstr "嗅探器"
 msgid "Sniffer settings"
 msgstr "嗅探器设置"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:622
-#: htdocs/luci-static/resources/view/fchomo/global.js:629
+#: htdocs/luci-static/resources/view/fchomo/global.js:625
+#: htdocs/luci-static/resources/view/fchomo/global.js:632
 msgid ""
 "Specify target ports to be proxied. Multiple ports must be separated by "
 "commas."
@@ -1363,7 +1367,7 @@ msgid ""
 msgstr ""
 "要启用 Tun 支持，您需要安装 <code>ip-full</code> 和 <code>kmod-tun</code>。"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:645
+#: htdocs/luci-static/resources/view/fchomo/global.js:648
 msgid "To enable, you need to install <code>dnsmasq-full</code>."
 msgstr "要启用，您需要安装 <code>dnsmasq-full</code>。"
 
@@ -1375,7 +1379,7 @@ msgstr "Tproxy 标记"
 msgid "Tproxy port"
 msgstr "Tproxy 端口"
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:636
+#: htdocs/luci-static/resources/view/fchomo/global.js:639
 msgid "Traffic routing mode via firewall rules."
 msgstr "流量通过防火墙规则的路由模式。"
 

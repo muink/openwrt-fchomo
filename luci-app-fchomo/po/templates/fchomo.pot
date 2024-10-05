@@ -95,12 +95,12 @@ msgid "Address"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:596
-#: htdocs/luci-static/resources/view/fchomo/global.js:637
+#: htdocs/luci-static/resources/view/fchomo/global.js:640
 msgid "All allowed"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:623
-#: htdocs/luci-static/resources/view/fchomo/global.js:630
+#: htdocs/luci-static/resources/view/fchomo/global.js:626
+#: htdocs/luci-static/resources/view/fchomo/global.js:633
 msgid "All ports"
 msgstr ""
 
@@ -177,7 +177,7 @@ msgstr ""
 msgid "Boot DNS server (Node)"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:638
+#: htdocs/luci-static/resources/view/fchomo/global.js:641
 msgid "Bypass CN"
 msgstr ""
 
@@ -221,13 +221,13 @@ msgstr ""
 msgid "Collecting data..."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:625
-#: htdocs/luci-static/resources/view/fchomo/global.js:632
+#: htdocs/luci-static/resources/view/fchomo/global.js:628
+#: htdocs/luci-static/resources/view/fchomo/global.js:635
 msgid "Common and STUN ports"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:624
-#: htdocs/luci-static/resources/view/fchomo/global.js:631
+#: htdocs/luci-static/resources/view/fchomo/global.js:627
+#: htdocs/luci-static/resources/view/fchomo/global.js:634
 msgid "Common ports only (bypass P2P traffic)"
 msgstr ""
 
@@ -265,11 +265,11 @@ msgstr ""
 msgid "Cron expression"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:654
+#: htdocs/luci-static/resources/view/fchomo/global.js:657
 msgid "Custom CN List"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:679
+#: htdocs/luci-static/resources/view/fchomo/global.js:682
 msgid "Custom GFW List"
 msgstr ""
 
@@ -608,7 +608,7 @@ msgstr ""
 msgid "HTTP/3"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:641
+#: htdocs/luci-static/resources/view/fchomo/global.js:644
 msgid "Handle domain"
 msgstr ""
 
@@ -1068,6 +1068,10 @@ msgstr ""
 msgid "Proxy mode"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:618
+msgid "Proxy routerself"
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/client.js:177
 msgid "Quick Reload"
 msgstr ""
@@ -1135,11 +1139,11 @@ msgstr ""
 msgid "Resources management"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:619
+#: htdocs/luci-static/resources/view/fchomo/global.js:622
 msgid "Routing Control"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:639
+#: htdocs/luci-static/resources/view/fchomo/global.js:642
 msgid "Routing GFW"
 msgstr ""
 
@@ -1149,16 +1153,16 @@ msgstr ""
 msgid "Routing mark"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:635
+#: htdocs/luci-static/resources/view/fchomo/global.js:638
 msgid "Routing mode"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:642
+#: htdocs/luci-static/resources/view/fchomo/global.js:645
 msgid "Routing mode will be handle domain."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:621
-#: htdocs/luci-static/resources/view/fchomo/global.js:628
+#: htdocs/luci-static/resources/view/fchomo/global.js:624
+#: htdocs/luci-static/resources/view/fchomo/global.js:631
 msgid "Routing ports"
 msgstr ""
 
@@ -1269,8 +1273,8 @@ msgstr ""
 msgid "Sniffer settings"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:622
-#: htdocs/luci-static/resources/view/fchomo/global.js:629
+#: htdocs/luci-static/resources/view/fchomo/global.js:625
+#: htdocs/luci-static/resources/view/fchomo/global.js:632
 msgid ""
 "Specify target ports to be proxied. Multiple ports must be separated by "
 "commas."
@@ -1350,7 +1354,7 @@ msgid ""
 "<code>kmod-tun</code>"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:645
+#: htdocs/luci-static/resources/view/fchomo/global.js:648
 msgid "To enable, you need to install <code>dnsmasq-full</code>."
 msgstr ""
 
@@ -1362,7 +1366,7 @@ msgstr ""
 msgid "Tproxy port"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:636
+#: htdocs/luci-static/resources/view/fchomo/global.js:639
 msgid "Traffic routing mode via firewall rules."
 msgstr ""
 

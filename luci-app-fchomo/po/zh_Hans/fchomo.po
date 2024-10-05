@@ -161,7 +161,7 @@ msgstr "绑定接口"
 #: htdocs/luci-static/resources/view/fchomo/client.js:239
 #: htdocs/luci-static/resources/view/fchomo/node.js:229
 msgid "Bind outbound interface.</br>"
-msgstr "绑定出站接口"
+msgstr "绑定出站接口。</br>"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:556
 msgid ""

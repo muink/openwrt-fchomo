@@ -1336,7 +1336,7 @@ msgstr "TCP-Keep-Alive 间隔"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:193
 msgid "TFO"
-msgstr "TCP 快速打开"
+msgstr "TCP 快速打开 (TFO)"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:416
 msgid "TLS"
@@ -1451,7 +1451,7 @@ msgstr "未知错误：%s"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:205
 msgid "UoT"
-msgstr "UDP over TCP"
+msgstr "UDP over TCP (UoT)"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:52
 msgid "Update failed."
@@ -1538,7 +1538,7 @@ msgstr "metacubexd"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:197
 msgid "mpTCP"
-msgstr "多路径 TCP"
+msgstr "多路径 TCP (mpTCP)"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:497
 msgid "no-resolve"

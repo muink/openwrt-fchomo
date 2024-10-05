@@ -391,7 +391,7 @@ return view.extend({
 				desc.innerHTML = _('Less compatibility and sometimes better performance.');
 		}
 
-		so = ss.option(form.Value, 'tun_mtu', _('Maximum transmission unit'));
+		so = ss.option(form.Value, 'tun_mtu', _('MTU'));
 		so.datatype = 'uinteger';
 		so.placeholder = '9000';
 
@@ -642,7 +642,7 @@ return view.extend({
 			_('Routing mode will be handle domain.'));
 		so.default = so.disabled;
 		if (!features.hm_has_dnsmasq_full) {
-			so.description = _('To enable, you need to install <code>dnsmasq-full</code>');
+			so.description = _('To enable, you need to install <code>dnsmasq-full</code>.');
 			so.readonly = true;
 			uci.set(data[0], so.section.section, so.option, '');
 			uci.save();

@@ -5,6 +5,7 @@
 'require rpc';
 'require uci';
 'require ui';
+'require validation';
 
 var rulesetdoc = 'data:text/html;base64,' + 'cmxzdHBsYWNlaG9sZGVy';
 
@@ -532,7 +533,21 @@ return baseclass.extend({
 	},
 
 	validateCommonPort: function(section_id, value) {
-		if (value && value !== 'common') {
+		// thanks to homeproxy
+		var stubValidator = {
+			factory: validation,
+			apply: function(type, value, args) {
+				if (value != null)
+					this.value = value;
+
+				return validation.types[type].apply(this, args);
+			},
+			assert: function(condition) {
+				return !!condition;
+			}
+		};
+
+		if (value && !value.match(/common(_stun)?/)) {
 			var ports = [];
 			for (var i of value.split(',')) {
 				if (!stubValidator.apply('port', i) && !stubValidator.apply('portrange', i))

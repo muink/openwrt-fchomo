@@ -1380,8 +1380,8 @@ msgid "Tproxy port"
 msgstr "Tproxy 端口"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:639
-msgid "Traffic routing mode via firewall rules."
-msgstr "流量通过防火墙规则的路由模式。"
+msgid "Routing mode of the traffic enters mihomo via firewall rules."
+msgstr "流量通过防火墙规则进入 mihomo 的路由模式。"
 
 #: htdocs/luci-static/resources/fchomo.js:79
 msgid "Trojan"

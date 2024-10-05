@@ -636,7 +636,7 @@ return view.extend({
 		so.validate = L.bind(hm.validateCommonPort, so);
 
 		so = ss.taboption('routing_control', form.ListValue, 'routing_mode', _('Routing mode'),
-			_('Traffic routing mode via firewall rules.'));
+			_('Routing mode of the traffic enters mihomo via firewall rules.'));
 		so.value('', _('All allowed'));
 		so.value('bypass_cn', _('Bypass CN'));
 		so.value('routing_gfw', _('Routing GFW'));

@@ -1367,7 +1367,7 @@ msgid "Tproxy port"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:639
-msgid "Traffic routing mode via firewall rules."
+msgid "Routing mode of the traffic enters mihomo via firewall rules."
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo.js:79

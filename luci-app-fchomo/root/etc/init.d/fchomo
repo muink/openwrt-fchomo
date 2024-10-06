@@ -112,7 +112,7 @@ start_service() {
 			mv "$RUN_DIR/"*-gh-pages/ "$RUN_DIR/ui/"
 		fi
 
-		# DNSMasq servers
+		# Setup DNSMasq servers
 		local ipv6 dns_ipv6
 		config_get_bool ipv6 "global" "ipv6" "1"
 		config_get_bool dns_ipv6 "dns" "ipv6" "1"
@@ -129,6 +129,41 @@ start_service() {
 		EOF
 
 		/etc/init.d/dnsmasq reload >/dev/null 2>&1
+
+		# Setup routing table
+		local proxy_mode table_id
+		config_get proxy_mode "inbound" "proxy_mode" "redir_tproxy"
+		config_get table_id "config" "route_table_id" "2022"
+		config_get rule_pref "config" "route_rule_pref" "9000"
+		case "$proxy_mode" in
+		"redir_tproxy")
+			local tproxy_mark
+			config_get tproxy_mark "config" "tproxy_mark" "201"
+
+			ip rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
+			ip route add local 0.0.0.0/0 dev lo table "$table_id"
+
+			if [ "$ipv6" = "1" ]; then
+				ip -6 rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
+				ip -6 route add local ::/0 dev lo table "$table_id"
+			fi
+			;;
+		"redir_tun"|"tun")
+			local tun_name tun_mark
+			config_get tun_name "config" "tun_name" "hmtun0"
+			config_get tun_mark "config" "tun_mark" "202"
+
+			ip tuntap add mode tun user root name "$tun_name"
+			sleep 1s
+			ip link set "$tun_name" up
+
+			ip route replace default dev "$tun_name" table "$table_id"
+			ip rule add fwmark "$tun_mark" pref "$rule_pref" table "$table_id"
+
+			ip -6 route replace default dev "$tun_name" table "$table_id"
+			ip -6 rule add fwmark "$tun_mark" pref "$rule_pref" table "$table_id"
+			;;
+		esac
 
 		# mihomo (client)
 		procd_open_instance "mihomo-c"
@@ -187,6 +222,29 @@ stop_service() {
 }
 
 stop_client() {
+	# Load config
+	local table_id tproxy_mark tun_mark tun_name
+	config_get table_id "cofnig" "route_table_id" "2022"
+	config_get rule_pref "config" "route_rule_pref" "9000"
+	config_get tproxy_mark "cofnig" "tproxy_mark" "201"
+	config_get tun_mark "cofnig" "tun_mark" "202"
+	config_get tun_name "cofnig" "tun_name" "hmtun0"
+
+	# Remove routing table
+	# Tproxy
+	ip rule del pref "$rule_pref" table "$table_id" 2>"/dev/null"
+	ip route del local 0.0.0.0/0 dev lo table "$table_id" 2>"/dev/null"
+
+	ip -6 rule del pref "$rule_pref" table "$table_id" 2>"/dev/null"
+	ip -6 route del local ::/0 dev lo table "$table_id" 2>"/dev/null"
+
+	# TUN
+	ip route del default dev "$tun_name" table "$table_id" 2>"/dev/null"
+	ip rule del pref "$rule_pref" table "$table_id" 2>"/dev/null"
+
+	ip -6 route del default dev "$tun_name" table "$table_id" 2>"/dev/null"
+	ip -6 rule del pref "$rule_pref" table "$table_id" 2>"/dev/null"
+
 	# Remove DNSMasq servers
 	rm -rf "$DNSMASQ_DIR/../dnsmasq-fchomo.conf" "$DNSMASQ_DIR"
 	/etc/init.d/dnsmasq reload >/dev/null 2>&1
@@ -208,6 +266,7 @@ stop_server() {
 }
 
 service_stopped() {
+	sleep 1s # Wait for procd_kill complete
 	# Client
 	[ -n "$(/etc/init.d/$CONF info | jsonfilter -q -e '@.'"$CONF"'.instances["mihomo-c"]')" ] || client_stopped
 	# Server
@@ -215,7 +274,15 @@ service_stopped() {
 }
 
 client_stopped() {
-	return 0
+	# Load config
+	local tun_name
+	config_get tun_name "config" "tun_name" "hmtun0"
+
+	# TUN
+	ip link set "$tun_name" down 2>"/dev/null"
+	ip tuntap del mode tun name "$tun_name" 2>"/dev/null"
+
+	ip -6 rule del oif "$tun_name" 2>"/dev/null"
 }
 
 server_stopped() {

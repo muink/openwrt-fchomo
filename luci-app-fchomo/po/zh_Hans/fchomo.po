@@ -1183,7 +1183,7 @@ msgstr "路由规则"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:567
 msgid "Routing rule priority"
-msgstr "路由规则优先级"
+msgstr "路由规则优先权"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:561
 msgid "Routing table ID"

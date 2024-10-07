@@ -641,7 +641,7 @@ return view.extend({
 		so.value('bypass_cn', _('Bypass CN'));
 		so.value('routing_gfw', _('Routing GFW'));
 
-		so = ss.taboption('routing_control', form.Flag, 'handle_domain', _('Handle domain'),
+		so = ss.taboption('routing_control', form.Flag, 'routing_domain', _('Handle domain'),
 			_('Routing mode will be handle domain.'));
 		so.default = so.disabled;
 		if (!features.hm_has_dnsmasq_full) {

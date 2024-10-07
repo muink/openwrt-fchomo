@@ -147,15 +147,15 @@ start_service() {
 
 		# IP-sets
 		if [ -n "$(opkg list-installed dnsmasq-full)" ]; then
-			write_ipset_file 4 inet4_wan_direct_addr "$DNSMASQ_DIR/direct_list.yaml" "$DNSMASQ_DIR/direct_list.conf" yaml
+			write_ipset_file 4 inet4_wan_direct_addr "$HM_DIR/resources/direct_list.yaml" "$DNSMASQ_DIR/direct_list.conf" yaml
 			[ "$global_ipv6" != "1" ] || \
-			write_ipset_file 6 inet6_wan_direct_addr "$DNSMASQ_DIR/direct_list.yaml" "$DNSMASQ_DIR/direct_list6.conf" yaml
+			write_ipset_file 6 inet6_wan_direct_addr "$HM_DIR/resources/direct_list.yaml" "$DNSMASQ_DIR/direct_list6.conf" yaml
 
-			write_ipset_file 4 inet4_wan_proxy_addr "$DNSMASQ_DIR/proxy_list.yaml" "$DNSMASQ_DIR/proxy_list.conf" yaml
+			write_ipset_file 4 inet4_wan_proxy_addr "$HM_DIR/resources/proxy_list.yaml" "$DNSMASQ_DIR/proxy_list.conf" yaml
 			[ "$global_ipv6" != "1" ] || \
-			write_ipset_file 6 inet6_wan_proxy_addr "$DNSMASQ_DIR/proxy_list.yaml" "$DNSMASQ_DIR/proxy_list6.conf" yaml
+			write_ipset_file 6 inet6_wan_proxy_addr "$HM_DIR/resources/proxy_list.yaml" "$DNSMASQ_DIR/proxy_list6.conf" yaml
 
-			if [ "$routing_domain" = "1"]; then
+			if [ "$routing_domain" = "1" ]; then
 				case "$routing_mode" in
 					bypass_cn)
 						write_ipset_file 4 inet4_china_list_addr "$HM_DIR/resources/china_list.txt" "$DNSMASQ_DIR/china_list.conf"

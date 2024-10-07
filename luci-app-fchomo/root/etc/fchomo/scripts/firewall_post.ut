@@ -4,7 +4,7 @@
 {%-
 	import { readfile } from 'fs';
 	import { cursor } from 'uci';
-	import { isEmpty } from '/etc/fchomo/scripts/fchomo.uc';
+	import { isEmpty, yqRead } from '/etc/fchomo/scripts/fchomo.uc';
 
 	const fw4 = require('fw4');
 
@@ -85,6 +85,11 @@
 
 	for (let i in control_options)
 		control_info[i] = uci.get(cfgname, 'routing', i);
+
+	control_info.wan_direct_ipv4_ips = json(trim(yqRead('-oj', '.IPCIDR',  resources_dir + '/direct_list.yaml')) || '[]');
+	control_info.wan_direct_ipv6_ips = json(trim(yqRead('-oj', '.IPCIDR6', resources_dir + '/direct_list.yaml')) || '[]');
+	control_info.wan_proxy_ipv4_ips  = json(trim(yqRead('-oj', '.IPCIDR',  resources_dir + '/proxy_list.yaml')) || '[]')
+	control_info.wan_proxy_ipv6_ips  = json(trim(yqRead('-oj', '.IPCIDR6', resources_dir + '/proxy_list.yaml')) || '[]')
 	/* UCI config end */
 -%}
 
@@ -140,6 +145,38 @@ table inet fchomo {
 			fe80::/10,
 			ff00::/8
 		}
+	}
+	{% endif %}
+	{# Custom Direct list -#}
+	set inet4_wan_direct_addr {
+		type ipv4_addr
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', control_info.wan_direct_ipv4_ips) }} }
+	}
+
+	{% if (global_ipv6 === '1'): %}
+	set inet6_wan_direct_addr {
+		type ipv6_addr
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', control_info.wan_direct_ipv6_ips) }} }
+	}
+	{% endif %}
+	{# Custom Proxy list -#}
+	set inet4_wan_proxy_addr {
+		type ipv4_addr
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', control_info.wan_proxy_ipv4_ips) }} }
+	}
+
+	{% if (global_ipv6 === '1'): %}
+	set inet6_wan_proxy_addr {
+		type ipv6_addr
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', control_info.wan_proxy_ipv6_ips) }} }
 	}
 	{% endif %}
 

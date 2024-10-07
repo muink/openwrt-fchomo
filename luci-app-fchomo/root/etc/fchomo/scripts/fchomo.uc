@@ -1,6 +1,6 @@
 /* thanks for homeproxy */
 
-import { mkstemp } from 'fs';
+import { mkstemp, popen } from 'fs';
 
 /* Global variables START */
 export const HM_DIR = '/etc/fchomo';
@@ -13,6 +13,25 @@ export const PRESET_OUTBOUND = [
 	'COMPATIBLE'
 ];
 /* Global variables END */
+
+/* Utilities start */
+/* Kanged from luci-app-commands */
+export function shellQuote(s) {
+	return `'${replace(s, "'", "'\\''")}'`;
+};
+
+export function yqRead(flags, command, filepath) {
+	let out = '';
+
+	const fd = popen(`yq ${flags} ${shellQuote(command)} ${filepath}`);
+	if (fd) {
+		out = fd.read('all');
+		fd.close();
+	}
+
+	return out;
+};
+/* Utilities end */
 
 /* String helper start */
 export function isEmpty(res) {

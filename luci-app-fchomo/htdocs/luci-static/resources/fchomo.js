@@ -414,22 +414,23 @@ return baseclass.extend({
 	renderResDownload: function(self, section_id) {
 		var section_type = this.section.sectiontype;
 		var type = uci.get(this.config, section_id, 'type'),
-			url = uci.get(this.config, section_id, 'url');
+			url = uci.get(this.config, section_id, 'url'),
+			header = uci.get(this.config, section_id, 'header');
 
 		var El = E([
 			E('button', {
 				class: 'cbi-button cbi-button-apply',
 				disabled: (type !== 'http') || null,
-				click: ui.createHandlerFn(this, function(section_id, type, url) {
+				click: ui.createHandlerFn(this, function(section_type, section_id, type, url, header) {
 					if (type === 'http') {
-						return self.downloadFile(section_type, section_id, url).then((res) => {
+						return self.downloadFile(section_type, section_id, url, header).then((res) => {
 							ui.addNotification(null, E('p', _('Download successful.')));
 						}).catch((e) => {
 							ui.addNotification(null, E('p', _('Download failed: %s').format(e)));
 						});
 					} else
 						return ui.addNotification(null, E('p', _('Unable to download unsupported type: %s').format(type)));
-				}, section_id, type, url)
+				}, section_type, section_id, type, url, header)
 			}, [ _('🡇') ]) //🗘
 		]);
 
@@ -667,15 +668,15 @@ return baseclass.extend({
 		});
 	},
 
-	downloadFile: function(type, filename, url) {
+	downloadFile: function(type, filename, url, header) {
 		var callDownloadFile = rpc.declare({
 			object: 'luci.fchomo',
 			method: 'file_download',
-			params: ['type', 'filename', 'url'],
+			params: ['type', 'filename', 'url', 'header'],
 			expect: { '': {} }
 		});
 
-		return L.resolveDefault(callDownloadFile(type, filename, url), {}).then((res) => {
+		return L.resolveDefault(callDownloadFile(type, filename, url, header), {}).then((res) => {
 			if (res.result) {
 				return res.result;
 			} else

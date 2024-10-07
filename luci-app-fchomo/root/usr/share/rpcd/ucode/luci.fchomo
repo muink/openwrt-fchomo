@@ -25,6 +25,32 @@ function yqRead(flags, command, filepath) {
 	return out;
 }
 
+function wGET(url, header, filepath) {
+	if (!url || type(url) !== 'string')
+		return null;
+
+	let timeout = '10';
+	let ua = 'Wget/1.21 (FullCombo Mihomo)';
+
+	if (header) {
+		header = json(trim(header) || {});
+
+		header = join(' ', filter(map(keys(header), (k) => {
+			let v = join(', ', type(header[k]) === 'array' ? filter(header[k], v => v) : []);
+			if (k === 'User-Agent') {
+				ua = v;
+				v = null;
+			}
+			return v ? '--header=' + shellquote(`${k}: ${v}`) : null;
+		}), v => v));
+	} else
+		header = '';
+
+	let exitcode = system(`/usr/bin/wget --timeout=${timeout} --user-agent ${shellquote(ua)} ${header} -q ${shellquote(url)} -O ${shellquote(filepath)}`);
+
+	return exitcode;
+}
+
 const HM_DIR = '/etc/fchomo';
 const RUN_DIR = '/var/run/fchomo';
 const RES_TYPE = ['certs', 'provider', 'ruleset', 'resources', 'templates'];
@@ -206,7 +232,7 @@ const methods = {
 	},
 
 	file_download: {
-		args: { type: 'type', filename: 'filename', url: 'url' },
+		args: { type: 'type', filename: 'filename', url: 'url', header: 'header' },
 		call: function(req) {
 			if (!(req.args?.type in RES_TYPE))
 				return { result: false, error: 'illegal type' };
@@ -220,7 +246,7 @@ const methods = {
 			const file = `${HM_DIR}/${req.args?.type}/${req.args?.filename}`;
 
 			//system(`mkdir -p ${HM_DIR}/${req.args?.type}`);
-			let exitcode = system(`wget --timeout=10 -q "${req.args?.url}" -O "${file}"`);
+			let exitcode = wGET(req.args?.url, req.args?.header, file);
 
 			if (exitcode === 0) {
 				return { result: true };

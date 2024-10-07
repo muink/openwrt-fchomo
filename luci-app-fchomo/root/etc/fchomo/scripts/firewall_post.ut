@@ -57,8 +57,8 @@
 
 	let default_proxy, routing_tcpport, routing_udpport, routing_mode, routing_domain;
 	default_proxy = uci.get(cfgname, 'routing', 'default_proxy') || null,
-	routing_tcpport = uci.get(cfgname, 'routing', 'routing_tcpport') || 'common';
-	routing_udpport = uci.get(cfgname, 'routing', 'routing_udpport') || 'common';
+	routing_tcpport = uci.get(cfgname, 'routing', 'routing_tcpport') || null;
+	routing_udpport = uci.get(cfgname, 'routing', 'routing_udpport') || null;
 	routing_mode = uci.get(cfgname, 'routing', 'routing_mode') || null;
 	routing_domain = uci.get(cfgname, 'routing', 'routing_domain') || '0';
 
@@ -213,6 +213,23 @@ table inet fchomo {
 	}
 	{% endif %}
 	{% endif /* routing_mode */ %}
+	{# Routing port -#}
+	{% if (routing_tcpport): %}
+	set tcp_routing_port {
+		type inet_service
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', split(routing_tcpport, ',')) }} }
+	}
+	{% endif %}
+	{% if (routing_udpport): %}
+	set udp_routing_port {
+		type inet_service
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', split(routing_udpport, ',')) }} }
+	}
+	{% endif %}
 
 	chain output {
 		type nat hook output priority mangle - 5; policy accept;

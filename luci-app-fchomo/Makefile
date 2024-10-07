@@ -30,6 +30,7 @@ PKG_UNPACK=$(CURDIR)/.prepare.sh $(PKG_NAME) $(CURDIR) $(PKG_BUILD_DIR)
 define Package/luci-app-fchomo/prerm
 #!/bin/sh
 uci delete firewall.fchomo_pre
+uci delete firewall.fchomo_post
 uci commit firewall
 endef
 

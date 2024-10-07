@@ -61,6 +61,11 @@ uci -q batch <<-EOF >"/dev/null"
 	set firewall.fchomo_pre.path="/var/run/fchomo/fchomo_pre.nft"
 	set firewall.fchomo_pre.position="table-pre"
 
+	delete firewall.fchomo_post
+	set firewall.fchomo_post=include
+	set firewall.fchomo_post.type=nftables
+	set firewall.fchomo_post.path="/var/run/fchomo/fchomo_post.nft"
+	set firewall.fchomo_post.position="ruleset-post"
 	commit firewall
 EOF
 

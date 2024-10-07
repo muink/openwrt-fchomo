@@ -239,6 +239,10 @@ start_service() {
 
 	# Setup firewall
 	utpl -S "$HM_DIR/scripts/firewall_pre.ut" > "$RUN_DIR/fchomo_pre.nft"
+	# Setup Nftables rules
+	if [ -n "$default_proxy" ]; then
+		[ -z "$1" -o "$1" = "mihomo-c" ] && utpl -S "$HM_DIR/scripts/firewall_post.ut" > "$RUN_DIR/fchomo_post.nft"
+	fi
 	fw4 reload >"/dev/null" 2>&1
 
 	log "$(mihomo -v | awk 'NR==1{print $1,$3}') started."
@@ -278,6 +282,11 @@ stop_client() {
 
 	ip -6 route del default dev "$tun_name" table "$table_id" 2>"/dev/null"
 	ip -6 rule del pref "$rule_pref" table "$table_id" 2>"/dev/null"
+
+	# Remove Nftables rules
+	nft flush  table inet fchomo 2>"/dev/null"
+	nft delete table inet fchomo 2>"/dev/null"
+	echo > "$RUN_DIR/fchomo_post.nft" 2>"/dev/null"
 
 	# Remove DNSMasq servers
 	rm -rf "$DNSMASQ_DIR/../dnsmasq-fchomo.conf" "$DNSMASQ_DIR"

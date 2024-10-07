@@ -1,0 +1,7 @@
+#!/usr/bin/utpl -S
+
+table inet fchomo {
+	chain output {
+		type nat hook output priority mangle - 5; policy accept;
+	}
+}

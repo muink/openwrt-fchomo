@@ -68,6 +68,7 @@ const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || nul
       lan_proxy_ipv6_ips = uci.get(uciconf, uciroute, 'lan_proxy_ipv6_ips') || null,
       lan_proxy_mac_addrs = uci.get(uciconf, uciroute, 'lan_proxy_mac_addrs') || null,
       proxy_router = (uci.get(uciconf, uciroute, 'proxy_router') === '0') ? null : true,
+      default_proxy = uci.get(uciconf, uciroute, 'default_proxy') || null,
       routing_tcpport = uci.get(uciconf, uciroute, 'routing_tcpport') || null,
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
       routing_mode = uci.get(uciconf, uciroute, 'routing_mode') || null,
@@ -535,7 +536,7 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 		}(split(cfg.entry, ','))
 	);
 });
-push(config.rules, 'MATCH,' + get_proxygroup(uci.get(uciconf, uciroute, 'default_proxy')));
+push(config.rules, 'MATCH,' + get_proxygroup(default_proxy));
 /* Routing rules END */
 
 printf('%.J\n', removeBlankAttrs(config));

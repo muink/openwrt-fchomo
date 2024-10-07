@@ -266,11 +266,11 @@ msgid "Cron expression"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:657
-msgid "Custom CN List"
+msgid "Custom Direct List"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:682
-msgid "Custom GFW List"
+msgid "Custom Proxy List"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:155

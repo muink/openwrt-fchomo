@@ -273,12 +273,12 @@ msgid "Cron expression"
 msgstr "Cron 表达式"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:657
-msgid "Custom CN List"
-msgstr "自定义 CN 列表"
+msgid "Custom Direct List"
+msgstr "自定义直连列表"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:682
-msgid "Custom GFW List"
-msgstr "自定义 GFW 列表"
+msgid "Custom Proxy List"
+msgstr "自定义代理列表"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:155
 msgid "Custom HTTP header."

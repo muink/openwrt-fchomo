@@ -653,8 +653,8 @@ return view.extend({
 		so.depends('routing_mode', 'bypass_cn');
 		so.depends('routing_mode', 'routing_gfw');
 
-		/* Custom CN list */
-		ss.tab('direct_list', _('Custom CN List'));
+		/* Custom Direct list */
+		ss.tab('direct_list', _('Custom Direct List'));
 
 		so = ss.taboption('direct_list', form.TextValue, 'direct_list.yaml', null);
 		so.renderWidget = function(/* ... */) {
@@ -678,10 +678,10 @@ return view.extend({
 		}
 		so.rmempty = false;
 
-		/* Custom GFW list */
-		ss.tab('routing_list', _('Custom GFW List'));
+		/* Custom Proxy list */
+		ss.tab('proxy_list', _('Custom Proxy List'));
 
-		so = ss.taboption('routing_list', form.TextValue, 'routing_list.yaml', null);
+		so = ss.taboption('proxy_list', form.TextValue, 'proxy_list.yaml', null);
 		so.renderWidget = function(/* ... */) {
 			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 

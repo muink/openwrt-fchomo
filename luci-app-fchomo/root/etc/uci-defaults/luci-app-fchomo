@@ -19,8 +19,8 @@ if [ ! -s "/etc/fchomo/resources/direct_list.yaml" ]; then
 	EOF
 fi
 
-if [ ! -s "/etc/fchomo/resources/routing_list.yaml" ]; then
-	cat <<- EOF > "/etc/fchomo/resources/routing_list.yaml"
+if [ ! -s "/etc/fchomo/resources/proxy_list.yaml" ]; then
+	cat <<- EOF > "/etc/fchomo/resources/proxy_list.yaml"
 	FQDN:
 	- www.google.com
 	IPCIDR:

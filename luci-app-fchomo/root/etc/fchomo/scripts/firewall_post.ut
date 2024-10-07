@@ -179,6 +179,40 @@ table inet fchomo {
 		elements = { {{ join(', ', control_info.wan_proxy_ipv6_ips) }} }
 	}
 	{% endif %}
+	{# Routing mode -#}
+	{% if (match(routing_mode, /bypass_cn/): %}
+	set inet4_china_list_addr {
+		type ipv4_addr
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', split(trim(readfile(resources_dir + '/china_ip4.txt')), /[\r\n]/)) }} }
+	}
+
+	{% if (global_ipv6 === '1'): %}
+	set inet6_china_list_addr {
+		type ipv6_addr
+		flags interval
+		auto-merge
+		elements = { {{ join(', ', split(trim(readfile(resources_dir + '/china_ip6.txt')), /[\r\n]/)) }} }
+	}
+	{% endif %}
+	{% elif (match(routing_mode, /routing_gfw/) %}
+	set inet4_gfw_list_addr {
+		type ipv4_addr
+		flags interval
+		auto-merge
+		elements = {}
+	}
+
+	{% if (global_ipv6 === '1'): %}
+	set inet6_gfw_list_addr {
+		type ipv6_addr
+		flags interval
+		auto-merge
+		elements = {}
+	}
+	{% endif %}
+	{% endif /* routing_mode */ %}
 
 	chain output {
 		type nat hook output priority mangle - 5; policy accept;

@@ -72,7 +72,7 @@ const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || nul
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
       routing_mode = uci.get(uciconf, uciroute, 'routing_mode') || null,
       handle_domain = strToBool(uci.get(uciconf, uciroute, 'handle_domain')),
-      something_routing_options = 'EOF';
+      tposh = 'c2luZ2JveA';
 
 /* WAN DNS server array */
 let wan_dns = ubus.call('network.interface', 'status', {'interface': 'wan'})?.['dns-server'];

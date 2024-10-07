@@ -27,6 +27,12 @@ endef
 
 PKG_UNPACK=$(CURDIR)/.prepare.sh $(PKG_NAME) $(CURDIR) $(PKG_BUILD_DIR)
 
+define Package/luci-app-fchomo/prerm
+#!/bin/sh
+uci delete firewall.fchomo_pre
+uci commit firewall
+endef
+
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature

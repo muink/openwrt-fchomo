@@ -54,4 +54,14 @@ if [ ! -s "/etc/fchomo/templates/hosts.yaml" ]; then
 	EOF
 fi
 
+uci -q batch <<-EOF >"/dev/null"
+	delete firewall.fchomo_pre
+	set firewall.fchomo_pre=include
+	set firewall.fchomo_pre.type=nftables
+	set firewall.fchomo_pre.path="/var/run/fchomo/fchomo_pre.nft"
+	set firewall.fchomo_pre.position="table-pre"
+
+	commit firewall
+EOF
+
 exit 0

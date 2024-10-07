@@ -1,0 +1,50 @@
+#!/usr/bin/utpl -S
+
+{%-
+	import { cursor } from 'uci';
+	const uci = cursor();
+
+	const cfgname = 'fchomo';
+	uci.load(cfgname);
+
+	const proxy_mode = uci.get(cfgname, 'inbound', 'proxy_mode') || 'redir_tproxy';
+	let default_proxy, tun_name;
+	if (match(proxy_mode, /tun/)) {
+		default_proxy = uci.get(cfgname, 'routing', 'default_proxy') || null;
+
+		if (default_proxy)
+			tun_name = uci.get(cfgname, 'config', 'tun_name') || 'hmtun0';
+	}
+
+	const server_enabled = uci.get(cfgname, 'routing', 'server_enabled') || '0';
+	let auto_firewall = '0';
+	if (server_enabled === '1')
+		auto_firewall = uci.get(cfgname, 'server', 'auto_firewall') || '0';
+-%}
+
+{% if (tun_name): %}
+chain forward {
+	iifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun forward"
+	oifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun forward"
+}
+{% endif %}
+
+{% if (tun_name || auto_firewall === '1'): %}
+chain input {
+	{% if (tun_name): %}
+	iifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun input"
+	oifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun input"
+	{% endif %}
+	{%
+	if (auto_firewall === '1')
+		uci.foreach(cfgname, 'server', (cfg) => {
+			if (cfg.enabled === '0')
+				return;
+
+			let proto = (cfg.udp === '0') ? 'tcp' : '{ tcp, udp }';
+			printf('	meta l4proto %s th dport %s counter accept comment "!%s: accept server instance [%s]"\n',
+				proto, cfg.port, cfgname, cfg['.name']);
+		});
+	%}
+}
+{% endif %}

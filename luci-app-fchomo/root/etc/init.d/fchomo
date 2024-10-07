@@ -110,21 +110,66 @@ start_service() {
 			mv "$RUN_DIR/"*-gh-pages/ "$RUN_DIR/ui/"
 		fi
 
-		# Setup DNSMasq servers
+		# Setup DNSMasq servers and IP-sets
 		local global_ipv6 dns_ipv6
 		config_get_bool global_ipv6 "global" "ipv6" "1"
 		config_get_bool dns_ipv6 "dns" "ipv6" "1"
 		local dns_port tcp_dns_port
 		config_get dns_port "dns" "port" "7853"
 		config_get tcp_dns_port "inbound" "tunnel_port" "7893"
+		local routing_mode routing_domain
+		config_get routing_mode "routing" "routing_mode" ""
+		config_get_bool routing_domain "routing" "routing_domain" "0"
 
 		mkdir -p "$DNSMASQ_DIR"
 		echo -e "conf-dir=$DNSMASQ_DIR" > "$DNSMASQ_DIR/../dnsmasq-fchomo.conf"
-		cat <<-EOF >> "$DNSMASQ_DIR/redirect-dns.conf"
+		cat <<-EOF > "$DNSMASQ_DIR/forward-dns.conf"
 			no-poll
 			no-resolv
 			server=127.0.0.1#$dns_port
 		EOF
+
+		# <family> <set_name> <src> <dst> [yaml]
+		write_ipset_file() {
+			local family=$1
+			local set_name=$2
+			local src="$3"
+			local dst="$4"
+			local yaml="$5"
+
+			if [ -n "$yaml" ]; then
+				yq '.[] |= with(select(. == null); . = []) | .FQDN[]' "$src" | \
+				sed "s|^|nftset=/|;s|$|/${family}#inet#fchomo#${set_name}|" > "$dst"
+			else
+				sed "s|^|nftset=/|;s|$|/${family}#inet#fchomo#${set_name}|" "$src" > "$dst"
+			fi
+		}
+
+		# IP-sets
+		if [ -n "$(opkg list-installed dnsmasq-full)" ]; then
+			write_ipset_file 4 inet4_wan_direct_addr "$DNSMASQ_DIR/direct_list.yaml" "$DNSMASQ_DIR/direct_list.conf" yaml
+			[ "$global_ipv6" != "1" ] || \
+			write_ipset_file 6 inet6_wan_direct_addr "$DNSMASQ_DIR/direct_list.yaml" "$DNSMASQ_DIR/direct_list6.conf" yaml
+
+			write_ipset_file 4 inet4_wan_proxy_addr "$DNSMASQ_DIR/proxy_list.yaml" "$DNSMASQ_DIR/proxy_list.conf" yaml
+			[ "$global_ipv6" != "1" ] || \
+			write_ipset_file 6 inet6_wan_proxy_addr "$DNSMASQ_DIR/proxy_list.yaml" "$DNSMASQ_DIR/proxy_list6.conf" yaml
+
+			if [ "$routing_domain" = "1"]; then
+				case "$routing_mode" in
+					bypass_cn)
+						write_ipset_file 4 inet4_china_list_addr "$HM_DIR/resources/china_list.txt" "$DNSMASQ_DIR/china_list.conf"
+						[ "$global_ipv6" != "1" ] || \
+						write_ipset_file 6 inet6_china_list_addr "$HM_DIR/resources/china_list.txt" "$DNSMASQ_DIR/china_list6.conf"
+						;;
+					routing_gfw)
+						write_ipset_file 4 inet4_gfw_list_addr "$HM_DIR/resources/gfw_list.txt" "$DNSMASQ_DIR/gfw_list.conf"
+						[ "$global_ipv6" != "1" ] || \
+						write_ipset_file 6 inet6_gfw_list_addr "$HM_DIR/resources/gfw_list.txt" "$DNSMASQ_DIR/gfw_list6.conf"
+						;;
+				esac
+			fi
+		fi
 
 		/etc/init.d/dnsmasq reload >/dev/null 2>&1
 

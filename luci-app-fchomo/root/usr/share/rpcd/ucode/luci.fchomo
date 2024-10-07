@@ -13,6 +13,18 @@ function hasKernelModule(kmod) {
 	return (system(sprintf('[ -e "/lib/modules/$(uname -r)"/%s ]', shellquote(kmod))) === 0);
 }
 
+function yqRead(flags, command, filepath) {
+	let out = '';
+
+	const fd = popen(`yq ${flags} ${shellquote(command)} ${filepath}`);
+	if (fd) {
+		out = fd.read('all');
+		fd.close();
+	}
+
+	return out;
+}
+
 const HM_DIR = '/etc/fchomo';
 const RUN_DIR = '/var/run/fchomo';
 const RES_TYPE = ['certs', 'provider', 'ruleset', 'resources', 'templates'];
@@ -52,14 +64,8 @@ const methods = {
 		call: function(req) {
 			if (req.args?.instance) {
 				const instance = req.args?.instance;
-				let config;
 
-				const fd = popen(`yq -oj '.[] |= with(select(type == "!!map"); del(.)) |= with(select(type == "!!seq"); del(.))' ${RUN_DIR}/${instance}.yaml`);
-				if (fd) {
-					config = json(trim(fd.read('all')) || '{}');
-
-					fd.close();
-				}
+				let config = json(trim(yqRead('-oj', '.[] |= with(select(type == "!!map"); del(.)) |= with(select(type == "!!seq"); del(.))', `${RUN_DIR}/${instance}.yaml`)) || '{}');
 
 				return {
 					http: config['external-controller'],

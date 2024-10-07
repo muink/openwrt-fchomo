@@ -1,0 +1,26 @@
+dns 劫持:
+prerouting去往:53的流量 劫持到路由器:53
+output去往公網:53的流量 劫持到路由器:7853 -> mihomo -> mark 200
+
+config_get_bool ipv6 "global" "ipv6" "1"
+config_get_bool dns_ipv6 "dns" "ipv6" "1"
+
+nftables_set() {
+	config_get_bool dns_redirect "@dnsmasq[0]" dns_redirect 0
+	config_get dns_port "@dnsmasq[0]" port 53
+	if [ "$dns_redirect" = 1 ]; then
+		nft add table inet dnsmasq
+		nft add chain inet dnsmasq prerouting "{ type nat hook prerouting priority -105; policy accept; }"
+		nft add rule inet dnsmasq prerouting "meta nfproto { ipv4, ipv6 } udp dport 53 counter redirect to :$dns_port comment \"DNSMASQ HIJACK\""
+	fi
+}
+nftables_clear() {
+	! nft --check list table inet dnsmasq > "/dev/null" 2>&1 || \
+		nft delete table inet dnsmasq
+}
+
+nft delete table inet dnsmasq
+nft add table inet dnsmasq
+nft add chain inet dnsmasq prerouting "{ type nat hook prerouting priority -105; policy accept; }"
+nft add rule inet dnsmasq prerouting "meta nfproto { ipv4, ipv6 } meta l4proto { udp, tcp } th dport 53 counter redirect to :$dns_port comment \"DNSMASQ HIJACK\""
+nft list table inet dnsmasq

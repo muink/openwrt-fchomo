@@ -17,9 +17,9 @@
 	}
 
 	const server_enabled = uci.get(cfgname, 'routing', 'server_enabled') || '0';
-	let auto_firewall = '0';
+	let server_auto_firewall = '0';
 	if (server_enabled === '1')
-		auto_firewall = uci.get(cfgname, 'server', 'auto_firewall') || '0';
+		server_auto_firewall = uci.get(cfgname, 'routing', 'server_auto_firewall') || '0';
 -%}
 
 {% if (tun_name): %}
@@ -29,14 +29,14 @@ chain forward {
 }
 {% endif %}
 
-{% if (tun_name || auto_firewall === '1'): %}
+{% if (tun_name || server_auto_firewall === '1'): %}
 chain input {
 	{% if (tun_name): %}
 	iifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun input"
 	oifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun input"
 	{% endif %}
 	{%
-	if (auto_firewall === '1')
+	if (server_auto_firewall === '1')
 		uci.foreach(cfgname, 'server', (cfg) => {
 			if (cfg.enabled === '0')
 				return;

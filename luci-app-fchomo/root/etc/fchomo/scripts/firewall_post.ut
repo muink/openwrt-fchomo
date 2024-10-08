@@ -232,7 +232,23 @@ table inet fchomo {
 	}
 	{% endif %}
 
+	chain prerouting {
+		type nat hook prerouting priority mangle - 5; policy accept;
+	}
+
+	chain input {
+		type filter hook input priority mangle - 5; policy accept;
+	}
+
+	chain forward {
+		type filter hook forward priority mangle - 5; policy accept;
+	}
+
 	chain output {
 		type nat hook output priority mangle - 5; policy accept;
+	}
+
+	chain postrouting {
+		type nat hook postrouting priority mangle - 5; policy accept;
 	}
 }

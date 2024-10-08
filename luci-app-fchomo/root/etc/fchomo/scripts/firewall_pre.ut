@@ -15,11 +15,6 @@
 		if (default_proxy)
 			tun_name = uci.get(cfgname, 'config', 'tun_name') || 'hmtun0';
 	}
-
-	const server_enabled = uci.get(cfgname, 'routing', 'server_enabled') || '0';
-	let server_auto_firewall = '0';
-	if (server_enabled === '1')
-		server_auto_firewall = uci.get(cfgname, 'routing', 'server_auto_firewall') || '0';
 -%}
 
 {% if (tun_name): %}
@@ -27,24 +22,9 @@ chain forward {
 	iifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun forward"
 	oifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun forward"
 }
-{% endif %}
 
-{% if (tun_name || server_auto_firewall === '1'): %}
 chain input {
-	{% if (tun_name): %}
 	iifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun input"
 	oifname {{ tun_name }} counter accept comment "!{{ cfgname }}: accept tun input"
-	{% endif %}
-	{%
-	if (server_auto_firewall === '1')
-		uci.foreach(cfgname, 'server', (cfg) => {
-			if (cfg.enabled === '0')
-				return;
-
-			let proto = (cfg.udp === '0') ? 'tcp' : '{ tcp, udp }';
-			printf('	meta l4proto %s th dport %s counter accept comment "!%s: accept server instance [%s]"\n',
-				proto, cfg.port, cfgname, cfg['.name']);
-		});
-	%}
 }
 {% endif %}

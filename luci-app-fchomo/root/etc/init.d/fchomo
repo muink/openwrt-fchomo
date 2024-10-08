@@ -174,38 +174,40 @@ start_service() {
 		/etc/init.d/dnsmasq reload >/dev/null 2>&1
 
 		# Setup routing table
-		local proxy_mode table_id
+		local proxy_mode table_id rule_pref
 		config_get proxy_mode "inbound" "proxy_mode" "redir_tproxy"
 		config_get table_id "config" "route_table_id" "2022"
 		config_get rule_pref "config" "route_rule_pref" "9000"
 		case "$proxy_mode" in
-		"redir_tproxy")
-			local tproxy_mark
-			config_get tproxy_mark "config" "tproxy_mark" "201"
+			"redir_tproxy")
+				local tproxy_mark
+				config_get tproxy_mark "config" "tproxy_mark" "201"
 
-			ip rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
-			ip route add local 0.0.0.0/0 dev lo table "$table_id"
+				ip rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
+				ip route add local 0.0.0.0/0 dev lo table "$table_id"
 
-			if [ "$global_ipv6" = "1" ]; then
-				ip -6 rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
-				ip -6 route add local ::/0 dev lo table "$table_id"
-			fi
-			;;
-		"redir_tun"|"tun")
-			local tun_name tun_mark
-			config_get tun_name "config" "tun_name" "hmtun0"
-			config_get tun_mark "config" "tun_mark" "202"
+				if [ "$global_ipv6" = "1" ]; then
+					ip -6 rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
+					ip -6 route add local ::/0 dev lo table "$table_id"
+				fi
+				;;
+			"redir_tun"|"tun")
+				local tun_name tun_mark
+				config_get tun_name "config" "tun_name" "hmtun0"
+				config_get tun_mark "config" "tun_mark" "202"
 
-			ip tuntap add mode tun user root name "$tun_name"
-			sleep 1s
-			ip link set "$tun_name" up
+				ip tuntap add mode tun user root name "$tun_name"
+				sleep 1s
+				ip link set "$tun_name" up
 
-			ip route replace default dev "$tun_name" table "$table_id"
-			ip rule add fwmark "$tun_mark" pref "$rule_pref" table "$table_id"
+				ip route replace default dev "$tun_name" table "$table_id"
+				ip rule add fwmark "$tun_mark" pref "$rule_pref" table "$table_id"
 
-			ip -6 route replace default dev "$tun_name" table "$table_id"
-			ip -6 rule add fwmark "$tun_mark" pref "$rule_pref" table "$table_id"
-			;;
+				if [ "$global_ipv6" = "1" ]; then
+					ip -6 route replace default dev "$tun_name" table "$table_id"
+					ip -6 rule add fwmark "$tun_mark" pref "$rule_pref" table "$table_id"
+				fi
+				;;
 		esac
 
 		# mihomo (client)

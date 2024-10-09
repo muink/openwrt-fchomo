@@ -229,13 +229,33 @@ return view.extend({
 		so = ss.taboption('field_general', form.MultiValue, 'proxies', _('Node'));
 		so.value('', _('-- Please choose --'));
 		so.load = L.bind(hm.loadNodeLabel, so);
-		so.editable = true;
+		so.textvalue = function(section_id) {
+			if (this.section.getOption('include_all').cfgvalue(section_id) === '1')
+				return _('All Node');
+			if (this.section.getOption('include_all_proxies').cfgvalue(section_id) === '1')
+				return _('All Node');
+
+			return this.cfgvalue(section_id).map((key) => {
+				let i = this.keylist.indexOf(key);
+				return this.vallist[i];
+			}).join(', ');
+		}
 		so.depends({ include_all: '0', include_all_proxies: '0' });
 
 		so = ss.taboption('field_general', form.MultiValue, 'use', _('Provider'));
 		so.value('', _('-- Please choose --'));
 		so.load = L.bind(hm.loadProviderLabel, so);
-		so.editable = true;
+		so.textvalue = function(section_id) {
+			if (this.section.getOption('include_all').cfgvalue(section_id) === '1')
+				return _('All Provider');
+			if (this.section.getOption('include_all_providers').cfgvalue(section_id) === '1')
+				return _('All Provider');
+
+			return this.cfgvalue(section_id).map((key) => {
+				let i = this.keylist.indexOf(key);
+				return this.vallist[i];
+			}).join(', ');
+		}
 		so.depends({ include_all: '0', include_all_providers: '0' });
 
 		so = ss.taboption('field_general', form.Flag, 'include_all', _('Include all'),

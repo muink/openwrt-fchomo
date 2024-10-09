@@ -94,7 +94,7 @@
 -%}
 
 table inet fchomo {
-	{# Reserved addresses -#}
+	{#- Reserved addresses #}
 	set inet4_local_addr {
 		type ipv4_addr
 		flags interval
@@ -147,7 +147,8 @@ table inet fchomo {
 		}
 	}
 	{% endif %}
-	{# Custom Direct list #}
+
+	{#- Custom Direct list #}
 	set inet4_wan_direct_addr {
 		type ipv4_addr
 		flags interval
@@ -163,7 +164,8 @@ table inet fchomo {
 		elements = { {{ join(', ', control_info.wan_direct_ipv6_ips) }} }
 	}
 	{% endif %}
-	{# Custom Proxy list #}
+
+	{#- Custom Proxy list #}
 	set inet4_wan_proxy_addr {
 		type ipv4_addr
 		flags interval
@@ -179,7 +181,8 @@ table inet fchomo {
 		elements = { {{ join(', ', control_info.wan_proxy_ipv6_ips) }} }
 	}
 	{% endif %}
-	{# Routing mode #}
+
+	{#- Routing mode #}
 	{% if (match(routing_mode, /bypass_cn/)): %}
 	set inet4_china_list_addr {
 		type ipv4_addr
@@ -213,7 +216,8 @@ table inet fchomo {
 	}
 	{% endif %}
 	{% endif /* routing_mode */ %}
-	{# Routing port #}
+
+	{#- Routing port #}
 	{% if (routing_tcpport): %}
 	set tcp_routing_port {
 		type inet_service
@@ -232,6 +236,7 @@ table inet fchomo {
 	}
 	{% endif %}
 
+	{# Main entrypoint #}
 	chain prerouting {
 		type nat hook prerouting priority mangle - 5; policy accept;
 	}

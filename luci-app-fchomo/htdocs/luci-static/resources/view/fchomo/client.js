@@ -222,7 +222,9 @@ return view.extend({
 
 		// dev: Features under development
 		so = ss.taboption('field_general', form.MultiValue, 'groups', _('Group'));
-		so.value('', _('-- Please choose --'));
+		hm.preset_outbound.full.forEach((res) => {
+			so.value.apply(so, res);
+		})
 		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.full);
 		so.editable = true;
 
@@ -487,7 +489,7 @@ return view.extend({
 		initFactor.call(so, data[0]);
 
 		so = ss.option(form.ListValue, 'rule_set', _('Factor'));
-		so.value('');
+		so.value('', _('-- Please choose --'));
 		so.depends('type', 'RULE-SET');
 		initFactor.call(so, data[0]);
 		so.load = function(section_id) {
@@ -786,7 +788,7 @@ return view.extend({
 
 		so = ss.option(form.MultiValue, 'rule_set', _('Rule set'),
 			_('Match rule set.'));
-		so.value('');
+		so.value('', _('-- Please choose --'));
 		so.load = L.bind(hm.loadRulesetLabel, so, ['domain', 'classical']);
 		so.depends('type', 'rule_set');
 		so.modalonly = true;

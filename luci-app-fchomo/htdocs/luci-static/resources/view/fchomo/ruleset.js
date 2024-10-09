@@ -265,6 +265,10 @@ return view.extend({
 
 		o = s.option(form.ListValue, 'proxy', _('Proxy group'),
 			_('Name of the Proxy group to download rule set.'));
+		o.default = hm.preset_outbound.direct[0][0];
+		hm.preset_outbound.direct.forEach((res) => {
+			o.value.apply(o, res);
+		})
 		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct);
 		o.textvalue = L.bind(hm.textvalue2Value, o);
 		//o.editable = true;

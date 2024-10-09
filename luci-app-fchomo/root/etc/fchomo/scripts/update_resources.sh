@@ -224,7 +224,7 @@ case "$1" in
 	fi
 	;;
 "dashboard")
-	check_dashboard_update "$1" "${2:-metacubex/yacd-meta}"
+	check_dashboard_update "$1" "${2:-MetaCubeX/metacubexd}"
 	;;
 "geoip")
 	check_geodata_update "$1" "Loyalsoldier/v2ray-rules-dat"

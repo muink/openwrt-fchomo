@@ -596,6 +596,10 @@ msgstr ""
 msgid "Grant access to fchomo configuration"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/client.js:224
+msgid "Group"
+msgstr ""
+
 #: htdocs/luci-static/resources/fchomo.js:72
 msgid "HTTP"
 msgstr ""

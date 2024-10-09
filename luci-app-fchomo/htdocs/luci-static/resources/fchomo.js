@@ -337,6 +337,19 @@ return baseclass.extend({
 		return this.super('load', section_id);
 	},
 
+	loadNodeLabel: function(section_id) {
+		delete this.keylist;
+		delete this.vallist;
+
+		this.value('', _('-- Please choose --'));
+		uci.sections(this.config, 'node', (res) => {
+			if (res.enabled !== '0')
+				this.value(res['.name'], res.label);
+		});
+
+		return this.super('load', section_id);
+	},
+
 	loadProviderLabel: function(section_id) {
 		delete this.keylist;
 		delete this.vallist;

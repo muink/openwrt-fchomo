@@ -221,14 +221,37 @@ return view.extend({
 		})
 
 		// dev: Features under development
-		so = ss.taboption('field_general', form.MultiValue, 'proxies', _('Node'));
+		so = ss.taboption('field_general', form.MultiValue, 'groups', _('Group'));
 		so.value('', _('-- Please choose --'));
-		so.readonly = true;
+		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.full);
 		so.editable = true;
 
+		so = ss.taboption('field_general', form.MultiValue, 'proxies', _('Node'));
+		so.value('', _('-- Please choose --'));
+		so.load = L.bind(hm.loadNodeLabel, so);
+		so.editable = true;
+		so.depends({ include_all: '0', include_all_proxies: '0' });
+
 		so = ss.taboption('field_general', form.MultiValue, 'use', _('Provider'));
+		so.value('', _('-- Please choose --'));
 		so.load = L.bind(hm.loadProviderLabel, so);
 		so.editable = true;
+		so.depends({ include_all: '0', include_all_providers: '0' });
+
+		so = ss.taboption('field_general', form.Flag, 'include_all', _('Include all'),
+			_('Includes all Proxy Node and Provider.'));
+		so.default = so.disabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'include_all_proxies', _('Include all node'),
+			_('Includes all Proxy Node.'));
+		so.default = so.disabled;
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'include_all_providers', _('Include all provider'),
+			_('Includes all Provider.'));
+		so.default = so.disabled;
+		so.modalonly = true;
 
 		/* Override fields */
 		so = ss.taboption('field_override', form.Flag, 'disable_udp', _('Disable UDP'));
@@ -311,27 +334,6 @@ return view.extend({
 		so.modalonly = true;
 
 		/* General fields */
-		// dev: Features under development
-		so = ss.taboption('field_general', form.Flag, 'include_all', _('Include all'),
-			_('Includes all Proxy Node and Provider.'));
-		so.default = so.disabled;
-		so.readonly = true;
-		so.modalonly = true;
-
-		// dev: Features under development
-		so = ss.taboption('field_general', form.Flag, 'include_all_proxies', _('Include all node'),
-			_('Includes all Proxy Node.'));
-		so.default = so.disabled;
-		so.readonly = true;
-		so.modalonly = true;
-
-		// dev: Features under development
-		so = ss.taboption('field_general', form.Flag, 'include_all_providers', _('Include all provider'),
-			_('Includes all Provider.'));
-		so.default = so.disabled;
-		so.readonly = true;
-		so.modalonly = true;
-
 		so = ss.taboption('field_general', form.DynamicList, 'filter', _('Node filter'),
 			_('Filter nodes that meet keywords or regexps.'));
 		so.placeholder = '(?i)港|hk|hongkong|hong kong';

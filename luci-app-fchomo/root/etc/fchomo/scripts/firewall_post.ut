@@ -237,8 +237,12 @@ table inet fchomo {
 	{% endif %}
 
 	{# Main entrypoint #}
-	chain prerouting {
-		type nat hook prerouting priority mangle - 5; policy accept;
+	chain postdnat {
+		type nat hook prerouting priority dstnat + 5; policy accept;
+		{#- TCP redirect entrypoint #}
+		{% if (match(proxy_mode, /redir/)): %}
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto tcp jump redir_acl_src
+		{% endif %}
 	}
 
 	chain input {
@@ -249,11 +253,99 @@ table inet fchomo {
 		type filter hook forward priority mangle - 5; policy accept;
 	}
 
-	chain output {
-		type nat hook output priority mangle - 5; policy accept;
+	chain preoutput {
+		type nat hook output priority 0; policy accept;
+		{#- TCP redirect entrypoint #}
+		{% if (proxy_router === '1'): %}
+		{% if (match(proxy_mode, /redir/)): %}
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto tcp jump redir_acl_dst
+		{% endif %}
+		{% endif /* proxy_router */ %}
 	}
 
 	chain postrouting {
 		type nat hook postrouting priority mangle - 5; policy accept;
 	}
+
+	{# TCP redirect START #}
+	{% if (match(proxy_mode, /redir/)): %}
+	chain redir_acl_src {
+		{% if (control_info.listen_interfaces): %}
+		meta iifname != {{ array_to_nftarr(control_info.listen_interfaces) }} counter return
+		{% endif %}
+		meta mark {{ self_mark }} counter return
+
+		{% if (control_info.lan_filter === 'white_list'): %}
+		{% if (!isEmpty(control_info.lan_proxy_ipv4_ips)): %}
+		ip saddr {{ array_to_nftarr(control_info.lan_proxy_ipv4_ips) }} counter goto redir_acl_dst
+		{% endif %}
+		{% for (let ipv6 in control_info.lan_proxy_ipv6_ips): %}
+		ip6 saddr {{ resolve_ipv6(ipv6) }} counter goto redir_acl_dst
+		{% endfor %}
+		{% if (!isEmpty(control_info.lan_proxy_mac_addrs)): %}
+		ether saddr {{ array_to_nftarr(control_info.lan_proxy_mac_addrs) }} counter goto redir_acl_dst
+		{% endif %}
+		{% elif (control_info.lan_filter === 'black_list'): %}
+		{% if (!isEmpty(control_info.lan_direct_ipv4_ips)): %}
+		ip saddr {{ array_to_nftarr(control_info.lan_direct_ipv4_ips) }} counter return
+		{% endif %}
+		{% for (let ipv6 in control_info.lan_direct_ipv6_ips): %}
+		ip6 saddr {{ resolve_ipv6(ipv6) }} counter return
+		{% endfor %}
+		{% if (!isEmpty(control_info.lan_direct_mac_addrs)): %}
+		ether saddr {{ array_to_nftarr(control_info.lan_direct_mac_addrs) }} counter return
+		{% endif %}
+		{% endif /* lan_filter */ %}
+
+		{% if (control_info.lan_filter !== 'white_list'): %}
+		counter goto redir_acl_dst
+		{% endif %}
+	}
+
+	chain redir_acl_dst {
+		meta mark {{ self_mark }} counter return
+
+		ip daddr @inet4_local_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_local_addr counter return
+		{% endif %}
+
+		ip daddr @inet4_wan_proxy_addr counter goto redir_acl_dport
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_wan_proxy_addr counter goto redir_acl_dport
+		{% endif %}
+
+		ip daddr @inet4_wan_direct_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_wan_direct_addr counter return
+		{% endif %}
+
+		{% if (routing_mode === 'routing_gfw'): %}
+		ip daddr != @inet4_gfw_list counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr != @inet6_gfw_list counter return
+		{% endif %}
+		{% elif (routing_mode === 'bypass_cn'): %}
+		ip daddr @inet4_china_list_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_china_list_addr counter return
+		{% endif %}
+		{% endif /* routing_mode */ %}
+
+		counter goto redir_acl_dport
+	}
+
+	chain redir_acl_dport {
+		{% if (routing_tcpport): %}
+		tcp dport != @tcp_routing_port counter return
+		{% endif %}
+		goto redir_gate
+	}
+
+	chain redir_gate {
+		meta l4proto tcp counter redirect to :{{ redir_port }}
+	}
+	{% endif /* proxy_mode */ %}
+	{# TCP redirect END #}
+
 }

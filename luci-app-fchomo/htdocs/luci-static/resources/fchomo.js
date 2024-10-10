@@ -432,7 +432,7 @@ return baseclass.extend({
 
 		var El = E([
 			E('button', {
-				class: 'cbi-button cbi-button-apply',
+				class: 'cbi-button cbi-button-add',
 				disabled: (type !== 'http') || null,
 				click: ui.createHandlerFn(this, function(section_type, section_id, type, url, header) {
 					if (type === 'http') {

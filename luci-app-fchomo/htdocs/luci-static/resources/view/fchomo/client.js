@@ -231,49 +231,45 @@ return view.extend({
 		so = ss.taboption('field_general', form.MultiValue, 'proxies', _('Node'));
 		so.value('', _('-- Please choose --'));
 		so.load = L.bind(hm.loadNodeLabel, so);
-		so.textvalue = function(section_id) {
-			if (this.section.getOption('include_all').cfgvalue(section_id) === '1')
-				return _('All Node');
-			if (this.section.getOption('include_all_proxies').cfgvalue(section_id) === '1')
-				return _('All Node');
+		so.validate = function(section_id, value) {
+			if (this.section.getOption('include_all').formvalue(section_id) === '1' ||
+			    this.section.getOption('include_all_proxies').formvalue(section_id) === '1')
+				this.getUIElement(section_id, this.option).node.setAttribute('disabled', '');
+			else
+				this.getUIElement(section_id, this.option).node.removeAttribute('disabled');
 
-			return this.cfgvalue(section_id).map((key) => {
-				let i = this.keylist.indexOf(key);
-				return this.vallist[i];
-			}).join(', ');
+			return true;
 		}
-		so.depends({ include_all: '0', include_all_proxies: '0' });
+		so.editable = true;
 
 		so = ss.taboption('field_general', form.MultiValue, 'use', _('Provider'));
 		so.value('', _('-- Please choose --'));
 		so.load = L.bind(hm.loadProviderLabel, so);
-		so.textvalue = function(section_id) {
-			if (this.section.getOption('include_all').cfgvalue(section_id) === '1')
-				return _('All Provider');
-			if (this.section.getOption('include_all_providers').cfgvalue(section_id) === '1')
-				return _('All Provider');
+		so.validate = function(section_id, value) {
+			if (this.section.getOption('include_all').formvalue(section_id) === '1' ||
+			    this.section.getOption('include_all_providers').formvalue(section_id) === '1')
+				this.getUIElement(section_id, this.option).node.setAttribute('disabled', '');
+			else
+				this.getUIElement(section_id, this.option).node.removeAttribute('disabled');
 
-			return this.cfgvalue(section_id).map((key) => {
-				let i = this.keylist.indexOf(key);
-				return this.vallist[i];
-			}).join(', ');
+			return true;
 		}
-		so.depends({ include_all: '0', include_all_providers: '0' });
+		so.editable = true;
 
 		so = ss.taboption('field_general', form.Flag, 'include_all', _('Include all'),
 			_('Includes all Proxy Node and Provider.'));
 		so.default = so.disabled;
-		so.modalonly = true;
+		so.editable = true;
 
 		so = ss.taboption('field_general', form.Flag, 'include_all_proxies', _('Include all node'),
 			_('Includes all Proxy Node.'));
 		so.default = so.disabled;
-		so.modalonly = true;
+		so.editable = true;
 
 		so = ss.taboption('field_general', form.Flag, 'include_all_providers', _('Include all provider'),
 			_('Includes all Provider.'));
 		so.default = so.disabled;
-		so.modalonly = true;
+		so.editable = true;
 
 		/* Override fields */
 		so = ss.taboption('field_override', form.Flag, 'disable_udp', _('Disable UDP'));

@@ -186,14 +186,15 @@ return view.extend({
 		/* Proxy Group */
 		o = s.taboption('group', form.SectionValue, '_group', form.GridSection, 'proxy_group', null);
 		ss = o.subsection;
+		var prefmt = { 'prefix': 'group_', 'suffix': '' };
 		ss.addremove = true;
 		ss.rowcolors = true;
 		ss.sortable = true;
 		ss.nodescriptions = true;
 		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('Proxy Group'), _('Add a proxy group'));
 		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
-		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, {}, true);
-		ss.handleAdd = L.bind(hm.handleAdd, ss, {});
+		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, true);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		ss.tab('field_general', _('General fields'));
 		ss.tab('field_override', _('Override fields'));

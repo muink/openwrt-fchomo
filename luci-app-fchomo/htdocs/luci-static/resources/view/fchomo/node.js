@@ -42,6 +42,10 @@ return view.extend({
 		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 
+		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so.default = so.enabled;
+		so.editable = true;
+
 		so = ss.option(form.ListValue, 'type', _('Type'));
 		so.default = hm.outbound_type[0][0];
 		hm.outbound_type.forEach((res) => {

@@ -790,7 +790,7 @@ return view.extend({
 		so.depends('type', 'rule_set');
 		so.modalonly = true;
 
-		so = ss.option(form.DummyValue, '_value', _('Value'));
+		so = ss.option(form.DummyValue, '_entry', _('Entry'));
 		so.load = function(section_id) {
 			var option = uci.get(data[0], section_id, 'type');
 

@@ -68,8 +68,30 @@ class RulesEntry {
 		this.input = entry || '';
 		this.rawparams = this.input.split(',');
 		this.type = this.rawparams.shift() || '';
-		this.factor = this.rawparams.shift() || '';
+		this.logical = hm.rules_logical_type.map(e => e[0] || e).includes(this.type);
+		var logical_payload, rawfactor;
+		(function(rawparams_typecuted) {
+			logical_payload = rawparams_typecuted.match(/^\(.*\)/);
+			if (logical_payload) {
+				rawfactor = logical_payload[0];
+				this.rawparams = rawparams_typecuted.replace(/^\(.*\),?/, '').split(',');
+			} else
+				rawfactor = this.rawparams.shift() || '';
+		}.call(this, this.rawparams.join(',')));
 		this.detour = this.rawparams.shift() || '';
+
+		this.payload = [];
+		if (logical_payload) { // ꓹ ႇ ❟
+			if (rawfactor.match(/^\(.*\)$/)) // LOGICAL_TPYE,()
+				rawfactor.slice(1, -1).split('ꓹ').forEach((payload) => { // U+A4F9
+					if (payload.match(/^\(.*\)$/)) { // (payload)
+						let arr = payload.slice(1, -1).split('‚'); // U+201A
+						this.payload.push({ type: arr[0] || '', factor: arr[1] || '' });
+					}
+				});
+		} else
+			this.payload[0] = { type: this.type, factor: rawfactor };
+
 		this.params = {};
 		if (this.rawparams.length > 0) {
 			this.rawparams.forEach((k) => {
@@ -81,6 +103,20 @@ class RulesEntry {
 
 	setKey(key, value) {
 		this[key] = value;
+
+		return this
+	}
+
+	getPayload(n) {
+		return this.payload[n] || {};
+	}
+
+	setPayload(n, obj) {
+		this.payload[n] ||= {};
+
+		Object.keys(obj).forEach((key) => {
+			this.payload[n][key] = obj[key] || null;
+		});
 
 		return this
 	}
@@ -99,7 +135,16 @@ class RulesEntry {
 	}
 
 	toString() {
-		return [this.type, this.factor, this.detour].concat(
+		var factor = '';
+		if (this.logical) {
+			let n = hm.rules_logical_payload_count[this.type] || 0;
+			factor = '(%s)'.format(this.payload.slice(0, n).map((payload) => {
+				return '(%s‚%s)'.format(payload.type || '', payload.factor || '');
+			}).join('ꓹ'));
+		} else
+			factor = this.payload[0].factor;
+
+		return [this.type, factor, this.detour].concat(
 			['no-resolve', 'src'].filter(k => this.params[k])
 		).join(',');
 	}

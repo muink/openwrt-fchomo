@@ -147,13 +147,21 @@ return baseclass.extend({
 		//['DSCP'],
 
 		['RULE-SET'],
+	],
+
+	rules_logical_type: [
 		['AND'],
 		['OR'],
 		['NOT'],
-		['SUB-RULE'],
-
-		//['MATCH']
+		//['SUB-RULE'],
 	],
+
+	rules_logical_payload_count: {
+		'AND': 2,
+		'OR': 2,
+		'NOT': 1,
+		//'SUB-RULE': 0,
+	},
 
 	tls_client_fingerprints: [
 		['chrome'],

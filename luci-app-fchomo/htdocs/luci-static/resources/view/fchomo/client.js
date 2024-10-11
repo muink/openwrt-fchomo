@@ -31,8 +31,8 @@ function validateNameserver(section_id, value) {
 
 class DNSAddress {
 	constructor(address) {
-		this.rawaddr = address || '';
-		[this.addr, this.rawparams] = this.rawaddr.split('#');
+		this.input = address || '';
+		[this.addr, this.rawparams] = this.input.split('#');
 		if (this.rawparams) {
 			if (this.rawparams.match(/^[^=&]+(&|$)/))
 				this.rawparams = 'detour=' + this.rawparams
@@ -65,8 +65,8 @@ class DNSAddress {
 
 class RulesEntry {
 	constructor(entry) {
-		this.rawentry = entry || '';
-		this.rawparams = this.rawentry.split(',');
+		this.input = entry || '';
+		this.rawparams = this.input.split(',');
 		this.type = this.rawparams.shift() || '';
 		this.factor = this.rawparams.shift() || '';
 		this.detour = this.rawparams.shift() || '';
@@ -94,15 +94,6 @@ class RulesEntry {
 			this.params[param] = value;
 		} else
 			this.params[param] = null;
-
-		return this
-	}
-
-	delParam(param) {
-		if (param) {
-			delete this.params[param];
-		} else
-			throw 'illegal param'
 
 		return this
 	}

@@ -415,8 +415,11 @@ uci.foreach(uciconf, ucipgrp, (cfg) => {
 	push(config["proxy-groups"], {
 		name: cfg.label,
 		type: cfg.type,
-		proxies: cfg.proxies,
+		proxies: [ ...(cfg.groups || []), ...(cfg.proxies || []) ],
 		use: cfg.use,
+		"include-all": strToBool(cfg.include_all),
+		"include-all-proxies": strToBool(cfg.include_all_proxies),
+		"include-all-providers": strToBool(cfg.include_all_providers),
 		// Url-test fields
 		tolerance: (cfg.type === 'url-test') ? strToInt(cfg.tolerance) || 150 : null,
 		// Load-balance fields
@@ -432,10 +435,6 @@ uci.foreach(uciconf, ucipgrp, (cfg) => {
 		lazy: (cfg.lazy === '0') ? false : null,
 		"expected-status": cfg.url ? cfg.expected_status || '204' : null,
 		"max-failed-times": cfg.url ? strToInt(cfg.max_failed_times) || 5 : null,
-		// General fields
-		"include-all": strToBool(cfg.include_all),
-		"include-all-proxies": strToBool(cfg.include_all_proxies),
-		"include-all-providers": strToBool(cfg.include_all_providers),
 		filter: parse_filter(cfg.filter),
 		"exclude-filter": parse_filter(cfg.exclude_filter),
 		"exclude-type": parse_filter(cfg.exclude_type)

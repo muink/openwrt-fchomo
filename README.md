@@ -2,14 +2,11 @@
 
 ## Todo
 
-- [ ] proxies
-- [ ] rules: AND/OR/NOT/SUB-RULE
+- [ ] node/server
+- [ ] rules: SUB-RULE
 - [ ] sub-rules
 - [ ] dialer-proxy
-- [ ] interface-name
-- [ ] routing-mark
 - [ ] fw4 acl
-- [ ] dnsmasq acl
 - [ ] Any other improvements
 
 ## Screenshots

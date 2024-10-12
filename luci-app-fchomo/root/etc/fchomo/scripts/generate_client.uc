@@ -127,6 +127,17 @@ function parse_time_duration(time) {
 	return seconds;
 }
 
+function get_proxynode(cfg) {
+	if (isEmpty(cfg))
+		return null;
+
+	const label = uci.get(uciconf, cfg, 'label');
+	if (isEmpty(label))
+		die(sprintf("%s's label is missing, please check your configuration.", cfg));
+	else
+		return label;
+}
+
 function get_proxygroup(cfg) {
 	if (isEmpty(cfg))
 		return null;
@@ -415,7 +426,10 @@ uci.foreach(uciconf, ucipgrp, (cfg) => {
 	push(config["proxy-groups"], {
 		name: cfg.label,
 		type: cfg.type,
-		proxies: [ ...(cfg.groups || []), ...(cfg.proxies || []) ],
+		proxies: [
+			...map(cfg.groups || [], cfg => get_proxygroup(cfg)),
+			...map(cfg.proxies || [], cfg => get_proxynode(cfg))
+		],
 		use: cfg.use,
 		"include-all": strToBool(cfg.include_all),
 		"include-all-proxies": strToBool(cfg.include_all_proxies),

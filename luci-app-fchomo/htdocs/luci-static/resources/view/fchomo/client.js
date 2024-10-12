@@ -175,6 +175,63 @@ function flagToStr(flag) {
 	}
 }
 
+function renderPayload(s, total, uciconfig) {
+	// common factor
+	var initFactor = function(uciconfig) {
+		this.load = function(section_id) {
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n).factor;
+		}
+		this.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setPayload(n, {factor: value}).toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			return UIEl.setValue(newvalue);
+		}
+		this.write = function() {};
+		this.rmempty = false;
+		this.modalonly = true;
+	}
+
+	var o, prefix;
+	for (var n=0; n<total; n++) {
+		prefix = `payload${n}_`;
+
+		o = s.option(form.Value, prefix + 'general', _('Factor') + ` ${n+1}`);
+		o.depends({type: /\bDOMAIN\b/});
+		o.depends({type: /\bGEO(SITE|IP)\b/});
+		o.depends({type: /\bPROCESS\b/});
+		initFactor.call(o, uciconfig);
+
+		o = s.option(form.Value, prefix + 'ip', _('Factor') + ` ${n+1}`);
+		o.datatype = 'cidr';
+		o.depends({type: /\bIP\b/});
+		initFactor.call(o, uciconfig);
+
+		o = s.option(form.Value, prefix + 'port', _('Factor') + ` ${n+1}`);
+		o.datatype = 'or(port, portrange)';
+		o.depends({type: /\bPORT\b/});
+		initFactor.call(o, uciconfig);
+
+		o = s.option(form.ListValue, prefix + 'l4', _('Factor') + ` ${n+1}`);
+		o.value('udp', _('UDP'));
+		o.value('tcp', _('TCP'));
+		o.depends('type', 'NETWORK');
+		initFactor.call(o, uciconfig);
+
+		o = s.option(form.ListValue, prefix + 'rule_set', _('Factor') + ` ${n+1}`);
+		o.value('', _('-- Please choose --'));
+		o.depends('type', 'RULE-SET');
+		initFactor.call(o, uciconfig);
+		o.load = function(section_id) {
+			hm.loadRulesetLabel.call(this, null, section_id);
+
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n).factor;
+		}
+	}
+}
+
 return view.extend({
 	load: function() {
 		return Promise.all([
@@ -439,7 +496,7 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'type', _('Type'));
 		so.default = hm.rules_type[0][0];
-		hm.rules_type.forEach((res) => {
+		[...hm.rules_type, ...hm.rules_logical_type].forEach((res) => {
 			so.value.apply(so, res);
 		})
 		so.load = function(section_id) {
@@ -448,7 +505,11 @@ return view.extend({
 		so.validate = function(section_id, value) {
 			// params only available for types other than
 			// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/config/config.go#L1050
-			if (['NOT', 'OR', 'AND', 'SUB-RULE'].includes(value) || value.match(/\bREGEX\b/)) {
+			// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/rules/parser.go#L12
+			if (['GEOIP', 'IP-ASN', 'IP-CIDR', 'IP-CIDR6', 'IP-SUFFIX', 'RULE-SET'].includes(value)) {
+				this.section.getUIElement(section_id, 'no-resolve').node.querySelector('input').disabled = null;
+				this.section.getUIElement(section_id, 'src').node.querySelector('input').disabled = null;
+			} else {
 				var UIEl = this.section.getUIElement(section_id, 'entry');
 
 				var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve').setParam('src').toString();
@@ -461,9 +522,6 @@ return view.extend({
 					UIEl.setValue('');
 					UIEl.node.querySelector('input').disabled = 'true';
 				});
-			} else {
-				this.section.getUIElement(section_id, 'no-resolve').node.querySelector('input').disabled = null;
-				this.section.getUIElement(section_id, 'src').node.querySelector('input').disabled = null;
 			}
 
 			return true;
@@ -480,58 +538,9 @@ return view.extend({
 		so.rmempty = false;
 		so.modalonly = true;
 
-		// common factor
-		var initFactor = function(uciconfig) {
-			this.load = function(section_id) {
-				return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).factor;
-			}
-			this.onchange = function(ev, section_id, value) {
-				var UIEl = this.section.getUIElement(section_id, 'entry');
-
-				var newvalue = new RulesEntry(UIEl.getValue()).setKey('factor', value).toString();
-
-				UIEl.node.previousSibling.innerText = newvalue;
-				return UIEl.setValue(newvalue);
-			}
-			this.write = function() {};
-			this.rmempty = false;
-			this.modalonly = true;
-		}
-
-		so = ss.option(form.Value, 'general', _('Factor'));
-		so.depends({type: /\bDOMAIN\b/});
-		so.depends({type: /\bGEO(SITE|IP)\b/});
-		so.depends({type: /\bPROCESS\b/});
-		initFactor.call(so, data[0]);
-
-		so = ss.option(form.Value, 'ip', _('Factor'));
-		so.datatype = 'cidr';
-		so.depends({type: /\bIP\b/});
-		initFactor.call(so, data[0]);
-
-		so = ss.option(form.Value, 'port', _('Factor'));
-		so.datatype = 'or(port, portrange)';
-		so.depends({type: /\bPORT\b/});
-		initFactor.call(so, data[0]);
-
-		so = ss.option(form.ListValue, 'l4', _('Factor'));
-		so.value('udp', _('UDP'));
-		so.value('tcp', _('TCP'));
-		so.depends('type', 'NETWORK');
-		initFactor.call(so, data[0]);
-
-		so = ss.option(form.ListValue, 'rule_set', _('Factor'));
-		so.value('', _('-- Please choose --'));
-		so.depends('type', 'RULE-SET');
-		initFactor.call(so, data[0]);
-		so.load = function(section_id) {
-			hm.loadRulesetLabel.call(this, null, section_id);
-
-			return new RulesEntry(uci.get(data[0], section_id, 'entry')).factor;
-		}
-
+		renderPayload(ss, Math.max(...Object.values(hm.rules_logical_payload_count)), data[0]);
 		// dev: Features under development
-		// AND/OR/NOT/SUB-RULE
+		// SUB-RULE
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {

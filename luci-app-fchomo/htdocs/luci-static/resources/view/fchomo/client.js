@@ -177,18 +177,18 @@ function flagToStr(flag) {
 
 function renderPayload(s, total, uciconfig) {
 	// common factor
-	var initFactor = function(uciconfig) {
-		this.load = function(section_id) {
+	var initFactor = function(n, uciconfig) {
+		this.load = L.bind(function(n, uciconfig, section_id) {
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n).factor;
-		}
-		this.onchange = function(ev, section_id, value) {
+		}, this, n, uciconfig)
+		this.onchange = L.bind(function(n, ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
 			var newvalue = new RulesEntry(UIEl.getValue()).setPayload(n, {factor: value}).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);
-		}
+		}, this, n)
 		this.write = function() {};
 		this.rmempty = false;
 		this.modalonly = true;
@@ -202,33 +202,33 @@ function renderPayload(s, total, uciconfig) {
 		o.depends({type: /\bDOMAIN\b/});
 		o.depends({type: /\bGEO(SITE|IP)\b/});
 		o.depends({type: /\bPROCESS\b/});
-		initFactor.call(o, uciconfig);
+		initFactor.call(o, n, uciconfig);
 
 		o = s.option(form.Value, prefix + 'ip', _('Factor') + ` ${n+1}`);
 		o.datatype = 'cidr';
 		o.depends({type: /\bIP\b/});
-		initFactor.call(o, uciconfig);
+		initFactor.call(o, n, uciconfig);
 
 		o = s.option(form.Value, prefix + 'port', _('Factor') + ` ${n+1}`);
 		o.datatype = 'or(port, portrange)';
 		o.depends({type: /\bPORT\b/});
-		initFactor.call(o, uciconfig);
+		initFactor.call(o, n, uciconfig);
 
 		o = s.option(form.ListValue, prefix + 'l4', _('Factor') + ` ${n+1}`);
 		o.value('udp', _('UDP'));
 		o.value('tcp', _('TCP'));
 		o.depends('type', 'NETWORK');
-		initFactor.call(o, uciconfig);
+		initFactor.call(o, n, uciconfig);
 
 		o = s.option(form.ListValue, prefix + 'rule_set', _('Factor') + ` ${n+1}`);
 		o.value('', _('-- Please choose --'));
 		o.depends('type', 'RULE-SET');
-		initFactor.call(o, uciconfig);
-		o.load = function(section_id) {
+		initFactor.call(o, n, uciconfig);
+		o.load = L.bind(function(n, uciconfig, section_id) {
 			hm.loadRulesetLabel.call(this, null, section_id);
 
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n).factor;
-		}
+		}, o, n, uciconfig)
 	}
 }
 

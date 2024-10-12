@@ -883,6 +883,15 @@ return view.extend({
 		so.validate = L.bind(validateNameserver, so);
 		so.rmempty = false;
 		so.editable = true;
+
+		so = ss.option(form.ListValue, 'proxy', _('Proxy group'),
+			_('Override the Proxy group of DNS server.'));
+		so.default = hm.preset_outbound.direct[0][0];
+		hm.preset_outbound.direct.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.direct);
+		so.editable = true;
 		/* DNS policy END */
 
 		/* Fallback filter START */

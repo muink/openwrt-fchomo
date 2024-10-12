@@ -152,7 +152,7 @@ function get_proxygroup(cfg) {
 		return label;
 }
 
-function get_nameserver(cfg) {
+function get_nameserver(cfg, detour) {
 	if (isEmpty(cfg))
 		return [];
 
@@ -170,7 +170,7 @@ function get_nameserver(cfg) {
 			});
 		} else
 			push(servers, replace(dnsservers[k]?.address || '', /#detour=([^&]+)/, (m, c1) => {
-				return '#' + urlencode(get_proxygroup(c1));
+				return '#' + urlencode(get_proxygroup(detour || c1));
 			}));
 	}
 
@@ -380,7 +380,7 @@ uci.foreach(uciconf, ucidnspoli, (cfg) => {
 	if (!key)
 		return null;
 
-	config.dns["nameserver-policy"][key] = get_nameserver(cfg.server);
+	config.dns["nameserver-policy"][key] = get_nameserver(cfg.server, cfg.proxy);
 });
 /* Fallback filter */
 if (!isEmpty(config.dns.fallback))

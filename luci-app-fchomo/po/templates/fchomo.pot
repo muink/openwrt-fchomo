@@ -979,6 +979,10 @@ msgstr ""
 msgid "Override fields"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/client.js:888
+msgid "Override the Proxy group of DNS server."
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:487
 msgid "Override the connection destination address with the sniffed domain."
 msgstr ""

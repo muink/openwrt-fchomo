@@ -156,7 +156,7 @@ return view.extend({
 		})
 		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.direct);
 		so.textvalue = L.bind(hm.textvalue2Value, so);
-		//o.editable = true;
+		//so.editable = true;
 		so.depends('type', 'http');
 
 		so = ss.taboption('field_general', form.TextValue, 'header', _('HTTP header'),

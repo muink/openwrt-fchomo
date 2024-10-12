@@ -209,30 +209,43 @@ function renderPayload(s, total, uciconfig) {
 		initPayload.call(o, n, 'type', uciconfig);
 
 		o = s.option(form.Value, prefix + 'general', _('Factor') + ` ${n+1}`);
-		o.depends({type: /\bDOMAIN\b/});
-		o.depends({type: /\bGEO(SITE|IP)\b/});
-		o.depends({type: /\bPROCESS\b/});
+		if (n === 0) {
+			o.depends({type: /\bDOMAIN\b/});
+			o.depends({type: /\bGEO(SITE|IP)\b/});
+			o.depends({type: /\bPROCESS\b/});
+		}
+		o.depends(Object.fromEntries([[prefix + 'type', /\bDOMAIN\b/]]));
+		o.depends(Object.fromEntries([[prefix + 'type', /\bGEO(SITE|IP)\b/]]));
+		o.depends(Object.fromEntries([[prefix + 'type', /\bPROCESS\b/]]));
 		initPayload.call(o, n, 'factor', uciconfig);
 
 		o = s.option(form.Value, prefix + 'ip', _('Factor') + ` ${n+1}`);
 		o.datatype = 'cidr';
-		o.depends({type: /\bIP\b/});
+		if (n === 0)
+			o.depends({type: /\bIP\b/});
+		o.depends(Object.fromEntries([[prefix + 'type', /\bIP\b/]]));
 		initPayload.call(o, n, 'factor', uciconfig);
 
 		o = s.option(form.Value, prefix + 'port', _('Factor') + ` ${n+1}`);
 		o.datatype = 'or(port, portrange)';
-		o.depends({type: /\bPORT\b/});
+		if (n === 0)
+			o.depends({type: /\bPORT\b/});
+		o.depends(Object.fromEntries([[prefix + 'type', /\bPORT\b/]]));
 		initPayload.call(o, n, 'factor', uciconfig);
 
 		o = s.option(form.ListValue, prefix + 'l4', _('Factor') + ` ${n+1}`);
 		o.value('udp', _('UDP'));
 		o.value('tcp', _('TCP'));
-		o.depends('type', 'NETWORK');
+		if (n === 0)
+			o.depends('type', 'NETWORK');
+		o.depends(prefix + 'type', 'NETWORK');
 		initPayload.call(o, n, 'factor', uciconfig);
 
 		o = s.option(form.ListValue, prefix + 'rule_set', _('Factor') + ` ${n+1}`);
 		o.value('', _('-- Please choose --'));
-		o.depends('type', 'RULE-SET');
+		if (n === 0)
+			o.depends('type', 'RULE-SET');
+		o.depends(prefix + 'type', 'RULE-SET');
 		initPayload.call(o, n, 'factor', uciconfig);
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
 			hm.loadRulesetLabel.call(this, null, section_id);

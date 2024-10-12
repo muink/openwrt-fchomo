@@ -505,22 +505,6 @@ return view.extend({
 		so.write = function() {};
 		so.editable = true;
 
-		so = ss.option(form.Flag, 'no-resolve', _('no-resolve'));
-		so.default = so.disabled;
-		so.load = function(section_id) {
-			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).getParam('no-resolve'));
-		}
-		so.onchange = function(ev, section_id, value) {
-			var UIEl = this.section.getUIElement(section_id, 'entry');
-
-			var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value)).toString();
-
-			UIEl.node.previousSibling.innerText = newvalue;
-			UIEl.setValue(newvalue);
-		}
-		so.write = function() {};
-		so.modalonly = true;
-
 		so = ss.option(form.Flag, 'src', _('src'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
@@ -530,6 +514,22 @@ return view.extend({
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
 			var newvalue = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value)).toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			UIEl.setValue(newvalue);
+		}
+		so.write = function() {};
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'no-resolve', _('no-resolve'));
+		so.default = so.disabled;
+		so.load = function(section_id) {
+			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).getParam('no-resolve'));
+		}
+		so.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value)).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
 			UIEl.setValue(newvalue);

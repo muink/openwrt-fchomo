@@ -530,7 +530,7 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 		return null;
 
 	push(config.rules, function(arr) {
-			arr[1] = replace(arr[1], /[ꓹ‚]/g, ',');
+			arr[1] = replace(arr[1], /ꓹ|‚/g, ','); // U+A4F9 | U+201A
 			arr[2] = get_proxygroup(arr[2]);
 			return join(',', arr);
 		}(split(cfg.entry, ','))

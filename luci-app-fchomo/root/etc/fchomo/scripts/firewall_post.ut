@@ -237,8 +237,8 @@ table inet fchomo {
 	{% endif %}
 
 	{# Main entrypoint START #}
-	{# https://koswu.github.io/2019/08/19/tproxy-config-with-nftables/nf-packet-flow.svg #}
-	chain postdnat {
+	{# https://en.wikipedia.org/wiki/Netfilter#/media/File:Netfilter-packet-flow.svg #}
+	chain dstnat {
 		type nat hook prerouting priority dstnat + 5; policy accept;
 		{#- TCP redirect entrypoint #}
 		{% if (match(proxy_mode, /redir/)): %}
@@ -254,15 +254,15 @@ table inet fchomo {
 		type filter hook forward priority mangle - 5; policy accept;
 	}
 
-	chain preoutput {
+	{% if (proxy_router === '1'): %}
+	chain nat_output {
 		type nat hook output priority 0; policy accept;
 		{#- TCP redirect entrypoint #}
-		{% if (proxy_router === '1'): %}
 		{% if (match(proxy_mode, /redir/)): %}
 		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto tcp jump redir_acl_dst
 		{% endif %}
-		{% endif /* proxy_router */ %}
 	}
+	{% endif /* proxy_router */ %}
 
 	chain postrouting {
 		type nat hook postrouting priority mangle - 5; policy accept;

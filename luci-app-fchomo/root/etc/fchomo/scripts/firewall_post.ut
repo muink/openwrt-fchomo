@@ -236,7 +236,8 @@ table inet fchomo {
 	}
 	{% endif %}
 
-	{# Main entrypoint #}
+	{# Main entrypoint START #}
+	{# https://koswu.github.io/2019/08/19/tproxy-config-with-nftables/nf-packet-flow.svg #}
 	chain postdnat {
 		type nat hook prerouting priority dstnat + 5; policy accept;
 		{#- TCP redirect entrypoint #}
@@ -266,6 +267,7 @@ table inet fchomo {
 	chain postrouting {
 		type nat hook postrouting priority mangle - 5; policy accept;
 	}
+	{# Main entrypoint END #}
 
 	{# TCP redirect START #}
 	{% if (match(proxy_mode, /redir/)): %}

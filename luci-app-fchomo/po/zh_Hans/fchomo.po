@@ -58,6 +58,10 @@ msgstr "API TLS 私钥"
 msgid "API secret"
 msgstr "API 令牌"
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:140
+msgid "Application version"
+msgstr "应用版本"
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:541
 #: htdocs/luci-static/resources/view/fchomo/global.js:593
 msgid "Access Control"

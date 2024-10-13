@@ -75,6 +75,13 @@ const methods = {
 				fd.close();
 			}
 
+			const fp = popen(`opkg list-installed luci-app-fchomo | awk '{print $NF}'`);
+			if (fp) {
+				features.luciapp_version = trim(fp.read('line')) || null;
+
+				fp.close();
+			}
+
 			features.hm_has_dnsmasq_full = system(`[ -n "$(opkg list-installed dnsmasq-full)" ]`) == 0 || null;
 			features.hm_has_ip_full = access('/usr/libexec/ip-full');
 			features.hm_has_tcp_brutal = hasKernelModule('brutal.ko');

@@ -51,6 +51,10 @@ msgstr ""
 msgid "API secret"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:140
+msgid "Application version"
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:541
 #: htdocs/luci-static/resources/view/fchomo/global.js:593
 msgid "Access Control"

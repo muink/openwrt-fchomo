@@ -82,7 +82,7 @@ check_dashboard_update() {
 	fi
 
 	$wget "https://codeload.github.com/$dashrepo/tar.gz/refs/heads/gh-pages" -O "$RUN_DIR/$dashtype.tgz"
-	if ! tar -tzf "$RUN_DIR/$dashtype.tgz"; then
+	if ! tar -tzf "$RUN_DIR/$dashtype.tgz" >/dev/null; then
 		rm -f "$RUN_DIR/$dashtype.tgz"
 		log "[$(to_upper "$dashtype")] [$dashrepo] Update failed."
 

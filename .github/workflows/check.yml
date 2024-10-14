@@ -1,0 +1,27 @@
+name: mihomo version check
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: 0 16 * * 5
+  push:
+    branches:
+      - master
+
+jobs:
+  check:
+    name: Check new mihomo version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: EkkoG/openwrt-packages-version-checker@main
+        env:
+          COMMIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: metacubex/mihomo
+          BRANCH: master
+          MAKEFILE: mihomo/Makefile
+          CREATE_PR: true
+          SOURCE_URL: https://github.com/metacubex/mihomo/archive/refs/tags/v{{version}}.tar.gz

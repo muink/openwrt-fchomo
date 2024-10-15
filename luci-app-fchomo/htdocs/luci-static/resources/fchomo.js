@@ -65,8 +65,8 @@ return baseclass.extend({
 
 	load_balance_strategy: [
 		['round-robin', _('Simple round-robin all nodes')],
-		['consistent-hashing', _('Same <code>dstaddr<code> requests. Same node')],
-		['sticky-sessions', _('Same <code>srcaddr<code> and <code>dstaddr<code> requests. Same node')]
+		['consistent-hashing', _('Same dstaddr requests. Same node')],
+		['sticky-sessions', _('Same srcaddr and dstaddr requests. Same node')]
 	],
 
 	outbound_type: [

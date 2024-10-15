@@ -473,6 +473,7 @@ return view.extend({
 
 		so = ss.option(form.DynamicList, 'external_controller_cors_allow_origins', _('CORS Allow origins'),
 			_('CORS allowed origins, <code>*</code> will be used if empty.'));
+		so.placeholder = 'https://yacd.metacubex.one';
 
 		so = ss.option(form.Flag, 'external_controller_cors_allow_private_network', _('CORS Allow private network'),
 			_('Allow access from private network.</br>' +
@@ -515,10 +516,10 @@ return view.extend({
 		so.datatype = 'list(string)';
 
 		so = ss.option(form.DynamicList, 'skip_src_address', _('Skiped sniffing src address'));
-		so.datatype = 'list(string)';
+		so.datatype = 'list(cidr)';
 
 		so = ss.option(form.DynamicList, 'skip_dst_address', _('Skiped sniffing dst address'));
-		so.datatype = 'list(string)';
+		so.datatype = 'list(cidr)';
 
 		/* Sniff protocol settings */
 		o = s.taboption('sniffer', form.SectionValue, '_sniffer_sniff', form.GridSection, 'sniff', _('Sniff protocol'));

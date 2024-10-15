@@ -120,6 +120,7 @@ msgid ""
 "Allow access from private network.</br>To access the API on a private "
 "network from a public website, it must be enabled."
 msgstr ""
+"允许从私有网络访问。</br>要从公共网站访问私有网络上的 API，则必须启用。"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:58
 msgid "Already at the latest version."
@@ -204,15 +205,15 @@ msgstr "绕过 CN 流量"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:474
 msgid "CORS Allow origins"
-msgstr ""
+msgstr "CORS 允许的来源"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:477
 msgid "CORS Allow private network"
-msgstr ""
+msgstr "CORS 允许私有网络"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:475
 msgid "CORS allowed origins, <code>*</code> will be used if empty."
-msgstr ""
+msgstr "CORS 允许的来源，留空则使用 <code>*</code>。"
 
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:113
 msgid "Cancel"
@@ -1262,12 +1263,12 @@ msgid "SSH"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo.js:68
-msgid "Same <code>dstaddr<code> requests. Same node"
-msgstr "相同 <code>目标地址<code> 请求。相同节点"
+msgid "Same dstaddr requests. Same node"
+msgstr "相同 目标地址 请求。相同节点"
 
 #: htdocs/luci-static/resources/fchomo.js:69
-msgid "Same <code>srcaddr<code> and <code>dstaddr<code> requests. Same node"
-msgstr "相同 <code>来源地址<code> 和 <code>目标地址<code> 请求。相同节点"
+msgid "Same srcaddr and dstaddr requests. Same node"
+msgstr "相同 来源地址 和 目标地址 请求。相同节点"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:406
 msgid "Segment maximum size"
@@ -1311,11 +1312,11 @@ msgstr "跳过嗅探域名"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:504
 msgid "Skiped sniffing dst address"
-msgstr "跳过嗅探域名的目标地址"
+msgstr "跳过嗅探目标地址"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:501
 msgid "Skiped sniffing src address"
-msgstr "跳过嗅探域名的来源地址"
+msgstr "跳过嗅探来源地址"
 
 #: htdocs/luci-static/resources/fchomo.js:77
 msgid "Snell"

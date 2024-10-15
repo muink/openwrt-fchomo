@@ -1352,6 +1352,10 @@ msgstr ""
 msgid "TCP concurrency"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:316
+msgid "TCP-Keep-Alive idle"
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:311
 msgid "TCP-Keep-Alive interval"
 msgstr ""

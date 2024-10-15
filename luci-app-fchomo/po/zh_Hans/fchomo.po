@@ -1359,6 +1359,10 @@ msgstr "TCP"
 msgid "TCP concurrency"
 msgstr "TCP 并发"
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:316
+msgid "TCP-Keep-Alive idle"
+msgstr "TCP-Keep-Alive 最大闲置时间"
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:311
 msgid "TCP-Keep-Alive interval"
 msgstr "TCP-Keep-Alive 间隔"

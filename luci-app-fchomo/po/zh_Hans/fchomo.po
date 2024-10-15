@@ -729,25 +729,13 @@ msgid "In millisecond. <code>%s</code> will be used if empty."
 msgstr "单位为毫秒。留空则使用 <code>%s</code>。"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:312
-msgid "In seconds. <code>120</code> is used by default."
-msgstr "单位为秒。留空则使用 <code>120</code>。"
-
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:261
-msgid "In seconds. <code>259200</code> will be used if empty."
-msgstr "单位为秒。留空则使用 <code>259200</code>。"
-
 #: htdocs/luci-static/resources/view/fchomo/global.js:411
-msgid "In seconds. <code>300</code> is used by default."
-msgstr "单位为秒。留空则使用 <code>300</code>。"
-
 #: htdocs/luci-static/resources/view/fchomo/client.js:430
-#: htdocs/luci-static/resources/view/fchomo/node.js:270
-msgid "In seconds. <code>600</code> will be used if empty."
-msgstr "单位为秒。留空则使用 <code>600</code>。"
-
 #: htdocs/luci-static/resources/view/fchomo/node.js:146
-msgid "In seconds. <code>86400</code> will be used if empty."
-msgstr "单位为秒。留空则使用 <code>86400</code>。"
+#: htdocs/luci-static/resources/view/fchomo/node.js:270
+msgid "In seconds. <code>%s</code> will be used if empty."
+msgstr "单位为秒。留空则使用 <code>%s</code>。"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:338
 msgid "Inbound"

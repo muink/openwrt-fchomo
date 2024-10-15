@@ -258,7 +258,7 @@ return view.extend({
 		o.modalonly = true;
 
 		o = s.option(form.Value, 'interval', _('Update interval'),
-			_('In seconds. <code>259200</code> will be used if empty.'));
+			_('In seconds. <code>%s</code> will be used if empty.').format('259200'));
 		o.placeholder = '259200';
 		o.validate = L.bind(hm.validateTimeDuration, o);
 		o.depends('type', 'http');

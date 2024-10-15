@@ -309,7 +309,7 @@ return view.extend({
 		so.default = so.disabled;
 
 		so = ss.option(form.Value, 'keep_alive_interval', _('TCP-Keep-Alive interval'),
-			_('In seconds. <code>120</code> is used by default.'));
+			_('In seconds. <code>%s</code> will be used if empty.').format('120'));
 		so.placeholder = '120';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 
@@ -408,7 +408,7 @@ return view.extend({
 		so.placeholder = '65536';
 
 		so = ss.option(form.Value, 'tun_udp_timeout', _('UDP NAT expiration time'),
-			_('In seconds. <code>300</code> is used by default.'));
+			_('In seconds. <code>%s</code> will be used if empty.').format('300'));
 		so.placeholder = '300';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 

@@ -427,7 +427,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'interval', _('Health check interval'),
-			_('In seconds. <code>600</code> will be used if empty.'));
+			_('In seconds. <code>%s</code> will be used if empty.').format('600'));
 		so.placeholder = '600';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 		so.depends({type: 'select', '!reverse': true});

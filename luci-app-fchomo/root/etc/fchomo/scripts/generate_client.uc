@@ -187,6 +187,7 @@ config["global-ua"] = 'clash.meta';
 config.mode = uci.get(uciconf, uciglobal, 'mode') || 'rule';
 config["find-process-mode"] = uci.get(uciconf, uciglobal, 'find_process_mode') || 'off';
 config["log-level"] = uci.get(uciconf, uciglobal, 'log_level') || 'warning';
+config["etag-support"] = (uci.get(uciconf, uciglobal, 'etag_support') === '0') ? false : true;
 config.ipv6 = (uci.get(uciconf, uciglobal, 'ipv6') === '0') ? false : true;
 config["unified-delay"] = strToBool(uci.get(uciconf, uciglobal, 'unified_delay')) || false;
 config["tcp-concurrent"] = strToBool(uci.get(uciconf, uciglobal, 'tcp_concurrent')) || false;

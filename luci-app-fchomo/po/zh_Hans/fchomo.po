@@ -388,6 +388,10 @@ msgstr "强制覆盖 ECS"
 msgid "EDNS Client Subnet"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:302
+msgid "ETag support"
+msgstr "ETag 支持"
+
 #: htdocs/luci-static/resources/view/fchomo/node.js:20
 msgid "Edit node"
 msgstr "编辑节点"

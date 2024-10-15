@@ -299,6 +299,9 @@ return view.extend({
 		so.value('debug', _('Debug'));
 		so.default = 'warning';
 
+		so = ss.option(form.Flag, 'etag_support', _('ETag support'));
+		so.default = so.enabled;
+
 		so = ss.option(form.Flag, 'ipv6', _('IPv6 support'));
 		so.default = so.enabled;
 

@@ -381,6 +381,10 @@ msgstr ""
 msgid "EDNS Client Subnet"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:302
+msgid "ETag support"
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/node.js:20
 msgid "Edit node"
 msgstr ""

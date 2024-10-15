@@ -471,6 +471,14 @@ return view.extend({
 		}
 		so.rmempty = false;
 
+		so = ss.option(form.DynamicList, 'external_controller_cors_allow_origins', _('CORS Allow origins'),
+			_('CORS allowed origins, <code>*</code> will be used if empty.'));
+
+		so = ss.option(form.Flag, 'external_controller_cors_allow_private_network', _('CORS Allow private network'),
+			_('Allow access from private network.</br>' +
+			'To access the API on a private network from a public website, it must be enabled.'));
+		so.default = so.enabled;
+
 		so = ss.option(form.Value, 'external_controller_port', _('API HTTP port'));
 		so.datatype = 'port';
 		so.placeholder = '9090';

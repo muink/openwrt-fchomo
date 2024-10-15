@@ -221,6 +221,10 @@ config.tls = {
 const api_port = uci.get(uciconf, uciapi, 'external_controller_port');
 const api_tls_port = uci.get(uciconf, uciapi, 'external_controller_tls_port');
 /* API settings */
+config["external-controller-cors"] = {
+	"allow-origins": uci.get(uciconf, uciapi, 'external_controller_cors_allow_origins') || ['*'],
+	"allow-private-network" : (uci.get(uciconf, uciapi, 'external_controller_cors_allow_private_network') === '0') ? false : true
+}
 config["external-controller"] = api_port ? '[::]:' + api_port : null;
 config["external-controller-tls"] = api_tls_port ? '[::]:' + api_tls_port : null;
 config["external-doh-server"] = uci.get(uciconf, uciapi, 'external_doh_server');

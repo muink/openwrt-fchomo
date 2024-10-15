@@ -108,6 +108,12 @@ msgstr ""
 msgid "All ports"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:478
+msgid ""
+"Allow access from private network.</br>To access the API on a private "
+"network from a public website, it must be enabled."
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:58
 msgid "Already at the latest version."
 msgstr ""
@@ -187,6 +193,18 @@ msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:646
 msgid "Bypass CN"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/global.js:474
+msgid "CORS Allow origins"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/global.js:477
+msgid "CORS Allow private network"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/global.js:475
+msgid "CORS allowed origins, <code>*</code> will be used if empty."
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:113

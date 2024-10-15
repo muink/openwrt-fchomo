@@ -434,7 +434,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'timeout', _('Health check timeout'),
-			_('In millisecond. <code>5000</code> will be used if empty.'));
+			_('In millisecond. <code>%s</code> will be used if empty.').format('5000'));
 		so.datatype = 'uinteger';
 		so.placeholder = '5000';
 		so.depends({type: 'select', '!reverse': true});
@@ -463,7 +463,7 @@ return view.extend({
 
 		/* Url-test fields */
 		so = ss.taboption('field_general', form.Value, 'tolerance', _('Node switch tolerance'),
-			_('In millisecond. <code>150</code> will be used if empty.'));
+			_('In millisecond. <code>%s</code> will be used if empty.').format('150'));
 		so.datatype = 'uinteger';
 		so.placeholder = '150';
 		so.depends('type', 'url-test');

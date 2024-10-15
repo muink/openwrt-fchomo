@@ -273,7 +273,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'health_timeout', _('Health check timeout'),
-			_('In millisecond. <code>5000</code> will be used if empty.'));
+			_('In millisecond. <code>%s</code> will be used if empty.').format('5000'));
 		so.datatype = 'uinteger';
 		so.placeholder = '5000';
 		so.modalonly = true;

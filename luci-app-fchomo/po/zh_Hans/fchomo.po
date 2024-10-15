@@ -723,13 +723,10 @@ msgid "In Mbps."
 msgstr "单位为 Mbps。"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:466
-msgid "In millisecond. <code>150</code> will be used if empty."
-msgstr "单位为毫秒。留空则使用 <code>150</code>。"
-
 #: htdocs/luci-static/resources/view/fchomo/client.js:437
 #: htdocs/luci-static/resources/view/fchomo/node.js:276
-msgid "In millisecond. <code>5000</code> will be used if empty."
-msgstr "单位为毫秒。留空则使用 <code>5000</code>。"
+msgid "In millisecond. <code>%s</code> will be used if empty."
+msgstr "单位为毫秒。留空则使用 <code>%s</code>。"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:312
 msgid "In seconds. <code>120</code> is used by default."

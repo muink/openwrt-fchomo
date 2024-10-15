@@ -190,7 +190,7 @@ config["log-level"] = uci.get(uciconf, uciglobal, 'log_level') || 'warning';
 config.ipv6 = (uci.get(uciconf, uciglobal, 'ipv6') === '0') ? false : true;
 config["unified-delay"] = strToBool(uci.get(uciconf, uciglobal, 'unified_delay')) || false;
 config["tcp-concurrent"] = strToBool(uci.get(uciconf, uciglobal, 'tcp_concurrent')) || false;
-config["keep-alive-interval"] = parse_time_duration(uci.get(uciconf, uciglobal, 'keep_alive_interval')) || 120;
+config["keep-alive-interval"] = parse_time_duration(uci.get(uciconf, uciglobal, 'keep_alive_interval')) || 30;
 /* ACL settings */
 config["interface-name"] = bind_interface;
 config["routing-mark"] = self_mark;

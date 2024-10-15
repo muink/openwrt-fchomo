@@ -309,8 +309,8 @@ return view.extend({
 		so.default = so.disabled;
 
 		so = ss.option(form.Value, 'keep_alive_interval', _('TCP-Keep-Alive interval'),
-			_('In seconds. <code>%s</code> will be used if empty.').format('120'));
-		so.placeholder = '120';
+			_('In seconds. <code>%s</code> will be used if empty.').format('30'));
+		so.placeholder = '30';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 
 		/* Global Authentication */

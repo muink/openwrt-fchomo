@@ -530,6 +530,14 @@ msgstr "兜底 DNS 服务器  (用于 境内-IP 响应)"
 msgid "Final DNS server (Used to Overseas-IP response)"
 msgstr "兜底 DNS 服务器  (用于 境外-IP 响应)"
 
+#: htdocs/luci-static/resources/view/fchomo/client.js:474
+msgid ""
+"For details, see <a target=\"_blank\" href=\"%s\" rel=\"noreferrer "
+"noopener\">%s</a>."
+msgstr ""
+"实现细节请参阅 <a target=\"_blank\" href=\"%s\" rel=\"noreferrer "
+"noopener\">%s</a>."
+
 #: htdocs/luci-static/resources/view/fchomo/client.js:320
 #: htdocs/luci-static/resources/view/fchomo/node.js:179
 #: htdocs/luci-static/resources/view/fchomo/node.js:280
@@ -1253,8 +1261,12 @@ msgid "SSH"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo.js:68
-msgid "Same TLD requests. Same node"
-msgstr "相同的 TLD 请求。相同的节点"
+msgid "Same <code>dstaddr<code> requests. Same node"
+msgstr "相同 <code>目标地址<code> 请求。相同节点"
+
+#: htdocs/luci-static/resources/fchomo.js:69
+msgid "Same <code>srcaddr<code> and <code>dstaddr<code> requests. Same node"
+msgstr "相同 <code>来源地址<code> 和 <code>目标地址<code> 请求。相同节点"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:401
 msgid "Segment maximum size"
@@ -1608,10 +1620,6 @@ msgstr ""
 #: htdocs/luci-static/resources/view/fchomo/client.js:529
 msgid "src"
 msgstr "src"
-
-#: htdocs/luci-static/resources/fchomo.js:69
-msgid "sticky-sessions"
-msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:187
 msgid "unchecked"

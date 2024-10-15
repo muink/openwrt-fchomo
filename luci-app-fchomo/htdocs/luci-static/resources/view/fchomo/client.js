@@ -470,7 +470,9 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Load-balance fields */
-		so = ss.taboption('field_general', form.ListValue, 'strategy', _('Strategy'));
+		so = ss.taboption('field_general', form.ListValue, 'strategy', _('Strategy'),
+			_('For details, see <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
+			.format('https://wiki.metacubex.one/config/proxy-groups/load-balance/#strategy', _('Strategy')));
 		so.default = hm.load_balance_strategy[0][0];
 		hm.load_balance_strategy.forEach((res) => {
 			so.value.apply(so, res);

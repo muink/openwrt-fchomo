@@ -1308,6 +1308,14 @@ msgstr "简单轮替所有节点"
 msgid "Skiped sniffing domain"
 msgstr "跳过嗅探域名"
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:504
+msgid "Skiped sniffing dst address"
+msgstr "跳过嗅探域名的目标地址"
+
+#: htdocs/luci-static/resources/view/fchomo/global.js:501
+msgid "Skiped sniffing src address"
+msgstr "跳过嗅探域名的来源地址"
+
 #: htdocs/luci-static/resources/fchomo.js:77
 msgid "Snell"
 msgstr ""

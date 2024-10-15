@@ -498,6 +498,12 @@ return view.extend({
 		so = ss.option(form.DynamicList, 'skip_domain', _('Skiped sniffing domain'));
 		so.datatype = 'list(string)';
 
+		so = ss.option(form.DynamicList, 'skip_src_address', _('Skiped sniffing src address'));
+		so.datatype = 'list(string)';
+
+		so = ss.option(form.DynamicList, 'skip_dst_address', _('Skiped sniffing dst address'));
+		so.datatype = 'list(string)';
+
 		/* Sniff protocol settings */
 		o = s.taboption('sniffer', form.SectionValue, '_sniffer_sniff', form.GridSection, 'sniff', _('Sniff protocol'));
 		ss = o.subsection;

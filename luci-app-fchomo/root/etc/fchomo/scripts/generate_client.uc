@@ -252,7 +252,9 @@ config.sniffer = {
 	"override-destination": (uci.get(uciconf, ucisniffer, 'override_destination') === '0') ? false : true,
 	sniff: {},
 	"force-domain": uci.get(uciconf, ucisniffer, 'force_domain'),
-	"skip-domain": uci.get(uciconf, ucisniffer, 'skip_domain')
+	"skip-domain": uci.get(uciconf, ucisniffer, 'skip_domain'),
+	"skip-src-address": uci.get(uciconf, ucisniffer, 'skip_src_address'),
+	"skip-dst-address": uci.get(uciconf, ucisniffer, 'skip_dst_address')
 };
 /* Sniff protocol settings */
 uci.foreach(uciconf, ucisniff, (cfg) => {

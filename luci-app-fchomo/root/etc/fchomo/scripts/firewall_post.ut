@@ -246,6 +246,14 @@ table inet fchomo {
 		{% endif %}
 	}
 
+	chain prerouting {
+		type filter hook prerouting priority 0; policy accept;
+		{#- UDP tproxy entrypoint #}
+		{% if (match(proxy_mode, /tproxy/)): %}
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_src
+		{% endif %}
+	}
+
 	chain input {
 		type filter hook input priority mangle - 5; policy accept;
 	}
@@ -255,6 +263,14 @@ table inet fchomo {
 	}
 
 	{% if (proxy_router === '1'): %}
+	chain mangle_output {
+		type route hook output priority 0; policy accept;
+		{#- UDP tproxy entrypoint #}
+		{% if (match(proxy_mode, /tproxy/)): %}
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_dst_output
+		{% endif %}
+	}
+
 	chain nat_output {
 		type nat hook output priority 0; policy accept;
 		{#- TCP redirect entrypoint #}
@@ -273,7 +289,7 @@ table inet fchomo {
 	{% if (match(proxy_mode, /redir/)): %}
 	chain redir_acl_src {
 		{% if (control_info.listen_interfaces): %}
-		meta iifname != {{ array_to_nftarr(control_info.listen_interfaces) }} counter return
+		meta iifname != {{ array_to_nftarr(split(join(' ', control_info.listen_interfaces) + ' lo', ' ')) }} counter return
 		{% endif %}
 		meta mark {{ self_mark }} counter return
 
@@ -323,9 +339,9 @@ table inet fchomo {
 		{% endif %}
 
 		{% if (routing_mode === 'routing_gfw'): %}
-		ip daddr != @inet4_gfw_list counter return
+		ip daddr != @inet4_gfw_list_addr counter return
 		{% if (global_ipv6 === '1'): %}
-		ip6 daddr != @inet6_gfw_list counter return
+		ip6 daddr != @inet6_gfw_list_addr counter return
 		{% endif %}
 		{% elif (routing_mode === 'bypass_cn'): %}
 		ip daddr @inet4_china_list_addr counter return
@@ -349,5 +365,133 @@ table inet fchomo {
 	}
 	{% endif /* proxy_mode */ %}
 	{# TCP redirect END #}
+
+	{# UDP tproxy START #}
+	{% if (match(proxy_mode, /tproxy/)): %}
+	chain tproxy_acl_src {
+		{% if (control_info.listen_interfaces): %}
+		meta iifname != {{ array_to_nftarr(split(join(' ', control_info.listen_interfaces) + ' lo', ' ')) }} counter return
+		{% endif %}
+		meta mark {{ self_mark }} counter return
+
+		{% if (control_info.lan_filter === 'white_list'): %}
+		{% if (!isEmpty(control_info.lan_proxy_ipv4_ips)): %}
+		ip saddr {{ array_to_nftarr(control_info.lan_proxy_ipv4_ips) }} counter goto tproxy_acl_dst
+		{% endif %}
+		{% for (let ipv6 in control_info.lan_proxy_ipv6_ips): %}
+		ip6 saddr {{ resolve_ipv6(ipv6) }} counter goto tproxy_acl_dst
+		{% endfor %}
+		{% if (!isEmpty(control_info.lan_proxy_mac_addrs)): %}
+		ether saddr {{ array_to_nftarr(control_info.lan_proxy_mac_addrs) }} counter goto tproxy_acl_dst
+		{% endif %}
+		{% elif (control_info.lan_filter === 'black_list'): %}
+		{% if (!isEmpty(control_info.lan_direct_ipv4_ips)): %}
+		ip saddr {{ array_to_nftarr(control_info.lan_direct_ipv4_ips) }} counter return
+		{% endif %}
+		{% for (let ipv6 in control_info.lan_direct_ipv6_ips): %}
+		ip6 saddr {{ resolve_ipv6(ipv6) }} counter return
+		{% endfor %}
+		{% if (!isEmpty(control_info.lan_direct_mac_addrs)): %}
+		ether saddr {{ array_to_nftarr(control_info.lan_direct_mac_addrs) }} counter return
+		{% endif %}
+		{% endif /* lan_filter */ %}
+
+		{% if (control_info.lan_filter !== 'white_list'): %}
+		counter goto tproxy_acl_dst
+		{% endif %}
+	}
+
+	chain tproxy_acl_dst {
+		ip daddr @inet4_local_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_local_addr counter return
+		{% endif %}
+
+		ip daddr @inet4_wan_proxy_addr counter goto tproxy_acl_dport
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_wan_proxy_addr counter goto tproxy_acl_dport
+		{% endif %}
+
+		ip daddr @inet4_wan_direct_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_wan_direct_addr counter return
+		{% endif %}
+
+		{% if (routing_mode === 'routing_gfw'): %}
+		ip daddr != @inet4_gfw_list_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr != @inet6_gfw_list_addr counter return
+		{% endif %}
+		{% elif (routing_mode === 'bypass_cn'): %}
+		ip daddr @inet4_china_list_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_china_list_addr counter return
+		{% endif %}
+		{% endif /* routing_mode */ %}
+
+		counter goto tproxy_acl_dport
+	}
+
+	chain tproxy_acl_dport {
+		{% if (routing_udpport): %}
+		udp dport != @udp_routing_port counter return
+		{% endif %}
+		goto tproxy_gate
+	}
+
+	chain tproxy_gate {
+		meta l4proto udp meta mark set {{ tproxy_mark }} tproxy ip to :{{ tproxy_port }} counter accept
+		{% if (global_ipv6 === '1'): %}
+		meta l4proto udp meta mark set {{ tproxy_mark }} tproxy ip6 to :{{ tproxy_port }} counter accept
+		{% endif %}
+	}
+
+	{% if (proxy_router === '1'): %}
+	chain tproxy_acl_dst_output {
+		meta mark {{ self_mark }} counter return
+
+		ip daddr @inet4_local_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_local_addr counter return
+		{% endif %}
+
+		ip daddr @inet4_wan_proxy_addr counter goto tproxy_acl_dport_output
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_wan_proxy_addr counter goto tproxy_acl_dport_output
+		{% endif %}
+
+		ip daddr @inet4_wan_direct_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_wan_direct_addr counter return
+		{% endif %}
+
+		{% if (routing_mode === 'routing_gfw'): %}
+		ip daddr != @inet4_gfw_list_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr != @inet6_gfw_list_addr counter return
+		{% endif %}
+		{% elif (routing_mode === 'bypass_cn'): %}
+		ip daddr @inet4_china_list_addr counter return
+		{% if (global_ipv6 === '1'): %}
+		ip6 daddr @inet6_china_list_addr counter return
+		{% endif %}
+		{% endif /* routing_mode */ %}
+
+		counter goto tproxy_acl_dport_output
+	}
+
+	chain tproxy_acl_dport_output {
+		{% if (routing_udpport): %}
+		udp dport != @udp_routing_port counter return
+		{% endif %}
+		goto tproxy_mark
+	}
+
+	chain tproxy_mark {
+		meta l4proto udp meta mark set {{ tproxy_mark }} counter accept
+	}
+	{% endif /* proxy_router */ %}
+	{% endif /* proxy_mode */ %}
+	{# UDP tproxy END #}
 
 }

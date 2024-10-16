@@ -185,11 +185,11 @@ start_service() {
 				config_get tproxy_mark "config" "tproxy_mark" "201"
 
 				ip rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
-				ip route add local 0.0.0.0/0 dev lo table "$table_id"
+				ip route add local default dev lo table "$table_id"
 
 				if [ "$global_ipv6" = "1" ]; then
 					ip -6 rule add fwmark "$tproxy_mark" pref "$rule_pref" table "$table_id"
-					ip -6 route add local ::/0 dev lo table "$table_id"
+					ip -6 route add local default dev lo table "$table_id"
 				fi
 				;;
 			"redir_tun"|"tun")
@@ -346,10 +346,10 @@ stop_client() {
 	# Remove routing table
 	# Tproxy
 	ip rule del pref "$rule_pref" table "$table_id" 2>"/dev/null"
-	ip route del local 0.0.0.0/0 dev lo table "$table_id" 2>"/dev/null"
+	ip route del local default dev lo table "$table_id" 2>"/dev/null"
 
 	ip -6 rule del pref "$rule_pref" table "$table_id" 2>"/dev/null"
-	ip -6 route del local ::/0 dev lo table "$table_id" 2>"/dev/null"
+	ip -6 route del local default dev lo table "$table_id" 2>"/dev/null"
 
 	# TUN
 	ip route del default dev "$tun_name" table "$table_id" 2>"/dev/null"

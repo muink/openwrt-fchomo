@@ -254,14 +254,6 @@ table inet fchomo {
 		{% endif %}
 	}
 
-	chain input {
-		type filter hook input priority mangle - 5; policy accept;
-	}
-
-	chain forward {
-		type filter hook forward priority mangle - 5; policy accept;
-	}
-
 	{% if (proxy_router === '1'): %}
 	chain mangle_output {
 		type route hook output priority 0; policy accept;
@@ -279,10 +271,6 @@ table inet fchomo {
 		{% endif %}
 	}
 	{% endif /* proxy_router */ %}
-
-	chain postrouting {
-		type nat hook postrouting priority mangle - 5; policy accept;
-	}
 	{# Main entrypoint END #}
 
 	{# TCP redirect START #}

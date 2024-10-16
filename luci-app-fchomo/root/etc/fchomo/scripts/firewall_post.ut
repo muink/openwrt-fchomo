@@ -259,7 +259,7 @@ table inet fchomo {
 		type route hook output priority 0; policy accept;
 		{#- UDP tproxy entrypoint #}
 		{% if (match(proxy_mode, /tproxy/)): %}
-		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_dst_output
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_dst_reroute
 		{% endif %}
 	}
 
@@ -435,7 +435,7 @@ table inet fchomo {
 	}
 
 	{% if (proxy_router === '1'): %}
-	chain tproxy_acl_dst_output {
+	chain tproxy_acl_dst_reroute {
 		meta mark {{ self_mark }} counter return
 
 		ip daddr @inet4_local_addr counter return
@@ -443,9 +443,9 @@ table inet fchomo {
 		ip6 daddr @inet6_local_addr counter return
 		{% endif %}
 
-		ip daddr @inet4_wan_proxy_addr counter goto tproxy_acl_dport_output
+		ip daddr @inet4_wan_proxy_addr counter goto tproxy_acl_dport_reroute
 		{% if (global_ipv6 === '1'): %}
-		ip6 daddr @inet6_wan_proxy_addr counter goto tproxy_acl_dport_output
+		ip6 daddr @inet6_wan_proxy_addr counter goto tproxy_acl_dport_reroute
 		{% endif %}
 
 		ip daddr @inet4_wan_direct_addr counter return
@@ -465,10 +465,10 @@ table inet fchomo {
 		{% endif %}
 		{% endif /* routing_mode */ %}
 
-		counter goto tproxy_acl_dport_output
+		counter goto tproxy_acl_dport_reroute
 	}
 
-	chain tproxy_acl_dport_output {
+	chain tproxy_acl_dport_reroute {
 		{% if (routing_udpport): %}
 		udp dport != @udp_routing_port counter return
 		{% endif %}

@@ -334,6 +334,10 @@ table inet fchomo {
 		{#- UDP tproxy entrypoint #}
 		{% if (match(proxy_mode, /tproxy/)): %}
 		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_src
+		{#- TUN entrypoint #}
+		{% elif (match(proxy_mode, /tun/)): %}
+		iifname {{ tun_name }} counter accept
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto { {{ (proxy_mode === 'tun') ? 'tcp, udp' : 'udp' }} } jump tun_acl_src
 		{% endif %}
 	}
 
@@ -343,6 +347,10 @@ table inet fchomo {
 		{#- UDP tproxy entrypoint #}
 		{% if (match(proxy_mode, /tproxy/)): %}
 		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_dst_reroute
+		{#- TUN entrypoint #}
+		{% elif (match(proxy_mode, /tun/)): %}
+		iifname {{ tun_name }} counter accept
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto { {{ (proxy_mode === 'tun') ? 'tcp, udp' : 'udp' }} } jump tun_acl_dst
 		{% endif %}
 	}
 
@@ -389,4 +397,14 @@ table inet fchomo {
 	{% endif /* proxy_mode */ %}
 	{# UDP tproxy END #}
 
+	{# TUN START #}
+	{% if (match(proxy_mode, /tun/)): %}
+	{{ render_acl_src('tun_acl_src', 'tun_acl_dst') }}
+	{{ render_acl_dst('tun_acl_dst', 'tun_acl_dport') }}
+	{{ render_acl_dport('tun_acl_dport', 'tun_mark', (proxy_mode === 'tun') ? '' : 'udp') }}
+	chain tun_mark {
+		meta mark set {{ tun_mark }} counter accept
+	}
+	{% endif /* proxy_mode */ %}
+	{# TUN END #}
 }

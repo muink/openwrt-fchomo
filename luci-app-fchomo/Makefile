@@ -6,6 +6,7 @@ LUCI_DEPENDS:= \
 	+mihomo \
 	+ca-bundle \
 	+firewall4 \
+	+kmod-inet-diag \
 	+kmod-nft-tproxy \
 	+yq \
 #	+ip-full +kmod-tun +dnsmasq-full \

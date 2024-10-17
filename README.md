@@ -6,7 +6,6 @@
 - [ ] rules: SUB-RULE
 - [ ] sub-rules
 - [ ] dialer-proxy
-- [ ] fw4 acl
 - [ ] Any other improvements
 
 ## Screenshots

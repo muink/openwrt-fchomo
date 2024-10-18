@@ -366,9 +366,9 @@ table inet fchomo {
 		type filter hook prerouting priority 5; policy accept;
 		{#- DNS hijack #}
 		fib daddr type local meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto { tcp, udp } th dport { {{ join(', ', [dnsmasq_port, dns_port, tunnel_port]) }} } counter accept comment "!{{ cfgname }}: DNS hijack (bypass local dnsserver)"
-		{#- UDP tproxy entrypoint #}
+		{#- TProxy entrypoint #}
 		{% if (match(proxy_mode, /tproxy/)): %}
-		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_src
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto { {{ (proxy_mode === 'tproxy') ? 'tcp, udp' : 'udp' }} } jump tproxy_acl_src
 		{#- TUN entrypoint #}
 		{% elif (match(proxy_mode, /tun/)): %}
 		iifname {{ tun_name }} counter accept
@@ -379,9 +379,9 @@ table inet fchomo {
 	{% if (proxy_router === '1'): %}
 	chain mangle_output {
 		type route hook output priority 0; policy accept;
-		{#- UDP tproxy entrypoint #}
+		{#- TProxy entrypoint #}
 		{% if (match(proxy_mode, /tproxy/)): %}
-		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_dst_reroute
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto { {{ (proxy_mode === 'tproxy') ? 'tcp, udp' : 'udp' }} } jump tproxy_acl_dst_reroute
 		{#- TUN entrypoint #}
 		{% elif (match(proxy_mode, /tun/)): %}
 		iifname {{ tun_name }} counter accept
@@ -413,30 +413,30 @@ table inet fchomo {
 	{% endif /* proxy_mode */ %}
 	{# TCP redirect END #}
 
-	{# UDP tproxy START #}
+	{# TProxy START #}
 	{% if (match(proxy_mode, /tproxy/)): %}
 	{{ render_acl_src('tproxy_acl_src', 'tproxy_acl_dst') }}
 	{{ render_acl_dst('tproxy_acl_dst', 'tproxy_acl_dport') }}
-	{{ render_acl_dport('tproxy_acl_dport', 'tproxy_gate', 'udp') }}
+	{{ render_acl_dport('tproxy_acl_dport', 'tproxy_gate', (proxy_mode === 'tproxy') ? '' : 'udp') }}
 	chain tproxy_gate {
-		meta l4proto udp meta mark set {{ tproxy_mark }} tproxy ip to :{{ tproxy_port }} counter accept
+		meta l4proto { {{ (proxy_mode === 'tproxy') ? 'tcp, udp' : 'udp' }} } meta mark set {{ tproxy_mark }} tproxy ip to :{{ tproxy_port }} counter accept
 		{% if (global_ipv6 === '1'): %}
-		meta l4proto udp meta mark set {{ tproxy_mark }} tproxy ip6 to :{{ tproxy_port }} counter accept
+		meta l4proto { {{ (proxy_mode === 'tproxy') ? 'tcp, udp' : 'udp' }} } meta mark set {{ tproxy_mark }} tproxy ip6 to :{{ tproxy_port }} counter accept
 		{% endif %}
 	}
 
 	{% if (proxy_router === '1'): %}
 	{{ render_acl_dst('tproxy_acl_dst_reroute', 'tproxy_acl_dport_reroute') }}
-	{{ render_acl_dport('tproxy_acl_dport_reroute', 'tproxy_mark', 'udp') }}
+	{{ render_acl_dport('tproxy_acl_dport_reroute', 'tproxy_mark', (proxy_mode === 'tproxy') ? '' : 'udp') }}
 	chain tproxy_mark {
 		{#- DNS hijack (router udp) #}
 		{# tproxy_mark --> route_table_id --reroute-to--> lo --> prerouting #}
 
-		meta l4proto udp meta mark set {{ tproxy_mark }} counter accept
+		meta mark set {{ tproxy_mark }} counter accept
 	}
 	{% endif /* proxy_router */ %}
 	{% endif /* proxy_mode */ %}
-	{# UDP tproxy END #}
+	{# TProxy END #}
 
 	{# TUN START #}
 	{% if (match(proxy_mode, /tun/)): %}

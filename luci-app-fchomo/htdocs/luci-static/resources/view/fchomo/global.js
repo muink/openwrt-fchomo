@@ -378,8 +378,10 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'proxy_mode', _('Proxy mode'));
 		so.value('redir', _('Redirect TCP'));
-		if (features.hm_has_tproxy)
+		if (features.hm_has_tproxy) {
 			so.value('redir_tproxy', _('Redirect TCP + TProxy UDP'));
+			so.value('tproxy', _('TProxy TCP/UDP'));
+		}
 		if (features.hm_has_ip_full && features.hm_has_tun) {
 			so.value('redir_tun', _('Redirect TCP + Tun UDP'));
 			so.value('tun', _('Tun TCP/UDP'));

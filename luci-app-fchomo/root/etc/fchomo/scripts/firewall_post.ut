@@ -354,13 +354,13 @@ table inet fchomo {
 		{% endif %}
 	}
 
+	{#- TCP redirect entrypoint #}
+	{% if (match(proxy_mode, /redir/)): %}
 	chain nat_output {
 		type nat hook output priority 0; policy accept;
-		{#- TCP redirect entrypoint #}
-		{% if (match(proxy_mode, /redir/)): %}
 		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto tcp jump redir_acl_dst
-		{% endif %}
 	}
+	{% endif %}
 	{% endif /* proxy_router */ %}
 	{# Main entrypoint END #}
 

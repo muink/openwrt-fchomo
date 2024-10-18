@@ -29,7 +29,6 @@ function wGET(url, header, filepath) {
 	if (!url || type(url) !== 'string')
 		return null;
 
-	let timeout = '10';
 	let ua = 'Wget/1.21 (FullCombo Mihomo)';
 
 	if (header) {
@@ -46,7 +45,7 @@ function wGET(url, header, filepath) {
 	} else
 		header = '';
 
-	let exitcode = system(`/usr/bin/wget --timeout=${timeout} --user-agent ${shellquote(ua)} ${header} -q ${shellquote(url)} -O ${shellquote(filepath)}`);
+	let exitcode = system(`wget --tries=1 --timeout=10 --user-agent ${shellquote(ua)} ${header} -q ${shellquote(url)} -O ${shellquote(filepath)}`);
 
 	return exitcode;
 }
@@ -118,7 +117,7 @@ const methods = {
 				return { httpcode: null, error: 'illegal url' };
 
 			let httpcode = '-1';
-			const fd = popen("wget --spider -ST3 '" + req.args?.url + "' 2>&1 | awk '/^\\s*HTTP\\//{print $2}'");
+			const fd = popen("wget --spider -t1 -ST3 '" + req.args?.url + "' 2>&1 | awk '/^\\s*HTTP\\//{print $2}'");
 			if (fd) {
 				httpcode = trim(fd.read('line')) || httpcode;
 

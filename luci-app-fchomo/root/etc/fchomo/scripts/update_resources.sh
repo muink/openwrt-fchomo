@@ -55,7 +55,7 @@ check_dashboard_update() {
 	local dashtype="$1"
 	local dashrepo="$2"
 	local dashrepoid="$(echo -n "$dashrepo" | sed 's|\W|_|g' | tr 'A-Z' 'a-z')"
-	local wget="wget --timeout=10 -q"
+	local wget="wget --tries=1 --timeout=10 -q"
 
 	set_lock "set" "$dashtype"
 
@@ -109,7 +109,7 @@ check_dashboard_update() {
 check_geodata_update() {
 	local geotype="$1"
 	local georepo="$2"
-	local wget="wget --timeout=10 -q"
+	local wget="wget --tries=1 --timeout=10 -q"
 
 	set_lock "set" "$geotype"
 
@@ -161,7 +161,7 @@ check_list_update() {
 	local listrepo="$2"
 	local listref="$3"
 	local listname="$4"
-	local wget="wget --timeout=10 -q"
+	local wget="wget --tries=1 --timeout=10 -q"
 
 	set_lock "set" "$listtype"
 

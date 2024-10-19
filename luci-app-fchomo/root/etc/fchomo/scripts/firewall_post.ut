@@ -378,6 +378,9 @@ table inet fchomo {
 	{{ render_acl_dst('redir_acl_dst', 'redir_acl_dport') }}
 	{{ render_acl_dport('redir_acl_dport', 'redir_gate', 'tcp') }}
 	chain redir_gate {
+		{#- DNS hijack #}
+		tcp dport 53 counter redirect to :{{ tunnel_port }} comment "!{{ cfgname }}: DNS hijack (router tcp)"
+
 		meta l4proto tcp counter redirect to :{{ redir_port }}
 	}
 	{% endif /* proxy_mode */ %}
@@ -399,6 +402,9 @@ table inet fchomo {
 	{{ render_acl_dst('tproxy_acl_dst_reroute', 'tproxy_acl_dport_reroute') }}
 	{{ render_acl_dport('tproxy_acl_dport_reroute', 'tproxy_mark', 'udp') }}
 	chain tproxy_mark {
+		{#- DNS hijack #}
+		udp dport 53 counter accept comment "!{{ cfgname }}: DNS hijack (bypass rerouter)"
+
 		meta l4proto udp meta mark set {{ tproxy_mark }} counter accept
 	}
 	{% endif /* proxy_router */ %}

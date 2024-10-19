@@ -607,14 +607,12 @@ return view.extend({
 
 		so = ss.taboption('interface', form.Value, 'tproxy_mark', _('Tproxy Fwmark'));
 		so.ucisection = 'config';
-		so.datatype = 'uinteger'
-		so.placeholder = '201';
+		so.placeholder = '201 or 0xc9/0xff';
 		so.rmempty = false;
 
 		so = ss.taboption('interface', form.Value, 'tun_mark', _('Tun Fwmark'));
 		so.ucisection = 'config';
-		so.datatype = 'uinteger'
-		so.placeholder = '202';
+		so.placeholder = '202 or 0xca/0xff';
 		so.rmempty = false;
 
 		/* Access control */

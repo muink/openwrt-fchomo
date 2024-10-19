@@ -1,4 +1,4 @@
-# [Work in Process] FullCombo Mihomo
+# FullCombo Mihomo
 
 ## Todo
 

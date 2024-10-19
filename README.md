@@ -3,7 +3,6 @@
 ## Todo
 
 - [ ] node/server
-- [ ] rules: SUB-RULE
 - [ ] sub-rules
 - [ ] dialer-proxy
 - [ ] Any other improvements

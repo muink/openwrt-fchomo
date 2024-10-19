@@ -670,6 +670,24 @@ return view.extend({
 		}
 		so.write = function() {};
 		so.modalonly = true;
+
+		// dev: Features under development
+		so = ss.option(form.Value, 'sub_rule', _('Sub rule'));
+		so.load = function(section_id) {
+			return new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule || '';
+		}
+		so.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setKey('subrule', value).toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			return UIEl.setValue(newvalue);
+		}
+		so.rmempty = false;
+		so.write = function() {};
+		so.depends('SUB-RULE', '1');
+		so.modalonly = true;
 		/* Routing rules END */
 
 		/* DNS settings START */

@@ -66,7 +66,20 @@ class DNSAddress {
 class RulesEntry {
 	constructor(entry) {
 		this.input = entry || '';
-		this.rawparams = this.input.split(',');
+		var content = this.input;
+		this.subrule = content.split(',');
+		if (this.subrule.shift() === 'SUB-RULE') {
+			var subrule_payload = this.subrule.join(',').match(/^\(.*\)/);
+			if (subrule_payload) {
+				content = subrule_payload[0].slice(1, -1);
+				this.subrule = this.subrule.pop() || ' ';
+			} else {
+				content = this.subrule.join(',');
+				this.subrule = ' ';
+			}
+		} else
+			this.subrule = false;
+		this.rawparams = content.split(',');
 		this.type = this.rawparams.shift() || '';
 		var logical_payload, rawfactor;
 		(function(rawparams_typecuted) {
@@ -144,9 +157,12 @@ class RulesEntry {
 		} else
 			factor = this.payload[0].factor;
 
-		return [this.type, factor, this.detour].concat(
-			['no-resolve', 'src'].filter(k => this.params[k])
-		).join(',');
+		if (this.subrule) {
+			return 'SUB-RULE,(%s),%s'.format([this.type, factor].join(','), this.subrule);
+		} else
+			return [this.type, factor, this.detour].concat(
+				['no-resolve', 'src'].filter(k => this.params[k])
+			).join(',');
 	}
 }
 
@@ -575,8 +591,6 @@ return view.extend({
 		so.modalonly = true;
 
 		renderPayload(ss, Math.max(...Object.values(hm.rules_logical_payload_count)), data[0]);
-		// dev: Features under development
-		// SUB-RULE
 
 		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
@@ -593,6 +607,7 @@ return view.extend({
 			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
+		//so.depends('SUB-RULE', '0');
 		so.editable = true;
 
 		so = ss.option(form.Flag, 'src', _('src'));
@@ -609,6 +624,7 @@ return view.extend({
 			UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
+		so.depends('SUB-RULE', '0');
 		so.modalonly = true;
 
 		so = ss.option(form.Flag, 'no-resolve', _('no-resolve'));
@@ -623,6 +639,23 @@ return view.extend({
 
 			UIEl.node.previousSibling.innerText = newvalue;
 			UIEl.setValue(newvalue);
+		}
+		so.write = function() {};
+		so.depends('SUB-RULE', '0');
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'SUB-RULE', _('SUB-RULE'));
+		so.default = so.disabled;
+		so.load = function(section_id) {
+			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule ? 'true' : 'false');
+		}
+		so.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setKey('subrule', value === '1' ? ' ' : false).toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			return UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
 		so.modalonly = true;

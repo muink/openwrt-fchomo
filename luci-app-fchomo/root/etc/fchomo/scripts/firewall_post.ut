@@ -52,8 +52,10 @@
 
 	const global_ipv6 = uci.get(cfgname, 'global', 'ipv6') || '1',
 	      dns_ipv6 = uci.get(cfgname, 'dns', 'ipv6') || '1',
-	      dns_port = uci.get(cfgname, 'dns', 'dns_port') || '7853',
-	      dns_hijacked = '1';
+	      dns_port = uci.get(cfgname, 'dns', 'dns_port') || '7853';
+
+	const dnsmasq_hijacked = uci.get('dhcp', '@dnsmasq[0]', 'dns_redirect') || '0',
+	      dnsmasq_port = uci.get('dhcp', '@dnsmasq[0]', 'port') || '53';
 
 	let default_proxy, routing_tcpport, routing_udpport, routing_mode, routing_domain;
 	default_proxy = uci.get(cfgname, 'routing', 'default_proxy') || null,
@@ -323,6 +325,10 @@ table inet fchomo {
 	{# https://en.wikipedia.org/wiki/Netfilter#/media/File:Netfilter-packet-flow.svg #}
 	chain dstnat {
 		type nat hook prerouting priority dstnat + 5; policy accept;
+		{#- DNS hijack #}
+		{% if (dnsmasq_hijacked !== '1'): %}
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto { tcp, udp } th dport 53 counter redirect to :{{ dnsmasq_port }} comment "!{{ cfgname }}: DNS hijack (subnet)"
+		{% endif %}
 		{#- TCP redirect entrypoint #}
 		{% if (match(proxy_mode, /redir/)): %}
 		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto tcp jump redir_acl_src
@@ -330,7 +336,9 @@ table inet fchomo {
 	}
 
 	chain prerouting {
-		type filter hook prerouting priority 0; policy accept;
+		type filter hook prerouting priority 5; policy accept;
+		{#- DNS hijack #}
+		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto { tcp, udp } th dport { {{ join(', ', [dnsmasq_port, dns_port, tunnel_port]) }} } counter accept comment "!{{ cfgname }}: DNS hijack (bypass local dnsserver)"
 		{#- UDP tproxy entrypoint #}
 		{% if (match(proxy_mode, /tproxy/)): %}
 		meta nfproto { {{ (global_ipv6 === '1') ? 'ipv4, ipv6' : 'ipv4' }} } meta l4proto udp jump tproxy_acl_src

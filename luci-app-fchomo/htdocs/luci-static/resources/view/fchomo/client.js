@@ -68,7 +68,6 @@ class RulesEntry {
 		this.input = entry || '';
 		this.rawparams = this.input.split(',');
 		this.type = this.rawparams.shift() || '';
-		this.logical = hm.rules_logical_type.map(e => e[0] || e).includes(this.type);
 		var logical_payload, rawfactor;
 		(function(rawparams_typecuted) {
 			logical_payload = rawparams_typecuted.match(/^\(.*\)/);
@@ -135,8 +134,9 @@ class RulesEntry {
 	}
 
 	toString() {
-		var factor = '';
-		if (this.logical) {
+		var logical = hm.rules_logical_type.map(e => e[0] || e).includes(this.type),
+		    factor = '';
+		if (logical) {
 			let n = hm.rules_logical_payload_count[this.type] || 0;
 			factor = '(%s)'.format(this.payload.slice(0, n).map((payload) => {
 				return '(%s‚%s)'.format(payload.type || '', payload.factor || '');
@@ -565,7 +565,7 @@ return view.extend({
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
-			var newvalue = new RulesEntry(('N' + UIEl.getValue()).replace(/^[^,]+/, value)).toString();
+			var newvalue = new RulesEntry(UIEl.getValue()).setKey('type', value).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);

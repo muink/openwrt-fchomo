@@ -1523,6 +1523,14 @@ msgstr "堆栈"
 msgid "Strategy"
 msgstr "策略"
 
+#: htdocs/luci-static/resources/view/fchomo/client.js:646
+msgid "SUB-RULE"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:664
+msgid "Sub rule"
+msgstr "子规则"
+
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:140
 msgid "Successfully imported %s rule-set of total %s."
 msgstr "已成功导入 %s 个规则集 (共 %s 个)。"

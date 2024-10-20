@@ -11,6 +11,7 @@
 ## Known issues
 
 - [ ] UDP DNS requests sent from local device to the pub-DNS-servers cannot be hijacked (Tproxy)
+- [ ] The domain of QUIC traffic cannot be restored, recommended to use TUN (Tproxy)
 
 ## Screenshots
 

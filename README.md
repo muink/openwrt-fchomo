@@ -8,6 +8,10 @@
 - [ ] dialer-proxy
 - [ ] Any other improvements
 
+## Known issues
+
+- [ ] UDP DNS requests sent from local device to the pub-DNS-servers cannot be hijacked (Tproxy)
+
 ## Screenshots
 
 ![global](assets/img/global.png "global")

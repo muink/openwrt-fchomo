@@ -68,7 +68,7 @@ const listen_interfaces = uci.get(uciconf, uciroute, 'listen_interfaces') || nul
       lan_proxy_ipv6_ips = uci.get(uciconf, uciroute, 'lan_proxy_ipv6_ips') || null,
       lan_proxy_mac_addrs = uci.get(uciconf, uciroute, 'lan_proxy_mac_addrs') || null,
       proxy_router = (uci.get(uciconf, uciroute, 'proxy_router') === '0') ? null : true,
-      default_proxy = uci.get(uciconf, uciroute, 'default_proxy') || null,
+      client_enabled = uci.get(uciconf, uciroute, 'client_enabled') || '0',
       routing_tcpport = uci.get(uciconf, uciroute, 'routing_tcpport') || null,
       routing_udpport = uci.get(uciconf, uciroute, 'routing_udpport') || null,
       routing_mode = uci.get(uciconf, uciroute, 'routing_mode') || null,
@@ -530,13 +530,16 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 		return null;
 
 	push(config.rules, function(arr) {
-			arr[1] = replace(arr[1], /ꓹ|‚/g, ','); // U+A4F9 | U+201A
-			arr[2] = get_proxygroup(arr[2]);
+			if (arr[0] === 'MATCH') {
+				arr[1] = get_proxygroup(arr[1]);
+			} else {
+				arr[1] = replace(arr[1], /ꓹ|‚/g, ','); // U+A4F9 | U+201A
+				arr[2] = get_proxygroup(arr[2]);
+			}
 			return join(',', arr);
 		}(split(cfg.entry, ','))
 	);
 });
-push(config.rules, 'MATCH,' + get_proxygroup(default_proxy));
 /* Routing rules END */
 
 printf('%.J\n', removeBlankAttrs(config));

@@ -158,6 +158,8 @@ return baseclass.extend({
 		//['DSCP'],
 
 		['RULE-SET'],
+
+		['MATCH']
 	],
 
 	rules_logical_type: [

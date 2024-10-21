@@ -91,6 +91,8 @@ class RulesEntry {
 				rawfactor = this.rawparams.shift() || '';
 		}.call(this, this.rawparams.join(',')));
 		this.detour = this.rawparams.shift() || '';
+		if (this.type === 'MATCH')
+			this.detour = rawfactor;
 
 		this.payload = [];
 		if (logical_payload) { // ꓹ ႇ ❟
@@ -160,9 +162,12 @@ class RulesEntry {
 		if (this.subrule) {
 			return 'SUB-RULE,(%s),%s'.format([this.type, factor].join(','), this.subrule);
 		} else
-			return [this.type, factor, this.detour].concat(
-				['no-resolve', 'src'].filter(k => this.params[k])
-			).join(',');
+			if (this.type === 'MATCH') {
+				return [this.type, this.detour].join(',');
+			} else
+				return [this.type, factor, this.detour].concat(
+					['no-resolve', 'src'].filter(k => this.params[k])
+				).join(',');
 	}
 }
 
@@ -327,8 +332,8 @@ return view.extend({
 		o.inputstyle = 'apply';
 		o.onclick = L.bind(hm.handleReload, o, 'mihomo-c');
 
-		o = s.taboption('group', form.ListValue, 'default_proxy', _('Default outbound'));
-		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct);
+		o = s.taboption('group', form.Flag, 'client_enabled', _('Enable'));
+		o.default = o.disabled;
 
 		/* Proxy Group */
 		o = s.taboption('group', form.SectionValue, '_group', form.GridSection, 'proxy_group', null);

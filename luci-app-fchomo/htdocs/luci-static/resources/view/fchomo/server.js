@@ -52,7 +52,7 @@ return view.extend({
 		o = s.option(form.Flag, 'server_auto_firewall', _('Auto configure firewall'));
 		o.default = o.disabled;
 
-		/* Server */
+		/* Server settings START */
 		s = m.section(form.GridSection, 'server', null);
 		var prefmt = { 'prefix': 'server_', 'suffix': '' };
 		s.addremove = true;
@@ -79,6 +79,34 @@ return view.extend({
 		hm.inbound_type.forEach((res) => {
 			o.value.apply(o, res);
 		})
+
+		o = s.option(form.Value, 'listen', _('Listen address'));
+		o.datatype = 'ipaddr';
+		o.placeholder = '::';
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'port', _('Listen port'));
+		o.datatype = 'port';
+		o.rmempty = false;
+
+		// dev: Features under development
+		// rule
+		// proxy
+
+		/* HTTP SOCKS */
+		o = s.option(form.DynamicList, 'users', _('User Authentication'));
+		o.datatype = 'list(string)';
+		o.placeholder = 'user1:pass1';
+		o.validate = L.bind(hm.validateAuth, o);
+		o.depends({type: /^(http|socks|mixed)$/});
+		o.modalonly = true;
+
+		/* Extra fields */
+		o = s.option(form.Flag, 'udp', _('UDP'));
+		o.default = o.enabled;
+		o.depends({type: /^(socks|mixed|shadowsocks)$/});
+		o.modalonly = true;
+		/* Server settings END */
 
 		return m.render();
 	}

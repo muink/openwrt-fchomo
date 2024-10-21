@@ -565,6 +565,15 @@ return baseclass.extend({
 		return this.vallist[i];
 	},
 
+	validateAuth: function(section_id, value) {
+		if (!value)
+			return true;
+		if (!value.match(/^[\w-]{3,}:[^:]+$/))
+			return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}:[^:]+');
+
+		return true;
+	},
+
 	validateCommonPort: function(section_id, value) {
 		// thanks to homeproxy
 		var stubValidator = {

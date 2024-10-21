@@ -328,14 +328,7 @@ return view.extend({
 		so = ss.option(form.DynamicList, 'authentication', _('User Authentication'));
 		so.datatype = 'list(string)';
 		so.placeholder = 'user1:pass1';
-		so.validate = function(section_id, value) {
-			if (!value)
-				return true;
-			if (!value.match(/^[\w-]{3,}:[^:]+$/))
-				return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}:[^:]+');
-
-			return true;
-		}
+		so.validate = L.bind(hm.validateAuth, so);
 
 		so = ss.option(form.DynamicList, 'skip_auth_prefixes', _('No Authentication IP ranges'));
 		so.datatype = 'list(cidr)';

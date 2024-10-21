@@ -54,6 +54,17 @@ return baseclass.extend({
 		['https://www.gstatic.com/generate_204']
 	],
 
+	inbound_type: [
+		['http', _('HTTP')],
+		['socks', _('SOCKS')],
+		['mixed', _('Mixed')],
+		['shadowsocks', _('Shadowsocks')],
+		['vmess', _('VMess')],
+		['tuic', _('TUIC')],
+		['hysteria2', _('Hysteria2')],
+		//['tunnel', _('Tunnel')]
+	],
+
 	ip_version: [
 		['', _('Keep default')],
 		['dual', _('Dual stack')],

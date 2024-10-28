@@ -174,6 +174,34 @@ return baseclass.extend({
 		//'SUB-RULE': 0,
 	},
 
+	shadowsocks_cipher_methods: [
+		/* Stream */
+		['none', _('none')],
+		/* AEAD */
+		['aes-128-gcm', _('aes-128-gcm')],
+		['aes-192-gcm', _('aes-192-gcm')],
+		['aes-256-gcm', _('aes-256-gcm')],
+		['chacha20-ietf-poly1305', _('chacha20-ietf-poly1305')],
+		['xchacha20-ietf-poly1305', _('xchacha20-ietf-poly1305')],
+		/* AEAD 2022 */
+		['2022-blake3-aes-128-gcm', _('2022-blake3-aes-128-gcm')],
+		['2022-blake3-aes-256-gcm', _('2022-blake3-aes-256-gcm')],
+		['2022-blake3-chacha20-poly1305', _('2022-blake3-chacha20-poly1305')]
+	],
+
+	shadowsocks_cipher_length: {
+		/* AEAD */
+		'aes-128-gcm': 0,
+		'aes-192-gcm': 0,
+		'aes-256-gcm': 0,
+		'chacha20-ietf-poly1305': 0,
+		'xchacha20-ietf-poly1305': 0,
+		/* AEAD 2022 */
+		'2022-blake3-aes-128-gcm': 16,
+		'2022-blake3-aes-256-gcm': 32,
+		'2022-blake3-chacha20-poly1305': 32
+	},
+
 	tls_client_fingerprints: [
 		['chrome'],
 		['firefox'],
@@ -282,6 +310,29 @@ return baseclass.extend({
 		return decodeURIComponent(Array.prototype.map.call(atob(str), (c) =>
 			'%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
 		).join(''));
+	},
+
+	generateRand: function(type, length) {
+		var byteArr;
+		if (['base64', 'hex'].includes(type))
+			byteArr = crypto.getRandomValues(new Uint8Array(length));
+		switch (type) {
+			case 'base64':
+				/* Thanks to https://stackoverflow.com/questions/9267899 */
+				return btoa(String.fromCharCode.apply(null, byteArr));
+			case 'hex':
+				return Array.from(byteArr, (byte) =>
+					(byte & 255).toString(16).padStart(2, '0')
+				).join('');
+			case 'uuid':
+				/* Thanks to https://stackoverflow.com/a/2117523 */
+				return (location.protocol === 'https:') ? crypto.randomUUID() :
+				([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, (c) =>
+					(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+				);
+			default:
+				return null;
+		};
 	},
 
 	getFeatures: function() {

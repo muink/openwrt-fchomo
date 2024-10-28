@@ -95,7 +95,7 @@ return view.extend({
 		s.nodescriptions = true;
 		s.modaltitle = L.bind(hm.loadModalTitle, s, _('Server'), _('Add a server'));
 		s.sectiontitle = L.bind(hm.loadDefaultLabel, s);
-		s.renderSectionAdd = L.bind(hm.renderSectionAdd, s, prefmt, true);
+		s.renderSectionAdd = L.bind(hm.renderSectionAdd, s, prefmt, false);
 		s.handleAdd = L.bind(hm.handleAdd, s, prefmt);
 
 		/* General fields */
@@ -127,7 +127,7 @@ return view.extend({
 		// rule
 		// proxy
 
-		/* HTTP SOCKS */
+		/* HTTP / SOCKS fields */
 		o = s.option(form.DynamicList, 'users', _('User Authentication'));
 		o.datatype = 'list(string)';
 		o.placeholder = 'user1:pass1';
@@ -135,7 +135,7 @@ return view.extend({
 		o.depends({type: /^(http|socks|mixed)$/});
 		o.modalonly = true;
 
-		/* Shadowsocks */
+		/* Shadowsocks fields */
 		o = s.option(form.ListValue, 'shadowsocks_chipher', _('Chipher'));
 		o.default = hm.shadowsocks_cipher_methods[1][0];
 		hm.shadowsocks_cipher_methods.forEach((res) => {
@@ -179,7 +179,7 @@ return view.extend({
 
 		/* Extra fields */
 		o = s.option(form.Flag, 'udp', _('UDP'));
-		o.default = o.enabled;
+		o.default = o.disabled;
 		o.depends({type: /^(socks|mixed|shadowsocks)$/});
 		o.modalonly = true;
 		/* Server settings END */

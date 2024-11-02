@@ -322,7 +322,6 @@ return view.extend({
 		/* TLS fields */
 		o = s.option(form.Flag, 'tls', _('TLS'));
 		o.default = o.disabled;
-		o.depends({type: /^(vmess|tuic|hysteria2)$/});
 		o.validate = function(section_id, value) {
 			var type = this.section.getOption('type').formvalue(section_id);
 			var tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
@@ -340,6 +339,7 @@ return view.extend({
 
 			return true;
 		}
+		o.depends({type: /^(vmess|tuic|hysteria2)$/});
 		o.modalonly = true;
 
 		o = s.option(form.DynamicList, 'tls_alpn', _('TLS ALPN'),

@@ -303,7 +303,7 @@ return baseclass.extend({
 
 		/* Thanks to luci-app-ssr-plus */
 		str = str.replace(/-/g, '+').replace(/_/g, '/');
-		var padding = (4 - str.length % 4) % 4;
+		var padding = (4 - (str.length % 4)) % 4;
 		if (padding)
 			str = str + Array(padding + 1).join('=');
 
@@ -328,7 +328,7 @@ return baseclass.extend({
 				/* Thanks to https://stackoverflow.com/a/2117523 */
 				return (location.protocol === 'https:') ? crypto.randomUUID() :
 				([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, (c) =>
-					(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+					(c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
 				);
 			default:
 				return null;
@@ -702,7 +702,7 @@ return baseclass.extend({
 		uci.sections(this.config, this.section.sectiontype, (res) => {
 			if (res['.name'] !== section_id)
 				if (res[this.option] === value)
-					duplicate = true
+					duplicate = true;
 		});
 		if (duplicate)
 			return _('Expecting: %s').format(_('unique value'));

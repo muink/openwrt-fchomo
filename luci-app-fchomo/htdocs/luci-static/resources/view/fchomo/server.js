@@ -155,6 +155,56 @@ return view.extend({
 		o.depends({type: /^(tuic)$/, uuid: /.+/});
 		o.modalonly = true;
 
+		/* Hysteria2 fields */
+		o = s.option(form.Value, 'hysteria_up_mbps', _('Max upload speed'),
+			_('In Mbps.'));
+		o.datatype = 'uinteger';
+		o.depends('type', 'hysteria2');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'hysteria_down_mbps', _('Max download speed'),
+			_('In Mbps.'));
+		o.datatype = 'uinteger';
+		o.depends('type', 'hysteria2');
+		o.modalonly = true;
+
+		o = s.option(form.Flag, 'hysteria_ignore_client_bandwidth', _('Ignore client bandwidth'),
+			_('Tell the client to use the BBR flow control algorithm instead of Hysteria CC.'));
+		o.default = o.disabled;
+		o.depends({type: 'hysteria2', hysteria_up_mbps: '', hysteria_down_mbps: ''});
+		o.modalonly = true;
+
+		o = s.option(form.ListValue, 'hysteria_obfs_type', _('Obfuscate type'));
+		o.value('', _('Disable'));
+		o.value('salamander', _('Salamander'));
+		o.depends('type', 'hysteria2');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'hysteria_obfs_password', _('Obfuscate password'),
+			_('Enabling obfuscation will make the server incompatible with standard QUIC connections, losing the ability to masquerade with HTTP/3.'));
+		o.password = true;
+		o.renderWidget = function() {
+			var node = form.Value.prototype.renderWidget.apply(this, arguments);
+
+			(node.querySelector('.control-group') || node).appendChild(E('button', {
+				'class': 'cbi-button cbi-button-add',
+				'title': _('Generate'),
+				'click': ui.createHandlerFn(this, handleGenKey, this.option)
+			}, [ _('Generate') ]));
+
+			return node;
+		}
+		o.rmempty = false;
+		o.depends('type', 'hysteria');
+		o.depends({type: 'hysteria2', hysteria_obfs_type: /.+/});
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'hysteria_masquerade', _('Masquerade'),
+			_('HTTP3 server behavior when authentication fails.<br/>A 404 page will be returned if empty.'));
+		o.placeholder = 'file:///var/www or http://127.0.0.1:8080'
+		o.depends('type', 'hysteria2');
+		o.modalonly = true;
+
 		/* Shadowsocks fields */
 		o = s.option(form.ListValue, 'shadowsocks_chipher', _('Chipher'));
 		o.default = hm.shadowsocks_cipher_methods[1][0];

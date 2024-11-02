@@ -52,6 +52,14 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		port: strToInt(cfg.port),
 		udp: strToBool(cfg.udp),
 
+		/* Hysteria2 */
+		up: strToInt(cfg.hysteria_up_mbps),
+		down: strToInt(cfg.hysteria_down_mbps),
+		"ignore-client-bandwidth": strToBool(cfg.hysteria_ignore_client_bandwidth),
+		obfs: cfg.hysteria_obfs_type,
+		"obfs-password": cfg.hysteria_obfs_password,
+		masquerade: cfg.hysteria_masquerade,
+
 		/* Shadowsocks */
 		cipher: cfg.shadowsocks_chipher,
 		password: cfg.shadowsocks_password,

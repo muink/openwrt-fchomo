@@ -68,7 +68,6 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		"congestion-controller": cfg.tuic_congestion_controller,
 		"max-idle-time": durationToSecond(cfg.tuic_max_idle_time),
 		"authentication-timeout": durationToSecond(cfg.tuic_authentication_timeout),
-		alpn: (cfg.type === 'tuic') ? ['h3'] : null,
 		"max-udp-relay-packet-size": strToInt(cfg.tuic_max_udp_relay_packet_size),
 
 		/* HTTP / SOCKS / VMess / Tuic / Hysteria2 */
@@ -85,6 +84,13 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 				alterId: strToInt(cfg.vmess_alterid)
 			}
 		] : null,
+
+		/* TLS */
+		...(cfg.tls === '1' ? {
+			alpn: cfg.tls_alpn,
+			certificate: cfg.tls_cert_path,
+			"private-key": cfg.tls_key_path
+		} : {})
 	});
 });
 /* Inbound END */

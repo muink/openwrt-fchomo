@@ -319,6 +319,64 @@ return view.extend({
 		o.depends('type', 'vmess');
 		o.modalonly = true;
 
+		/* TLS fields */
+		o = s.option(form.Flag, 'tls', _('TLS'));
+		o.default = o.disabled;
+		o.depends({type: /^(vmess|tuic|hysteria2)$/});
+		o.validate = function(section_id, value) {
+			var type = this.section.getOption('type').formvalue(section_id);
+			var tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
+			var tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
+
+			// Force enabled
+			if (['tuic', 'hysteria2'].includes(type)) {
+				tls.checked = true;
+				tls.disabled = true;
+				if (!`${tls_alpn.getValue()}`)
+					tls_alpn.setValue('h3');
+			} else {
+				tls.disabled = null;
+			}
+
+			return true;
+		}
+		o.modalonly = true;
+
+		o = s.option(form.DynamicList, 'tls_alpn', _('TLS ALPN'),
+			_('List of supported application level protocols, in order of preference.'));
+		o.depends('tls', '1');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'tls_cert_path', _('Certificate path'),
+			_('The server public key, in PEM format.'));
+		o.value('/etc/fchomo/certs/server_publickey.pem');
+		o.depends('tls', '1');
+		o.rmempty = false;
+		o.modalonly = true;
+
+		o = s.option(form.Button, '_upload_cert', _('Upload certificate'),
+			_('<strong>Save your configuration before uploading files!</strong>'));
+		o.inputstyle = 'action';
+		o.inputtitle = _('Upload...');
+		o.depends({tls: '1', tls_cert_path: '/etc/fchomo/certs/server_publickey.pem'});
+		o.onclick = L.bind(hm.uploadCertificate, o, _('certificate'), 'server_publickey');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'tls_key_path', _('Key path'),
+			_('The server private key, in PEM format.'));
+		o.value('/etc/fchomo/certs/server_privatekey.pem');
+		o.rmempty = false;
+		o.depends({tls: '1', tls_cert_path: /.+/});
+		o.modalonly = true;
+
+		o = s.option(form.Button, '_upload_key', _('Upload key'),
+			_('<strong>Save your configuration before uploading files!</strong>'));
+		o.inputstyle = 'action';
+		o.inputtitle = _('Upload...');
+		o.depends({tls: '1', tls_key_path: '/etc/fchomo/certs/server_privatekey.pem'});
+		o.onclick = L.bind(hm.uploadCertificate, o, _('private key'), 'server_privatekey');
+		o.modalonly = true;
+
 		/* Extra fields */
 		o = s.option(form.Flag, 'udp', _('UDP'));
 		o.default = o.disabled;

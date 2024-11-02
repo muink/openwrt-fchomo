@@ -197,6 +197,53 @@ return view.extend({
 		o.depends({type: 'shadowsocks', shadowsocks_chipher: /.+/});
 		o.modalonly = true;
 
+		/* Tuic fields */
+		o = s.option(form.Value, 'uuid', _('UUID'));
+		o.renderWidget = function() {
+			var node = form.Value.prototype.renderWidget.apply(this, arguments);
+
+			(node.querySelector('.control-group') || node).appendChild(E('button', {
+				'class': 'cbi-button cbi-button-add',
+				'title': _('Generate'),
+				'click': ui.createHandlerFn(this, handleGenKey, this.option)
+			}, [ _('Generate') ]));
+
+			return node;
+		}
+		o.rmempty = false;
+		o.validate = L.bind(hm.validateUUID, o);
+		o.depends('type', 'tuic');
+		o.modalonly = true;
+
+		o = s.option(form.ListValue, 'tuic_congestion_controller', _('Congestion controller'),
+			_('QUIC congestion controller.'));
+		o.default = 'cubic';
+		o.value('cubic', _('cubic'));
+		o.value('new_reno', _('new_reno'));
+		o.value('bbr', _('bbr'));
+		o.depends('type', 'tuic');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'tuic_max_idle_time', _('Idle timeout'),
+			_('In seconds.'));
+		o.default = '15000';
+		o.validate = L.bind(hm.validateTimeDuration, o);
+		o.depends('type', 'tuic');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'tuic_authentication_timeout', _('Auth timeout'),
+			_('In seconds.'));
+		o.default = '1000';
+		o.validate = L.bind(hm.validateTimeDuration, o);
+		o.depends('type', 'tuic');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'tuic_max_udp_relay_packet_size', _('Max UDP relay packet size'));
+		o.datatype = 'uinteger';
+		o.default = '1500';
+		o.depends('type', 'tuic');
+		o.modalonly = true;
+
 		/* VMess fields */
 		o = s.option(form.Value, 'vmess_uuid', _('UUID'));
 		o.renderWidget = function() {

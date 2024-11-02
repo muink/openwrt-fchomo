@@ -49,6 +49,28 @@ export function strToInt(str) {
 	return !match(str, /^\d+$/) ? str : int(str) ?? null;
 };
 
+export function durationToSecond(str) {
+	if (isEmpty(str))
+		return null;
+
+	let seconds = 0;
+	let arr = match(str, /^(\d+)(s|m|h|d)?$/);
+	if (arr) {
+		if (arr[2] === 's') {
+			seconds = strToInt(arr[1]);
+		} else if (arr[2] === 'm') {
+			seconds = strToInt(arr[1]) * 60;
+		} else if (arr[2] === 'h') {
+			seconds = strToInt(arr[1]) * 3600;
+		} else if (arr[2] === 'd') {
+			seconds = strToInt(arr[1]) * 86400;
+		} else
+			seconds = strToInt(arr[1]);
+	}
+
+	return seconds;
+};
+
 export function arrToObj(res) {
 	if (isEmpty(res))
 		return null;

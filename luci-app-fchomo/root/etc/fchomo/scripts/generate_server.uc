@@ -5,7 +5,7 @@
 import { cursor } from 'uci';
 
 import {
-	isEmpty, strToBool, strToInt,
+	isEmpty, strToBool, strToInt, durationToSecond,
 	arrToObj, removeBlankAttrs,
 	HM_DIR, RUN_DIR, PRESET_OUTBOUND
 } from 'fchomo';
@@ -55,6 +55,13 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		/* Shadowsocks */
 		cipher: cfg.shadowsocks_chipher,
 		password: cfg.shadowsocks_password,
+
+		/* Tuic */
+		"congestion-controller": cfg.tuic_congestion_controller,
+		"max-idle-time": durationToSecond(cfg.tuic_max_idle_time),
+		"authentication-timeout": durationToSecond(cfg.tuic_authentication_timeout),
+		alpn: (cfg.type === 'tuic') ? ['h3'] : null,
+		"max-udp-relay-packet-size": strToInt(cfg.tuic_max_udp_relay_packet_size),
 
 		/* HTTP / SOCKS / VMess / Tuic / Hysteria2 */
 		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess', 'tuic', 'hysteria2']) ? [

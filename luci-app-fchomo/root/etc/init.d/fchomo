@@ -277,18 +277,22 @@ start_service() {
 			add_firewall() {
 				local enabled udp proto port
 				config_get_bool enabled "$1" "enabled" "1"
-				config_get_bool udp "$1" "udp" "1"
-				[ "$udp" = "0" ] && proto='tcp' || proto='tcp udp'
+				config_get_bool udp "$1" "udp" "0"
+				[ "$udp" = "1" ] && proto='tcp udp' || proto='tcp'
+				config_get listen "$1" "listen" "::"
 				config_get port "$1" "port"
-				
+
 				[ "$enabled" = "0" ] && return 0
 
 				json_add_object ''
 				json_add_string type rule
 				json_add_string target ACCEPT
 				json_add_string name "$1"
+				json_add_string family '' # '' = IPv4 and IPv6
 				json_add_string proto "$proto"
 				json_add_string src "*"
+				json_add_string dest '' # '' = input
+				json_add_string dest_ip "$(echo "$listen" | grep -vE '^(0\.\d+\.\d+\.\d+|::)$')"
 				json_add_string dest_port "$port"
 				json_close_object
 			}

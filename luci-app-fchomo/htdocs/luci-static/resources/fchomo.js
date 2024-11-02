@@ -624,6 +624,20 @@ return baseclass.extend({
 
 		return true;
 	},
+	validateAuthUsername: function(section_id, value) {
+		if (!value)
+			return true;
+		if (!value.match(/^[\w-]{3,}$/))
+			return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}');
+
+		return true;
+	},
+	validateAuthPassword: function(section_id, value) {
+		if (!value.match(/^[^:]+$/))
+			return _('Expecting: %s').format('[^:]+');
+
+		return true;
+	},
 
 	validateCommonPort: function(section_id, value) {
 		// thanks to homeproxy
@@ -708,6 +722,15 @@ return baseclass.extend({
 		catch(e) {
 			return _('Expecting: %s').format(_('valid URL'));
 		}
+
+		return true;
+	},
+
+	validateUUID: function(section_id, value) {
+		if (!value)
+			return true;
+		else if (value.match('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$') === null)
+			return _('Expecting: %s').format(_('valid uuid'));
 
 		return true;
 	},

@@ -13,7 +13,7 @@ function handleGenKey(option) {
 	var widget = this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
 	var password, required_method;
 
-	if (option === 'uuid')
+	if (option === 'uuid' || option.match(/_uuid/))
 		required_method = 'uuid';
 	else if (type === 'shadowsocks')
 		required_method = this.section.getOption('shadowsocks_chipher')?.formvalue(section_id);
@@ -130,14 +130,7 @@ return view.extend({
 		/* HTTP / SOCKS fields */
 		/* hm.validateAuth */
 		o = s.option(form.Value, 'username', _('Username'));
-		o.validate = function(section_id, value) {
-			if (!value)
-				return true;
-			if (!value.match(/^[\w-]{3,}$/))
-				return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}');
-
-			return true;
-		}
+		o.validate = L.bind(hm.validateAuthUsername, o);
 		o.depends({type: /^(http|socks|mixed|hysteria2)$/});
 		o.modalonly = true;
 
@@ -155,11 +148,8 @@ return view.extend({
 			return node;
 		}
 		o.validate = function(section_id, value) {
-			if (!value.match(/^[^:]+$/))
-				return _('Expecting: %s').format('[^:]+');
-
-			return true;
 		}
+		o.validate = L.bind(hm.validateAuthPassword, o);
 		o.rmempty = false;
 		o.depends({type: /^(http|socks|mixed|hysteria2)$/, username: /.+/});
 		o.depends({type: /^(tuic)$/, uuid: /.+/});
@@ -205,6 +195,31 @@ return view.extend({
 			return true;
 		}
 		o.depends({type: 'shadowsocks', shadowsocks_chipher: /.+/});
+		o.modalonly = true;
+
+		/* VMess fields */
+		o = s.option(form.Value, 'vmess_uuid', _('UUID'));
+		o.renderWidget = function() {
+			var node = form.Value.prototype.renderWidget.apply(this, arguments);
+
+			(node.querySelector('.control-group') || node).appendChild(E('button', {
+				'class': 'cbi-button cbi-button-add',
+				'title': _('Generate'),
+				'click': ui.createHandlerFn(this, handleGenKey, this.option)
+			}, [ _('Generate') ]));
+
+			return node;
+		}
+		o.rmempty = false;
+		o.validate = L.bind(hm.validateUUID, o);
+		o.depends('type', 'vmess');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'vmess_alterid', _('Alter ID'),
+			_('Legacy protocol support (VMess MD5 Authentication) is provided for compatibility purposes only, use of alterId > 1 is not recommended.'));
+		o.datatype = 'uinteger';
+		o.placeholder = '0';
+		o.depends('type', 'vmess');
 		o.modalonly = true;
 
 		/* Extra fields */

@@ -46,7 +46,7 @@ export function strToInt(str) {
 	if (isEmpty(str))
 		return null;
 
-	return !match(str, /^\d+$/) ? str : int(str) || null;
+	return !match(str, /^\d+$/) ? str : int(str) ?? null;
 };
 
 export function arrToObj(res) {

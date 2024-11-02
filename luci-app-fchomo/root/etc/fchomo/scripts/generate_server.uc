@@ -66,7 +66,6 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 				...arrToObj([[cfg.uuid, cfg.password]]),
 
 				/* VMess */
-				username: cfg.vmess_username,
 				uuid: cfg.vmess_uuid,
 				alterId: strToInt(cfg.vmess_alterid)
 			}

@@ -6,7 +6,7 @@ import { cursor } from 'uci';
 
 import {
 	isEmpty, strToBool, strToInt,
-	removeBlankAttrs,
+	arrToObj, removeBlankAttrs,
 	HM_DIR, RUN_DIR, PRESET_OUTBOUND
 } from 'fchomo';
 
@@ -52,12 +52,25 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		port: strToInt(cfg.port),
 		udp: strToBool(cfg.udp),
 
-		/* HTTP / SOCKS */
-		users: (cfg.type in ['http', 'socks', 'mixed']) ? parse_users(cfg.users) : null,
-
 		/* Shadowsocks */
 		cipher: cfg.shadowsocks_chipher,
 		password: cfg.shadowsocks_password,
+
+		/* HTTP / SOCKS / VMess / Tuic / Hysteria2 */
+		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess', 'tuic', 'hysteria2']) ? [
+			{
+				/* HTTP / SOCKS / Hysteria2 */
+				...arrToObj([[cfg.username, cfg.password]]),
+
+				/* Tuic */
+				...arrToObj([[cfg.uuid, cfg.password]]),
+
+				/* VMess */
+				username: cfg.vmess_username,
+				uuid: cfg.vmess_uuid,
+				alterId: strToInt(cfg.vmess_alterid)
+			}
+		] : null,
 	});
 });
 /* Inbound END */

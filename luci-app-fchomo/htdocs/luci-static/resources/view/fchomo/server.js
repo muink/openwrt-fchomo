@@ -128,11 +128,41 @@ return view.extend({
 		// proxy
 
 		/* HTTP / SOCKS fields */
-		o = s.option(form.DynamicList, 'users', _('User Authentication'));
-		o.datatype = 'list(string)';
-		o.placeholder = 'user1:pass1';
-		o.validate = L.bind(hm.validateAuth, o);
-		o.depends({type: /^(http|socks|mixed)$/});
+		/* hm.validateAuth */
+		o = s.option(form.Value, 'username', _('Username'));
+		o.validate = function(section_id, value) {
+			if (!value)
+				return true;
+			if (!value.match(/^[\w-]{3,}$/))
+				return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}');
+
+			return true;
+		}
+		o.depends({type: /^(http|socks|mixed|hysteria2)$/});
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'password', _('Password'));
+		o.password = true;
+		o.renderWidget = function() {
+			var node = form.Value.prototype.renderWidget.apply(this, arguments);
+
+			(node.querySelector('.control-group') || node).appendChild(E('button', {
+				'class': 'cbi-button cbi-button-add',
+				'title': _('Generate'),
+				'click': ui.createHandlerFn(this, handleGenKey, this.option)
+			}, [ _('Generate') ]));
+
+			return node;
+		}
+		o.validate = function(section_id, value) {
+			if (!value.match(/^[^:]+$/))
+				return _('Expecting: %s').format('[^:]+');
+
+			return true;
+		}
+		o.rmempty = false;
+		o.depends({type: /^(http|socks|mixed|hysteria2)$/, username: /.+/});
+		o.depends({type: /^(tuic)$/, uuid: /.+/});
 		o.modalonly = true;
 
 		/* Shadowsocks fields */

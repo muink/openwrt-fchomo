@@ -49,6 +49,23 @@ export function strToInt(str) {
 	return !match(str, /^\d+$/) ? str : int(str) || null;
 };
 
+export function arrToObj(res) {
+	if (isEmpty(res))
+		return null;
+
+	let object;
+	if (type(res) === 'array') {
+		object = {};
+		map(res, (e) => {
+			if (type(e) === 'array')
+				object[e[0]] = e[1];
+		});
+	} else
+		return res;
+
+	return object;
+};
+
 export function removeBlankAttrs(res) {
 	let content;
 

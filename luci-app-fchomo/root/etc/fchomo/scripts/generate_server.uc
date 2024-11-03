@@ -71,19 +71,24 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		"max-udp-relay-packet-size": strToInt(cfg.tuic_max_udp_relay_packet_size),
 
 		/* HTTP / SOCKS / VMess / Tuic / Hysteria2 */
-		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess', 'tuic', 'hysteria2']) ? [
+		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess']) ? [
 			{
-				/* HTTP / SOCKS / Hysteria2 */
+				/* HTTP / SOCKS */
 				...arrToObj([[cfg.username, cfg.password]]),
-
-				/* Tuic */
-				...arrToObj([[cfg.uuid, cfg.password]]),
 
 				/* VMess */
 				uuid: cfg.vmess_uuid,
 				alterId: strToInt(cfg.vmess_alterid)
 			}
-		] : null,
+			/*{
+			}*/
+		] : ((cfg.type in ['tuic', 'hysteria2']) ? {
+			/* Hysteria2 */
+			...arrToObj([[cfg.username, cfg.password]]),
+
+			/* Tuic */
+			...arrToObj([[cfg.uuid, cfg.password]])
+		} : null),
 
 		/* TLS */
 		...(cfg.tls === '1' ? {

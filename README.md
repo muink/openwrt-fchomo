@@ -2,7 +2,7 @@
 
 ## Todo
 
-- [ ] node/server
+- [ ] node
 - [ ] rules: SUB-RULE
 - [ ] sub-rules
 - [ ] dialer-proxy

@@ -50,6 +50,7 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 
 		listen: cfg.listen || '::',
 		port: strToInt(cfg.port),
+		proxy: 'DIRECT',
 		udp: strToBool(cfg.udp),
 
 		/* Hysteria2 */
@@ -74,7 +75,8 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess']) ? [
 			{
 				/* HTTP / SOCKS */
-				...arrToObj([[cfg.username, cfg.password]]),
+				username: cfg.username,
+				password: cfg.password,
 
 				/* VMess */
 				uuid: cfg.vmess_uuid,

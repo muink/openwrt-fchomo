@@ -55,7 +55,8 @@ return view.extend({
 
 		var m, s, o;
 
-		m = new form.Map('fchomo', _('Mihomo server'));
+		m = new form.Map('fchomo', _('Mihomo server'),
+			_('When used as a server, HomeProxy is a better choice.'));
 
 		s = m.section(form.TypedSection);
 		s.render = function () {

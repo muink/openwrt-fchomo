@@ -1762,6 +1762,10 @@ msgstr "可视化值"
 msgid "Warning"
 msgstr "警告"
 
+#: htdocs/luci-static/resources/view/fchomo/server.js:59
+msgid "When used as a server, HomeProxy is a better choice."
+msgstr "用作服务端时，HomeProxy 是更好的选择。"
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:616
 msgid "White list"
 msgstr "白名单"

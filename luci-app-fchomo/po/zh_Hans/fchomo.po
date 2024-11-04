@@ -76,6 +76,10 @@ msgstr "API TLS 私钥"
 msgid "API secret"
 msgstr "API 令牌"
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:262
+msgid "ASN version"
+msgstr "ASN 版本"
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:562
 #: htdocs/luci-static/resources/view/fchomo/global.js:612
 msgid "Access Control"

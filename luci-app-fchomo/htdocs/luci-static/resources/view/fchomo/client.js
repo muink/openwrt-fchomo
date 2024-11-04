@@ -223,18 +223,23 @@ function renderPayload(s, total, uciconfig) {
 		if (n === 0) {
 			o.depends({type: /\bDOMAIN\b/});
 			o.depends({type: /\bGEO(SITE|IP)\b/});
+			o.depends({type: /\bASN\b/});
 			o.depends({type: /\bPROCESS\b/});
 		}
 		o.depends(Object.fromEntries([[prefix + 'type', /\bDOMAIN\b/]]));
 		o.depends(Object.fromEntries([[prefix + 'type', /\bGEO(SITE|IP)\b/]]));
+		o.depends(Object.fromEntries([[prefix + 'type', /\bASN\b/]]));
 		o.depends(Object.fromEntries([[prefix + 'type', /\bPROCESS\b/]]));
 		initPayload(o, n, 'factor', uciconfig);
 
 		o = s.option(form.Value, prefix + 'ip', _('Factor') + ` ${n+1}`);
 		o.datatype = 'cidr';
-		if (n === 0)
-			o.depends({type: /\bIP\b/});
-		o.depends(Object.fromEntries([[prefix + 'type', /\bIP\b/]]));
+		if (n === 0) {
+			o.depends({type: /\b(CIDR|CIDR6)\b/});
+			o.depends({type: /\bIP-SUFFIX\b/});
+		}
+		o.depends(Object.fromEntries([[prefix + 'type', /\b(CIDR|CIDR6)\b/]]));
+		o.depends(Object.fromEntries([[prefix + 'type', /\bIP-SUFFIX\b/]]));
 		initPayload(o, n, 'factor', uciconfig);
 
 		o = s.option(form.Value, prefix + 'port', _('Factor') + ` ${n+1}`);

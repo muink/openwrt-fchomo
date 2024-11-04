@@ -132,11 +132,11 @@ return baseclass.extend({
 		['IP-CIDR'],
 		['IP-CIDR6'],
 		['IP-SUFFIX'],
-		//['IP-ASN'],
+		['IP-ASN'],
 		['GEOIP'],
 
 		['SRC-GEOIP'],
-		//['SRC-IP-ASN'],
+		['SRC-IP-ASN'],
 		['SRC-IP-CIDR'],
 		['SRC-IP-SUFFIX'],
 

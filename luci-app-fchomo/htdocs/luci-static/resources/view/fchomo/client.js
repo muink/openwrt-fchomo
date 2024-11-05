@@ -292,6 +292,118 @@ function renderPayload(s, total, uciconfig) {
 	}
 }
 
+function renderRules(s, uciconfig) {
+	var o;
+
+	o = s.option(form.DummyValue, 'entry', _('Entry'));
+	o.load = function(section_id) {
+		return form.DummyValue.prototype.load.call(this, section_id) || '%s,%s,%s'.format(hm.rules_type[0][0], '', hm.preset_outbound.full[0][0]);
+	}
+	o.write = L.bind(form.AbstractValue.prototype.write, o);
+	o.remove = L.bind(form.AbstractValue.prototype.remove, o);
+	o.editable = true;
+
+	o = s.option(form.ListValue, 'type', _('Type'));
+	o.default = hm.rules_type[0][0];
+	[...hm.rules_type, ...hm.rules_logical_type].forEach((res) => {
+		o.value.apply(o, res);
+	})
+	o.load = function(section_id) {
+		return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).type;
+	}
+	o.validate = function(section_id, value) {
+		// params only available for types other than
+		// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/config/config.go#L1050
+		// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/rules/parser.go#L12
+		if (['GEOIP', 'IP-ASN', 'IP-CIDR', 'IP-CIDR6', 'IP-SUFFIX', 'RULE-SET'].includes(value)) {
+			['no-resolve', 'src'].forEach((opt) => {
+				let UIEl = this.section.getUIElement(section_id, opt);
+				UIEl.node.querySelector('input').disabled = null;
+			});
+		} else {
+			['no-resolve', 'src'].forEach((opt) => {
+				let UIEl = this.section.getUIElement(section_id, opt);
+				UIEl.setValue('');
+				UIEl.node.querySelector('input').disabled = 'true';
+			});
+
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve').setParam('src').toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			UIEl.setValue(newvalue);
+		}
+
+		return true;
+	}
+	o.onchange = function(ev, section_id, value) {
+		var UIEl = this.section.getUIElement(section_id, 'entry');
+
+		var newvalue = new RulesEntry(UIEl.getValue()).setKey('type', value).toString();
+
+		UIEl.node.previousSibling.innerText = newvalue;
+		return UIEl.setValue(newvalue);
+	}
+	o.write = function() {};
+	o.rmempty = false;
+	o.modalonly = true;
+
+	renderPayload(s, Math.max(...Object.values(hm.rules_logical_payload_count)), uciconfig);
+
+	o = s.option(form.ListValue, 'detour', _('Proxy group'));
+	o.load = function(section_id) {
+		hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, section_id);
+
+		return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).detour;
+	}
+	o.onchange = function(ev, section_id, value) {
+		var UIEl = this.section.getUIElement(section_id, 'entry');
+
+		var newvalue = new RulesEntry(UIEl.getValue()).setKey('detour', value).toString();
+
+		UIEl.node.previousSibling.innerText = newvalue;
+		return UIEl.setValue(newvalue);
+	}
+	o.write = function() {};
+	//o.depends('SUB-RULE', '0');
+	o.editable = true;
+
+	o = s.option(form.Flag, 'src', _('src'));
+	o.default = o.disabled;
+	o.load = function(section_id) {
+		return strToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('src'));
+	}
+	o.onchange = function(ev, section_id, value) {
+		var UIEl = this.section.getUIElement(section_id, 'entry');
+
+		var newvalue = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value)).toString();
+
+		UIEl.node.previousSibling.innerText = newvalue;
+		UIEl.setValue(newvalue);
+	}
+	o.write = function() {};
+	o.depends('SUB-RULE', '0');
+	o.modalonly = true;
+
+	o = s.option(form.Flag, 'no-resolve', _('no-resolve'));
+	o.default = o.disabled;
+	o.load = function(section_id) {
+		return strToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('no-resolve'));
+	}
+	o.onchange = function(ev, section_id, value) {
+		var UIEl = this.section.getUIElement(section_id, 'entry');
+
+		var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value)).toString();
+
+		UIEl.node.previousSibling.innerText = newvalue;
+		UIEl.setValue(newvalue);
+	}
+	o.write = function() {};
+	o.depends('SUB-RULE', '0');
+	o.modalonly = true;
+}
+
 return view.extend({
 	load: function() {
 		return Promise.all([
@@ -547,111 +659,7 @@ return view.extend({
 		so.default = so.enabled;
 		so.editable = true;
 
-		so = ss.option(form.DummyValue, 'entry', _('Entry'));
-		so.load = function(section_id) {
-			return form.DummyValue.prototype.load.call(this, section_id) || '%s,%s,%s'.format(hm.rules_type[0][0], '', hm.preset_outbound.full[0][0]);
-		}
-		so.write = L.bind(form.AbstractValue.prototype.write, so);
-		so.remove = L.bind(form.AbstractValue.prototype.remove, so);
-		so.editable = true;
-
-		so = ss.option(form.ListValue, 'type', _('Type'));
-		so.default = hm.rules_type[0][0];
-		[...hm.rules_type, ...hm.rules_logical_type].forEach((res) => {
-			so.value.apply(so, res);
-		})
-		so.load = function(section_id) {
-			return new RulesEntry(uci.get(data[0], section_id, 'entry')).type;
-		}
-		so.validate = function(section_id, value) {
-			// params only available for types other than
-			// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/config/config.go#L1050
-			// https://github.com/muink/mihomo/blob/43f21c0b412b7a8701fe7a2ea6510c5b985a53d6/rules/parser.go#L12
-			if (['GEOIP', 'IP-ASN', 'IP-CIDR', 'IP-CIDR6', 'IP-SUFFIX', 'RULE-SET'].includes(value)) {
-				this.section.getUIElement(section_id, 'no-resolve').node.querySelector('input').disabled = null;
-				this.section.getUIElement(section_id, 'src').node.querySelector('input').disabled = null;
-			} else {
-				var UIEl = this.section.getUIElement(section_id, 'entry');
-
-				var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve').setParam('src').toString();
-
-				UIEl.node.previousSibling.innerText = newvalue;
-				UIEl.setValue(newvalue);
-
-				['no-resolve', 'src'].forEach((opt) => {
-					let UIEl = this.section.getUIElement(section_id, opt);
-					UIEl.setValue('');
-					UIEl.node.querySelector('input').disabled = 'true';
-				});
-			}
-
-			return true;
-		}
-		so.onchange = function(ev, section_id, value) {
-			var UIEl = this.section.getUIElement(section_id, 'entry');
-
-			var newvalue = new RulesEntry(UIEl.getValue()).setKey('type', value).toString();
-
-			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
-		}
-		so.write = function() {};
-		so.rmempty = false;
-		so.modalonly = true;
-
-		renderPayload(ss, Math.max(...Object.values(hm.rules_logical_payload_count)), data[0]);
-
-		so = ss.option(form.ListValue, 'detour', _('Proxy group'));
-		so.load = function(section_id) {
-			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, section_id);
-
-			return new RulesEntry(uci.get(data[0], section_id, 'entry')).detour;
-		}
-		so.onchange = function(ev, section_id, value) {
-			var UIEl = this.section.getUIElement(section_id, 'entry');
-
-			var newvalue = new RulesEntry(UIEl.getValue()).setKey('detour', value).toString();
-
-			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
-		}
-		so.write = function() {};
-		//so.depends('SUB-RULE', '0');
-		so.editable = true;
-
-		so = ss.option(form.Flag, 'src', _('src'));
-		so.default = so.disabled;
-		so.load = function(section_id) {
-			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).getParam('src'));
-		}
-		so.onchange = function(ev, section_id, value) {
-			var UIEl = this.section.getUIElement(section_id, 'entry');
-
-			var newvalue = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value)).toString();
-
-			UIEl.node.previousSibling.innerText = newvalue;
-			UIEl.setValue(newvalue);
-		}
-		so.write = function() {};
-		so.depends('SUB-RULE', '0');
-		so.modalonly = true;
-
-		so = ss.option(form.Flag, 'no-resolve', _('no-resolve'));
-		so.default = so.disabled;
-		so.load = function(section_id) {
-			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).getParam('no-resolve'));
-		}
-		so.onchange = function(ev, section_id, value) {
-			var UIEl = this.section.getUIElement(section_id, 'entry');
-
-			var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value)).toString();
-
-			UIEl.node.previousSibling.innerText = newvalue;
-			UIEl.setValue(newvalue);
-		}
-		so.write = function() {};
-		so.depends('SUB-RULE', '0');
-		so.modalonly = true;
+		renderRules(ss, data[0]);
 
 		so = ss.option(form.Flag, 'SUB-RULE', _('SUB-RULE'));
 		so.default = so.disabled;
@@ -694,6 +702,38 @@ return view.extend({
 		so.depends('SUB-RULE', '1');
 		so.modalonly = true;
 		/* Routing rules END */
+
+		/* Sub rules START */
+		s.tab('subrules', _('Sub rule'));
+
+		/* Sub rules */
+		o = s.taboption('subrules', form.SectionValue, '_subrules', form.GridSection, 'subrules', null);
+		ss = o.subsection;
+		var prefmt = { 'prefix': '', 'suffix': '_subhost' };
+		ss.addremove = true;
+		ss.rowcolors = true;
+		ss.sortable = true;
+		ss.nodescriptions = true;
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('Sub rule'), _('Add a sub rule'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
+		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, false);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
+
+		so = ss.option(form.Value, 'label', _('Label'));
+		so.load = L.bind(hm.loadDefaultLabel, so);
+		so.validate = L.bind(hm.validateUniqueValue, so);
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so.default = so.enabled;
+		so.editable = true;
+
+		so = ss.option(form.Value, 'group', _('Sub rule group'));
+		so.rmempty = false;
+		so.editable = true;
+
+		renderRules(ss, data[0]);
+		/* Sub rules END */
 
 		/* DNS settings START */
 		s.tab('dns', _('DNS settings'));

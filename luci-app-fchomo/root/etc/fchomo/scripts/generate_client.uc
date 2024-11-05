@@ -40,7 +40,8 @@ const ucisniff = 'sniff',
       ucipgrp = 'proxy_group',
       uciprov = 'provider',
       ucirule = 'ruleset',
-      ucirout = 'rules';
+      ucirout = 'rules',
+      ucisubro = 'subrules';
 
 /* Hardcode options */
 const common_tcpport = uci.get(uciconf, ucifchm, 'common_tcpport') || '20-21,22,53,80,110,143,443,465,853,873,993,995,8080,8443,9418',
@@ -153,6 +154,24 @@ function get_nameserver(cfg, detour) {
 	}
 
 	return servers;
+}
+
+function parse_entry(cfg) {
+	if (isEmpty(cfg))
+		return null;
+
+	let arr = split(cfg, ',');
+	if (arr[0] === 'MATCH') {
+		arr[1] = get_proxygroup(arr[1]);
+	} else if (arr[0] === 'SUB-RULE') {
+		arr[1] = replace(arr[1], /ꓹ|‚/g, ','); // U+A4F9 | U+201A
+		arr[2] = replace(arr[2], /ꓹ|‚/g, ','); // U+A4F9 | U+201A
+	} else {
+		arr[1] = replace(arr[1], /ꓹ|‚/g, ','); // U+A4F9 | U+201A
+		arr[2] = get_proxygroup(arr[2]);
+	}
+
+	return join(',', arr);
 }
 /* Config helper END */
 
@@ -529,17 +548,21 @@ uci.foreach(uciconf, ucirout, (cfg) => {
 	if (cfg.enabled === '0')
 		return null;
 
-	push(config.rules, function(arr) {
-			if (arr[0] === 'MATCH') {
-				arr[1] = get_proxygroup(arr[1]);
-			} else {
-				arr[1] = replace(arr[1], /ꓹ|‚/g, ','); // U+A4F9 | U+201A
-				arr[2] = get_proxygroup(arr[2]);
-			}
-			return join(',', arr);
-		}(split(cfg.entry, ','))
-	);
+	push(config.rules, parse_entry(cfg.entry));
 });
 /* Routing rules END */
+
+/* Sub rules START */
+/* Sub rules */
+config["sub-rules"] = {};
+uci.foreach(uciconf, ucisubro, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	if (!config["sub-rules"][cfg.group])
+		config["sub-rules"][cfg.group] = [];
+	push(config["sub-rules"][cfg.group], parse_entry(cfg.entry));
+});
+/* Sub rules END */
 
 printf('%.J\n', removeBlankAttrs(config));

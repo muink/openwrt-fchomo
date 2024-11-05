@@ -449,6 +449,23 @@ return baseclass.extend({
 		return this.super('load', section_id);
 	},
 
+	loadSubRuleGroup: function(section_id) {
+		delete this.keylist;
+		delete this.vallist;
+
+		this.value('', _('-- Please choose --'));
+		let groups = {};
+		uci.sections(this.config, 'subrules', (res) => {
+			if (res.enabled !== '0')
+				groups[res.group] = res.group;
+		});
+		Object.keys(groups).forEach((group) => {
+			this.value(group, group);
+		});
+
+		return this.super('load', section_id);
+	},
+
 	renderStatus: function(self, ElId, isRunning, instance, noGlobal) {
 		var visible = isRunning && (isRunning.http || isRunning.https);
 

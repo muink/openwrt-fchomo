@@ -684,9 +684,10 @@ return view.extend({
 		so.write = function() {};
 		so.modalonly = true;
 
-		// dev: Features under development
-		so = ss.option(form.Value, 'sub_rule', _('Sub rule'));
+		so = ss.option(form.ListValue, 'sub_rule', _('Sub rule'));
 		so.load = function(section_id) {
+			hm.loadSubRuleGroup.call(this, section_id);
+
 			return new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule || '';
 		}
 		so.onchange = function(ev, section_id, value) {
@@ -729,7 +730,9 @@ return view.extend({
 		so.editable = true;
 
 		so = ss.option(form.Value, 'group', _('Sub rule group'));
+		so.value('sub-rule1');
 		so.rmempty = false;
+		so.validate = L.bind(hm.validateAuthUsername, so);
 		so.editable = true;
 
 		renderRules(ss, data[0]);

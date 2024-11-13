@@ -191,11 +191,13 @@ chain {{ inchain }} {
 {%- function render_acl_dport(inchain, outchain, l4proto): %}
 chain {{ inchain }} {
 		{% if ((l4proto === 'tcp' || !l4proto) && routing_tcpport): %}
-		tcp dport @tcp_routing_port counter goto {{ outchain }}
+		tcp dport != @tcp_routing_port counter return
 		{% endif %}
 		{% if ((l4proto === 'udp' || !l4proto) && routing_udpport): %}
-		udp dport @udp_routing_port counter goto {{ outchain }}
+		udp dport != @udp_routing_port counter return
 		{% endif %}
+
+		counter goto {{ outchain }}
 	}
 {% endfunction %}
 {# Common function END -#}

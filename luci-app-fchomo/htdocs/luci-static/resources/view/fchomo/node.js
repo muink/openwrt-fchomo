@@ -37,20 +37,89 @@ return view.extend({
 		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, true);
 		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
-		so = ss.option(form.Value, 'label', _('Label'));
+		ss.tab('field_general', _('General fields'));
+		ss.tab('field_dial', _('Dial fields'));
+		ss.tab('field_multiplex', _('Multiplex fields'));
+
+		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, so);
 		so.validate = L.bind(hm.validateUniqueValue, so);
 		so.modalonly = true;
 
-		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so = ss.taboption('field_general', form.Flag, 'enabled', _('Enable'));
 		so.default = so.enabled;
 		so.editable = true;
 
-		so = ss.option(form.ListValue, 'type', _('Type'));
+		so = ss.taboption('field_general', form.ListValue, 'type', _('Type'));
 		so.default = hm.outbound_type[0][0];
 		hm.outbound_type.forEach((res) => {
 			so.value.apply(so, res);
 		})
+
+		so = ss.taboption('field_general', form.Value, 'server', _('Address'));
+		so.datatype = 'host';
+		so.rmempty = false;
+		so.depends({type: 'direct', '!reverse': true});
+
+		so = ss.taboption('field_general', form.Value, 'port', _('Port'));
+		so.datatype = 'port';
+		so.rmempty = false;
+		so.depends({type: 'direct', '!reverse': true});
+
+		/* Extra fields */
+		// dev: Features under development
+		so = ss.taboption('field_general', form.Flag, 'udp', _('UDP'));
+		so.default = so.disabled;
+		so.depends({type: /^(direct|socks5|ss|vmess|vless|trojan|wireguard)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'uot', _('UoT'),
+			_('Enable the SUoT protocol, requires server support. Conflict with Multiplex.'));
+		so.default = so.disabled;
+		so.depends({type: 'ss', smux_enabled: '0'});
+		so.modalonly = true;
+
+		/* Dial fields */
+		so = ss.taboption('field_dial', form.Flag, 'tfo', _('TFO'));
+		so.default = so.disabled;
+		so.depends({type: 'direct', '!reverse': true});
+		so.modalonly = true;
+
+		so = ss.taboption('field_dial', form.Flag, 'mptcp', _('mpTCP'));
+		so.default = so.disabled;
+		so.depends({type: 'direct', '!reverse': true});
+		so.modalonly = true;
+
+		// dev: Features under development
+		so = ss.taboption('field_dial', form.Value, 'dialer_proxy', _('dialer-proxy'));
+		so.readonly = true;
+		so.depends({type: 'direct', '!reverse': true});
+		so.modalonly = true;
+
+		so = ss.taboption('field_dial', widgets.DeviceSelect, 'interface_name', _('Bind interface'),
+			_('Bind outbound interface.</br>') +
+			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.multiple = false;
+		so.noaliases = true;
+		so.modalonly = true;
+
+		so = ss.taboption('field_dial', form.Value, 'routing_mark', _('Routing mark'),
+			_('Priority: Proxy Node > Proxy Group > Global.'));
+		so.datatype = 'uinteger';
+		so.modalonly = true;
+
+		so = ss.taboption('field_dial', form.ListValue, 'ip_version', _('ip-version'));
+		so.default = hm.ip_version[0][0];
+		hm.ip_version.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.modalonly = true;
+
+		/* Multiplex fields */ // TCP protocol only
+		so = ss.taboption('field_multiplex', form.Flag, 'smux_enabled', _('Enable'));
+		so.default = so.disabled;
+		so.depends({type: /^(ss|vmess|vless|trojan|)$/});
+		so.modalonly = true;
 		/* Proxy Node END */
 
 		/* Provider START */
@@ -210,7 +279,8 @@ return view.extend({
 		so.default = so.enabled;
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Flag, 'override_uot', _('UoT'));
+		so = ss.taboption('field_override', form.Flag, 'override_uot', _('UoT'),
+			_('Enable the SUoT protocol, requires server support. Conflict with Multiplex.'));
 		so.default = so.disabled;
 		so.modalonly = true;
 

@@ -81,6 +81,7 @@ return baseclass.extend({
 	],
 
 	outbound_type: [
+		['direct', _('DIRECT')],
 		['http', _('HTTP')],
 		['socks5', _('SOCKS5')],
 		['ss', _('Shadowsocks')],

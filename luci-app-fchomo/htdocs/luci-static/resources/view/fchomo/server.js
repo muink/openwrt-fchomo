@@ -226,22 +226,9 @@ return view.extend({
 
 			return node;
 		}
-		o.validate = function(section_id, value) {
-				var encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
-				var length = hm.shadowsocks_cipher_length[encmode];
-				if (length) {
-					length = Math.ceil(length/3)*4;
-					if (encmode.match(/^2022-/)) {
-						if (value.length !== length || !value.match(/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/) || value[length-1] !== '=')
-							return _('Expecting: %s').format(_('valid base64 key with %d characters').format(length));
-					} else {
-						if (length !== 0 && value.length !== length)
-							return _('Expecting: %s').format(_('valid key length with %d characters').format(length));
-					}
-				} else
-					return true;
-
-			return true;
+		so.validate = function(section_id, value) {
+			var encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
+			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
 		}
 		o.depends({type: 'shadowsocks', shadowsocks_chipher: /.+/});
 		o.modalonly = true;

@@ -79,7 +79,78 @@ return view.extend({
 		so.depends({type: /^(http|socks5|trojan|hysteria2|tuic|ssh)$/});
 		so.modalonly = true;
 
+		/* Shadowsocks fields */
+		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_chipher', _('Chipher'));
+		so.default = hm.shadowsocks_cipher_methods[1][0];
+		hm.shadowsocks_cipher_methods.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.depends('type', 'ss');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'shadowsocks_password', _('Password'));
+		so.password = true;
+		so.validate = function(section_id, value) {
+			var encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
+			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
+		}
+		so.depends({type: 'ss', shadowsocks_chipher: /.+/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_plugin', _('Plugin'));
+		so.value('', _('none'));
+		so.value('obfs', _('obfs-simple'));
+		//so.value('v2ray-plugin', _('v2ray-plugin'));
+		so.value('shadow-tls', _('shadow-tls'));
+		so.value('restls', _('restls'));
+		so.depends('type', 'ss');
+		so.modalonly = true;
+
+		/* Shadowsocks Plugin fields */
+		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_plugin_opts_obfsmode', _('Mode'));
+		so.value('http', _('HTTP'));
+		so.value('tls', _('TLS'));
+		so.depends('shadowsocks_plugin', 'obfs');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_host', _('Host that supports TLS 1.3'));
+		so.placeholder = 'cloud.tencent.com';
+		so.depends({shadowsocks_plugin: /^(obfs|v2ray-plugin|shadow-tls|restls)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_thetlspassword', _('Password'));
+		so.password = true;
+		so.depends({shadowsocks_plugin: /^(shadow-tls|restls)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_plugin_opts_shadowtls_version', _('Version'));
+		so.value('1', _('v1'));
+		so.value('2', _('v2'));
+		so.value('3', _('v3'));
+		so.default = '2';
+		so.depends({shadowsocks_plugin: 'shadow-tls'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_restls_versionhint', _('version-hint'));
+		so.default = 'tls13';
+		so.depends({shadowsocks_plugin: 'restls'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_restls_script', _('restls-script'));
+		so.default = '300?100<1,400~100,350~100,600~100,300~200,300~100';
+		so.depends({shadowsocks_plugin: 'restls'});
+		so.modalonly = true;
+
 		/* Extra fields */
+		so = ss.taboption('field_general', form.ListValue, 'client_fingerprint', _('Client fingerprint'));
+		so.default = hm.tls_client_fingerprints[0][0];
+		hm.tls_client_fingerprints.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.depends({type: /^(vmess|vless|trojan)$/});
+		so.depends({type: 'ss', shadowsocks_plugin: /^(shadow-tls|restls)$/});
+		so.modalonly = true;
+
 		// dev: Features under development
 		so = ss.taboption('field_general', form.Flag, 'udp', _('UDP'));
 		so.default = so.disabled;
@@ -89,7 +160,19 @@ return view.extend({
 		so = ss.taboption('field_general', form.Flag, 'uot', _('UoT'),
 			_('Enable the SUoT protocol, requires server support. Conflict with Multiplex.'));
 		so.default = so.disabled;
-		so.depends({type: 'ss', smux_enabled: '0'});
+		so.depends('type', 'ss');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'uot_version', _('SUoT version'));
+		so.value('1', _('v1'));
+		so.value('2', _('v2'));
+		so.default = '2';
+		so.depends('uot', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'smux_enabled', _('Multiplex'));
+		so.default = so.disabled;
+		so.depends({type: /^(ss|vmess|vless|trojan|)$/, uot: '0'});
 		so.modalonly = true;
 
 		/* Dial fields */
@@ -129,9 +212,12 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Multiplex fields */ // TCP protocol only
-		so = ss.taboption('field_multiplex', form.Flag, 'smux_enabled', _('Enable'));
-		so.default = so.disabled;
-		so.depends({type: /^(ss|vmess|vless|trojan|)$/});
+		so = ss.taboption('field_multiplex', form.ListValue, 'smux_protocol', _('Protocol'));
+		so.default = 'h2mux';
+		so.value('smux', _('smux'));
+		so.value('yamux', _('yamux'));
+		so.value('h2mux', _('h2mux'));
+		so.depends('smux_enabled', '1');
 		so.modalonly = true;
 		/* Proxy Node END */
 

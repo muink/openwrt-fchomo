@@ -66,6 +66,19 @@ return view.extend({
 		so.rmempty = false;
 		so.depends({type: 'direct', '!reverse': true});
 
+		/* HTTP / SOCKS fields */
+		/* hm.validateAuth */
+		so = ss.taboption('field_general', form.Value, 'username', _('Username'));
+		so.validate = L.bind(hm.validateAuthUsername, so);
+		so.depends({type: /^(http|socks5|ssh)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'password', _('Password'));
+		so.password = true;
+		so.validate = L.bind(hm.validateAuthPassword, so);
+		so.depends({type: /^(http|socks5|trojan|hysteria2|tuic|ssh)$/});
+		so.modalonly = true;
+
 		/* Extra fields */
 		// dev: Features under development
 		so = ss.taboption('field_general', form.Flag, 'udp', _('UDP'));

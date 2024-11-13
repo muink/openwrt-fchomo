@@ -148,8 +148,6 @@ return view.extend({
 
 			return node;
 		}
-		o.validate = function(section_id, value) {
-		}
 		o.validate = L.bind(hm.validateAuthPassword, o);
 		o.rmempty = false;
 		o.depends({type: /^(http|socks|mixed|hysteria2)$/, username: /.+/});

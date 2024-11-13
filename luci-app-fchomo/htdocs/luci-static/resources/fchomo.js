@@ -653,6 +653,8 @@ return baseclass.extend({
 		return true;
 	},
 	validateAuthPassword: function(section_id, value) {
+		if (!value)
+			return true;
 		if (!value.match(/^[^:]+$/))
 			return _('Expecting: %s').format('[^:]+');
 

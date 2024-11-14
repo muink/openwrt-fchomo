@@ -39,6 +39,8 @@ return view.extend({
 
 		ss.tab('field_general', _('General fields'));
 		ss.tab('field_dial', _('Dial fields'));
+		ss.tab('field_tls', _('TLS fields'));
+		ss.tab('field_transport', _('Transport fields'));
 		ss.tab('field_multiplex', _('Multiplex fields'));
 
 		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
@@ -173,27 +175,27 @@ return view.extend({
 		so.depends('type', 'ss');
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.ListValue, 'plugin_opts_obfsmode', _('Obfs Mode'));
+		so = ss.taboption('field_general', form.ListValue, 'plugin_opts_obfsmode', _('Plugin: ') + _('Obfs Mode'));
 		so.value('http', _('HTTP'));
 		so.value('tls', _('TLS'));
 		so.depends('plugin', 'obfs');
 		so.depends('type', 'snell');
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'plugin_opts_host', _('Host that supports TLS 1.3'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_host', _('Plugin: ') + _('Host that supports TLS 1.3'));
 		so.placeholder = 'cloud.tencent.com';
 		so.rmempty = false;
 		so.depends({plugin: /^(obfs|v2ray-plugin|shadow-tls|restls)$/});
 		so.depends('type', 'snell');
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'plugin_opts_thetlspassword', _('Password'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_thetlspassword', _('Plugin: ') + _('Password'));
 		so.password = true;
 		so.rmempty = false;
 		so.depends({plugin: /^(shadow-tls|restls)$/});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.ListValue, 'plugin_opts_shadowtls_version', _('Version'));
+		so = ss.taboption('field_general', form.ListValue, 'plugin_opts_shadowtls_version', _('Plugin: ') + _('Version'));
 		so.value('1', _('v1'));
 		so.value('2', _('v2'));
 		so.value('3', _('v3'));
@@ -201,13 +203,13 @@ return view.extend({
 		so.depends({plugin: 'shadow-tls'});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'plugin_opts_restls_versionhint', _('version-hint'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_restls_versionhint', _('Plugin: ') + _('Version hint'));
 		so.default = 'tls13';
 		so.rmempty = false;
 		so.depends({plugin: 'restls'});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'plugin_opts_restls_script', _('restls-script'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_restls_script', _('Plugin: ') + _('Restls script'));
 		so.default = '300?100<1,400~100,350~100,600~100,300~200,300~100';
 		so.rmempty = false;
 		so.depends({plugin: 'restls'});

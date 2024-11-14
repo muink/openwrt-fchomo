@@ -8,8 +8,6 @@
 
 ## Known issues
 
-- [ ] The domain of QUIC traffic cannot be restored, recommended to use TUN (Tproxy)
-
 ## Screenshots
 
 ![global](assets/img/global.png "global")

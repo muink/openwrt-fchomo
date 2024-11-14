@@ -113,6 +113,54 @@ return view.extend({
 		so.depends('type', 'snell');
 		so.modalonly = true;
 
+		/* VMess / VLESS fields */
+		so = ss.taboption('field_general', form.Value, 'vmess_uuid', _('UUID'));
+		so.rmempty = false;
+		so.validate = L.bind(hm.validateUUID, so);
+		so.depends({type: /^(vmess|vless)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'vless_flow', _('Flow'));
+		so.value('', _('None'));
+		so.value('xtls-rprx-vision');
+		so.depends('type', 'vless');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'vmess_alterid', _('Alter ID'));
+		so.datatype = 'uinteger';
+		so.default = '0';
+		so.depends('type', 'vmess');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'vmess_chipher', _('Chipher'));
+		so.default = 'auto';
+		so.value('auto', _('auto'));
+		so.value('none', _('none'));
+		so.value('zero', _('zero'));
+		so.value('aes-128-gcm', _('aes-128-gcm'));
+		so.value('chacha20-poly1305', _('chacha20-poly1305'));
+		so.depends('type', 'vmess');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'vmess_global_padding', _('Global padding'),
+			_('Protocol parameter. Will waste traffic randomly if enabled (enabled by default in v2ray and cannot be disabled).'));
+		so.default = so.enabled;
+		so.depends('type', 'vmess');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'vmess_authenticated_length', _('Authenticated length'),
+			_('Protocol parameter. Enable length block encryption.'));
+		so.default = so.disabled;
+		so.depends('type', 'vmess');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'vmess_packet_encoding', _('Packet encoding'));
+		so.value('', _('none'));
+		so.value('packetaddr', _('packet addr (v2ray-core v5+)'));
+		so.value('xudp', _('Xudp (Xray-core)'));
+		so.depends({type: /^(vmess|vless)$/});
+		so.modalonly = true;
+
 		/* Plugin fields */
 		so = ss.taboption('field_general', form.ListValue, 'plugin', _('Plugin'));
 		so.value('', _('none'));

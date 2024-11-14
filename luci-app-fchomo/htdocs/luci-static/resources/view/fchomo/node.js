@@ -97,7 +97,24 @@ return view.extend({
 		so.depends({type: 'ss', shadowsocks_chipher: /.+/});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_plugin', _('Plugin'));
+		/* Snell fields */
+		so = ss.taboption('field_general', form.Value, 'snell_psk', _('Pre-shared key'));
+		so.password = true;
+		so.rmempty = false;
+		so.validate = L.bind(hm.validateAuthPassword, so);
+		so.depends('type', 'snell');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'snell_version', _('Version'));
+		so.value('1', _('v1'));
+		so.value('2', _('v2'));
+		so.value('3', _('v3'));
+		so.default = '1';
+		so.depends('type', 'snell');
+		so.modalonly = true;
+
+		/* Plugin fields */
+		so = ss.taboption('field_general', form.ListValue, 'plugin', _('Plugin'));
 		so.value('', _('none'));
 		so.value('obfs', _('obfs-simple'));
 		//so.value('v2ray-plugin', _('v2ray-plugin'));
@@ -106,39 +123,40 @@ return view.extend({
 		so.depends('type', 'ss');
 		so.modalonly = true;
 
-		/* Shadowsocks Plugin fields */
-		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_plugin_opts_obfsmode', _('Mode'));
+		so = ss.taboption('field_general', form.ListValue, 'plugin_opts_obfsmode', _('Obfs Mode'));
 		so.value('http', _('HTTP'));
 		so.value('tls', _('TLS'));
-		so.depends('shadowsocks_plugin', 'obfs');
+		so.depends('plugin', 'obfs');
+		so.depends('type', 'snell');
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_host', _('Host that supports TLS 1.3'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_host', _('Host that supports TLS 1.3'));
 		so.placeholder = 'cloud.tencent.com';
-		so.depends({shadowsocks_plugin: /^(obfs|v2ray-plugin|shadow-tls|restls)$/});
+		so.depends({plugin: /^(obfs|v2ray-plugin|shadow-tls|restls)$/});
+		so.depends('type', 'snell');
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_thetlspassword', _('Password'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_thetlspassword', _('Password'));
 		so.password = true;
-		so.depends({shadowsocks_plugin: /^(shadow-tls|restls)$/});
+		so.depends({plugin: /^(shadow-tls|restls)$/});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_plugin_opts_shadowtls_version', _('Version'));
+		so = ss.taboption('field_general', form.ListValue, 'plugin_opts_shadowtls_version', _('Version'));
 		so.value('1', _('v1'));
 		so.value('2', _('v2'));
 		so.value('3', _('v3'));
 		so.default = '2';
-		so.depends({shadowsocks_plugin: 'shadow-tls'});
+		so.depends({plugin: 'shadow-tls'});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_restls_versionhint', _('version-hint'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_restls_versionhint', _('version-hint'));
 		so.default = 'tls13';
-		so.depends({shadowsocks_plugin: 'restls'});
+		so.depends({plugin: 'restls'});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Value, 'shadowsocks_plugin_opts_restls_script', _('restls-script'));
+		so = ss.taboption('field_general', form.Value, 'plugin_opts_restls_script', _('restls-script'));
 		so.default = '300?100<1,400~100,350~100,600~100,300~200,300~100';
-		so.depends({shadowsocks_plugin: 'restls'});
+		so.depends({plugin: 'restls'});
 		so.modalonly = true;
 
 		/* Extra fields */
@@ -148,7 +166,7 @@ return view.extend({
 			so.value.apply(so, res);
 		})
 		so.depends({type: /^(vmess|vless|trojan)$/});
-		so.depends({type: 'ss', shadowsocks_plugin: /^(shadow-tls|restls)$/});
+		so.depends({type: 'ss', plugin: /^(shadow-tls|restls)$/});
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Flag, 'udp', _('UDP'));

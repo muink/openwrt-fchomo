@@ -113,6 +113,8 @@ return view.extend({
 		so.depends('type', 'snell');
 		so.modalonly = true;
 
+		/* Trojan fields */
+
 		/* VMess / VLESS fields */
 		so = ss.taboption('field_general', form.Value, 'vmess_uuid', _('UUID'));
 		so.rmempty = false;

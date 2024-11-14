@@ -81,6 +81,38 @@ return view.extend({
 		so.depends({type: /^(http|socks5|trojan|hysteria2|tuic|ssh)$/});
 		so.modalonly = true;
 
+		/* Hysteria / Hysteria2 fields */
+		so = ss.taboption('field_general', form.DynamicList, 'hysteria_ports', _('Multi-ports'));
+		so.datatype = 'or(port, portrange)';
+		so.depends({type: /^(hysteria|hysteria2)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'hysteria_up_mbps', _('Max upload speed'),
+			_('In Mbps.'));
+		so.datatype = 'uinteger';
+		so.depends({type: /^(hysteria|hysteria2)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'hysteria_down_mbps', _('Max download speed'),
+			_('In Mbps.'));
+		so.datatype = 'uinteger';
+		so.depends({type: /^(hysteria|hysteria2)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'hysteria_obfs_type', _('Obfuscate type'));
+		so.value('', _('Disable'));
+		so.value('salamander', _('Salamander'));
+		so.depends('type', 'hysteria2');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'hysteria_obfs_password', _('Obfuscate password'),
+			_('Enabling obfuscation will make the server incompatible with standard QUIC connections, losing the ability to masquerade with HTTP/3.'));
+		so.password = true;
+		so.rmempty = false;
+		so.depends('type', 'hysteria');
+		so.depends({type: 'hysteria2', hysteria_obfs_type: /.+/});
+		so.modalonly = true;
+
 		/* Shadowsocks fields */
 		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_chipher', _('Chipher'));
 		so.default = hm.shadowsocks_cipher_methods[1][0];

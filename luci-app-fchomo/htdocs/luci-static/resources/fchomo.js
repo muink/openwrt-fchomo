@@ -90,7 +90,7 @@ return baseclass.extend({
 		['vmess', _('VMess')],
 		['vless', _('VLESS')],
 		['trojan', _('Trojan')],
-		['hysteria', _('Hysteria')],
+		//['hysteria', _('Hysteria')],
 		['hysteria2', _('Hysteria2')],
 		['tuic', _('TUIC')],
 		['wireguard', _('WireGuard')],

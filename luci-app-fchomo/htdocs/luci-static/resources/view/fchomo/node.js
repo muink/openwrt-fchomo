@@ -151,7 +151,6 @@ return view.extend({
 		so.depends({type: 'ss', shadowsocks_plugin: /^(shadow-tls|restls)$/});
 		so.modalonly = true;
 
-		// dev: Features under development
 		so = ss.taboption('field_general', form.Flag, 'udp', _('UDP'));
 		so.default = so.disabled;
 		so.depends({type: /^(direct|socks5|ss|vmess|vless|trojan|wireguard)$/});
@@ -172,24 +171,22 @@ return view.extend({
 
 		so = ss.taboption('field_general', form.Flag, 'smux_enabled', _('Multiplex'));
 		so.default = so.disabled;
-		so.depends({type: /^(ss|vmess|vless|trojan|)$/, uot: '0'});
+		so.depends({type: /^(vmess|vless|trojan)$/});
+		so.depends({type: 'ss', uot: '0'});
 		so.modalonly = true;
 
 		/* Dial fields */
 		so = ss.taboption('field_dial', form.Flag, 'tfo', _('TFO'));
 		so.default = so.disabled;
-		so.depends({type: 'direct', '!reverse': true});
 		so.modalonly = true;
 
 		so = ss.taboption('field_dial', form.Flag, 'mptcp', _('mpTCP'));
 		so.default = so.disabled;
-		so.depends({type: 'direct', '!reverse': true});
 		so.modalonly = true;
 
 		// dev: Features under development
 		so = ss.taboption('field_dial', form.Value, 'dialer_proxy', _('dialer-proxy'));
 		so.readonly = true;
-		so.depends({type: 'direct', '!reverse': true});
 		so.modalonly = true;
 
 		so = ss.taboption('field_dial', widgets.DeviceSelect, 'interface_name', _('Bind interface'),

@@ -147,6 +147,56 @@ return view.extend({
 		so.depends('type', 'snell');
 		so.modalonly = true;
 
+		/* TUIC fields */
+		so = ss.taboption('field_general', form.Value, 'uuid', _('UUID'));
+		so.rmempty = false;
+		so.validate = L.bind(hm.validateUUID, so);
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'tuic_ip', _('IP override'),
+			_('Override the DNS response IP address of the server.'));
+		so.datatype = 'ipaddr(1)';
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'tuic_congestion_controller', _('Congestion controller'),
+			_('QUIC congestion controller.'));
+		so.default = 'cubic';
+		so.value('cubic', _('cubic'));
+		so.value('new_reno', _('new_reno'));
+		so.value('bbr', _('bbr'));
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'tuic_udp_relay_mode', _('UDP relay mode'),
+			_('UDP packet relay mode.'));
+		so.value('', _('Default'));
+		so.value('native', _('Native'));
+		so.value('quic', _('QUIC'));
+		so.depends({type: 'tuic', tuic_udp_over_stream: '0'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'tuic_udp_over_stream', _('UDP over stream'),
+			_('This is the TUIC port of the UDP over TCP protocol, designed to provide a QUIC stream based UDP relay mode that TUIC does not provide.'));
+		so.default = so.disabled;
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'tuic_reduce_rtt', _('Enable 0-RTT handshake'),
+			_('Enable 0-RTT QUIC connection handshake on the client side. This is not impacting much on the performance, as the protocol is fully multiplexed.<br/>' +
+				'Disabling this is highly recommended, as it is vulnerable to replay attacks.'));
+		so.default = so.disabled;
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'tuic_heartbeat', _('Heartbeat interval'),
+			_('In millisecond. <code>%s</code> will be used if empty.').format('10000'));
+		so.datatype = 'uinteger';
+		so.placeholder = '10000';
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
 		/* Trojan fields */
 
 		/* VMess / VLESS fields */

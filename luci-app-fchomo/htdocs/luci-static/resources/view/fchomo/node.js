@@ -38,10 +38,10 @@ return view.extend({
 		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
 
 		ss.tab('field_general', _('General fields'));
-		ss.tab('field_dial', _('Dial fields'));
 		ss.tab('field_tls', _('TLS fields'));
 		ss.tab('field_transport', _('Transport fields'));
 		ss.tab('field_multiplex', _('Multiplex fields'));
+		ss.tab('field_dial', _('Dial fields'));
 
 		so = ss.taboption('field_general', form.Value, 'label', _('Label'));
 		so.load = L.bind(hm.loadDefaultLabel, so);
@@ -312,15 +312,6 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Extra fields */
-		so = ss.taboption('field_general', form.ListValue, 'client_fingerprint', _('Client fingerprint'));
-		so.default = hm.tls_client_fingerprints[0][0];
-		hm.tls_client_fingerprints.forEach((res) => {
-			so.value.apply(so, res);
-		})
-		so.depends({type: /^(vmess|vless|trojan)$/});
-		so.depends({type: 'ss', plugin: /^(shadow-tls|restls)$/});
-		so.modalonly = true;
-
 		so = ss.taboption('field_general', form.Flag, 'udp', _('UDP'));
 		so.default = so.disabled;
 		so.depends({type: /^(direct|socks5|ss|vmess|vless|trojan|wireguard)$/});
@@ -343,6 +334,27 @@ return view.extend({
 		so.default = so.disabled;
 		so.depends({type: /^(vmess|vless|trojan)$/});
 		so.depends({type: 'ss', uot: '0'});
+		so.modalonly = true;
+
+		/* TLS fields */
+		so = ss.taboption('field_tls', form.ListValue, 'client_fingerprint', _('Client fingerprint'));
+		so.default = hm.tls_client_fingerprints[0][0];
+		hm.tls_client_fingerprints.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.depends({type: /^(vmess|vless|trojan)$/});
+		so.depends({type: 'ss', plugin: /^(shadow-tls|restls)$/});
+		so.modalonly = true;
+
+		/* Transport fields */
+
+		/* Multiplex fields */ // TCP protocol only
+		so = ss.taboption('field_multiplex', form.ListValue, 'smux_protocol', _('Protocol'));
+		so.default = 'h2mux';
+		so.value('smux', _('smux'));
+		so.value('yamux', _('yamux'));
+		so.value('h2mux', _('h2mux'));
+		so.depends('smux_enabled', '1');
 		so.modalonly = true;
 
 		/* Dial fields */
@@ -376,15 +388,6 @@ return view.extend({
 		hm.ip_version.forEach((res) => {
 			so.value.apply(so, res);
 		})
-		so.modalonly = true;
-
-		/* Multiplex fields */ // TCP protocol only
-		so = ss.taboption('field_multiplex', form.ListValue, 'smux_protocol', _('Protocol'));
-		so.default = 'h2mux';
-		so.value('smux', _('smux'));
-		so.value('yamux', _('yamux'));
-		so.value('h2mux', _('h2mux'));
-		so.depends('smux_enabled', '1');
 		so.modalonly = true;
 		/* Proxy Node END */
 

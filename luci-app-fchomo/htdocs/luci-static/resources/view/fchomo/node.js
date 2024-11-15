@@ -58,7 +58,7 @@ return view.extend({
 			so.value.apply(so, res);
 		})
 
-		so = ss.taboption('field_general', form.Value, 'server', _('Address'));
+		so = ss.taboption('field_general', form.Value, 'server', _('Server address'));
 		so.datatype = 'host';
 		so.rmempty = false;
 		so.depends({type: 'direct', '!reverse': true});
@@ -381,15 +381,15 @@ return view.extend({
 					case 'hysteria':
 					case 'hysteria2':
 					case 'tuic':
-						def_alpn = 'h3';
+						def_alpn = ['h3'];
 						break;
 					case 'vmess':
 					case 'vless':
 					case 'trojan':
-						def_alpn = 'h2 http/1.1';
+						def_alpn = ['h2', 'http/1.1'];
 						break;
 					default:
-						def_alpn = '';
+						def_alpn = [];
 				}
 
 				tls_alpn.setValue(def_alpn);
@@ -406,7 +406,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_tls', form.Value, 'tls_sni', _('TLS SNI'),
-			_('Used to verify the hostname on the returned certificates unless insecure is given.'));
+			_('Used to verify the hostname on the returned certificates.'));
 		so.depends({tls: '1', type: /^(http|vmess|vless|trojan|hysteria|hysteria2)$/});
 		so.depends({tls: '1', tls_disable_sni: '0', type: /^(tuic)$/});
 		so.modalonly = true;

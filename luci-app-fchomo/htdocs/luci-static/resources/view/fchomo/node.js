@@ -81,6 +81,20 @@ return view.extend({
 		so.depends({type: /^(http|socks5|trojan|hysteria2|tuic|ssh)$/});
 		so.modalonly = true;
 
+		so = ss.taboption('field_general', form.TextValue, 'headers', _('HTTP header'),
+			_('Custom HTTP header.'));
+		so.renderWidget = function(/* ... */) {
+			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+
+			frameEl.firstChild.style.fontFamily = hm.monospacefonts.join(',');
+
+			return frameEl;
+		}
+		so.placeholder = '{\n  "User-Agent": [\n    "Clash/v1.18.0",\n    "mihomo/1.18.3"\n  ],\n  "Accept": [\n    //"application/vnd.github.v3.raw"\n  ],\n  "Authorization": [\n    //"token 1231231"\n  ]\n}';
+		so.validate = L.bind(hm.validateJson, so);
+		so.depends('type', 'http');
+		so.modalonly = true;
+
 		/* Hysteria / Hysteria2 fields */
 		so = ss.taboption('field_general', form.DynamicList, 'hysteria_ports', _('Multi-ports'));
 		so.datatype = 'or(port, portrange)';

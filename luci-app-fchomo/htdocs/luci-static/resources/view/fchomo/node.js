@@ -212,6 +212,26 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Trojan fields */
+		so = ss.taboption('field_general', form.Flag, 'trojan_ss_enabled', _('Shadowsocks encrypt'));
+		so.default = so.disabled;
+		so.depends('type', 'trojan');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'trojan_ss_chipher', _('Shadowsocks chipher'));
+		so.value('aes-128-gcm', _('aes-128-gcm'));
+		so.value('aes-256-gcm', _('aes-256-gcm'));
+		so.value('chacha20-ietf-poly1305', _('chacha20-ietf-poly1305'));
+		so.depends({type: 'trojan', trojan_ss_enabled: '1'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'trojan_ss_password', _('Shadowsocks password'));
+		so.password = true;
+		so.validate = function(section_id, value) {
+			var encmode = this.section.getOption('trojan_ss_chipher').formvalue(section_id);
+			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
+		}
+		so.depends({type: 'trojan', trojan_ss_enabled: '1'});
+		so.modalonly = true;
 
 		/* VMess / VLESS fields */
 		so = ss.taboption('field_general', form.Value, 'vmess_uuid', _('UUID'));

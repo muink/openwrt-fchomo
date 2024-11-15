@@ -95,7 +95,7 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Hysteria / Hysteria2 fields */
-		so = ss.taboption('field_general', form.DynamicList, 'hysteria_ports', _('Multi-ports'));
+		so = ss.taboption('field_general', form.DynamicList, 'hysteria_ports', _('Ports pool'));
 		so.datatype = 'or(port, portrange)';
 		so.depends({type: /^(hysteria|hysteria2)$/});
 		so.modalonly = true;
@@ -168,7 +168,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Value, 'tuic_ip', _('IP override'),
-			_('Override the DNS response IP address of the server.'));
+			_('Override the IP address of the server that DNS response.'));
 		so.datatype = 'ipaddr(1)';
 		so.depends('type', 'tuic');
 		so.modalonly = true;
@@ -411,7 +411,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_tls', form.Flag, 'tls_disable_sni', _('Disable SNI'),
-			_('Not send server name in ClientHello.'));
+			_('Donot send server name in ClientHello.'));
 		so.default = so.disabled;
 		so.depends({tls: '1', type: /^(tuic)$/});
 		so.modalonly = true;
@@ -428,7 +428,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_tls', form.Value, 'tls_fingerprint', _('Cert fingerprint'),
-			_('SHA256 certificate fingerprint. Used to implement SSL Pinning and prevent MitM.'));
+			_('Certificate fingerprint. Used to implement SSL Pinning and prevent MitM.'));
 		so.validate = function(section_id, value) {
 			if (!value)
 				return true;
@@ -441,7 +441,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_tls', form.Flag, 'tls_skip_cert_verify', _('Skip cert verify'),
-			_('Not verifying server certificate.') +
+			_('Donot verifying server certificate.') +
 			'<br/>' +
 			_('This is <strong>DANGEROUS</strong>, your traffic is almost like <strong>PLAIN TEXT</strong>! Use at your own risk!'));
 		so.default = so.disabled;

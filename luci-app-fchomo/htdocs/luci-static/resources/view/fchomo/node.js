@@ -81,8 +81,7 @@ return view.extend({
 		so.depends({type: /^(http|socks5|trojan|hysteria2|tuic|ssh)$/});
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.TextValue, 'headers', _('HTTP header'),
-			_('Custom HTTP header.'));
+		so = ss.taboption('field_general', form.TextValue, 'headers', _('HTTP header'));
 		so.renderWidget = function(/* ... */) {
 			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 
@@ -90,7 +89,7 @@ return view.extend({
 
 			return frameEl;
 		}
-		so.placeholder = '{\n  "User-Agent": [\n    "Clash/v1.18.0",\n    "mihomo/1.18.3"\n  ],\n  "Accept": [\n    //"application/vnd.github.v3.raw"\n  ],\n  "Authorization": [\n    //"token 1231231"\n  ]\n}';
+		so.placeholder = '{\n  "User-Agent": [\n    "Clash/v1.18.0",\n    "mihomo/1.18.3"\n  ],\n  "Authorization": [\n    //"token 1231231"\n  ]\n}';
 		so.validate = L.bind(hm.validateJson, so);
 		so.depends('type', 'http');
 		so.modalonly = true;
@@ -475,6 +474,101 @@ return view.extend({
 		so.modalonly = true;
 
 		/* Transport fields */
+		so = ss.taboption('field_general', form.Flag, 'transport_enabled', _('Transport'));
+		so.default = so.disabled;
+		so.depends({type: /^(vmess|vless|trojan)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.ListValue, 'transport_type', _('Transport type'));
+		so.default = 'http';
+		so.value('http', _('HTTP'));
+		so.value('h2', _('HTTPUpgrade'));
+		so.value('grpc', _('gRPC'));
+		so.value('ws', _('WebSocket'));
+		so.validate = function(section_id, value) {
+			var type = this.section.getOption('type').formvalue(section_id);
+
+			switch (type) {
+				case 'vmess':
+				case 'vless':
+					if (!['http', 'h2', 'grpc', 'ws'].includes(value))
+						return _('Expecting: only support %s.').format(_('HTTP') +
+							' / ' + _('HTTPUpgrade') +
+							' / ' + _('gRPC') +
+							' / ' + _('WebSocket'));
+					break;
+				case 'trojan':
+					if (!['grpc', 'ws'].includes(value))
+						return _('Expecting: only support %s.').format(_('gRPC') +
+							' / ' + _('WebSocket'));
+					break;
+				default:
+					break;
+			}
+
+			return true;
+		}
+		so.depends('transport_enabled', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.DynamicList, 'transport_host', _('Server hostname'));
+		so.datatype = 'list(hostname)';
+		so.depends({transport_enabled: '1', transport_type: /^(h2|ws)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.Value, 'transport_http_method', _('HTTP request method'));
+		so.value('GET', _('GET'));
+		so.value('POST', _('POST'));
+		so.value('PUT', _('PUT'));
+		so.rmempty = false;
+		so.depends({transport_enabled: '1', transport_type: 'http'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.DynamicList, 'transport_path', _('Request path'));
+		so.placeholder = '/video';
+		so.default = '/';
+		so.rmempty = false;
+		so.depends({transport_enabled: '1', transport_type: /^(http|h2|ws)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.TextValue, 'transport_http_headers', _('HTTP header'));
+		so.renderWidget = function(/* ... */) {
+			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+
+			frameEl.firstChild.style.fontFamily = hm.monospacefonts.join(',');
+
+			return frameEl;
+		}
+		so.placeholder = '{\n  "User-Agent": [\n    "Clash/v1.18.0",\n    "mihomo/1.18.3"\n  ],\n  "Authorization": [\n    //"token 1231231"\n  ]\n}';
+		so.validate = L.bind(hm.validateJson, so);
+		so.depends({transport_enabled: '1', transport_type: 'http'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.Value, 'transport_grpc_servicename', _('gRPC service name'));
+		so.depends({transport_enabled: '1', transport_type: 'grpc'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.Value, 'transport_ws_max_early_data', _('Max Early Data'),
+			_('Early Data first packet length limit.'));
+		so.datatype = 'uinteger';
+		so.value('2048');
+		so.depends({transport_enabled: '1', transport_type: 'ws'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.Value, 'transport_ws_early_data_header', _('Early Data header name'));
+		so.value('Sec-WebSocket-Protocol');
+		so.depends({transport_enabled: '1', transport_type: 'ws'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.Flag, 'transport_ws_v2ray_http_upgrade', _('V2ray HTTPUpgrade'));
+		so.default = so.disabled;
+		so.depends({transport_enabled: '1', transport_type: 'ws'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.Flag, 'transport_ws_v2ray_http_upgrade_fast_open', _('V2ray HTTPUpgrade fast open'));
+		so.default = so.disabled;
+		so.depends({transport_enabled: '1', transport_type: 'ws', transport_ws_v2ray_http_upgrade: '1'});
+		so.modalonly = true;
 
 		/* Multiplex fields */ // TCP protocol only
 		so = ss.taboption('field_general', form.Flag, 'smux_enabled', _('Multiplex'));

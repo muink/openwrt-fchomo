@@ -337,13 +337,109 @@ return view.extend({
 		so.modalonly = true;
 
 		/* TLS fields */
-		so = ss.taboption('field_tls', form.ListValue, 'client_fingerprint', _('Client fingerprint'));
+		so = ss.taboption('field_tls', form.Flag, 'tls', _('TLS'));
+		so.default = so.disabled;
+		so.depends({type: /^(http|socks5|vmess|vless|trojan|hysteria|hysteria2|tuic)$/});
+		so.validate = function(section_id, value) {
+			var type = this.section.getOption('type').formvalue(section_id);
+			var tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
+			var tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
+
+			// Force enabled
+			if (['trojan', 'hysteria', 'hysteria2', 'tuic'].includes(type)) {
+				tls.checked = true;
+				tls.disabled = true;
+			} else {
+				tls.disabled = null;
+			}
+
+			// Default alpn
+			if (!`${tls_alpn.getValue()}`) {
+				let def_alpn;
+
+				switch (type) {
+					case 'hysteria':
+					case 'hysteria2':
+					case 'tuic':
+						def_alpn = 'h3';
+						break;
+					case 'vmess':
+					case 'vless':
+					case 'trojan':
+						def_alpn = 'h2 http/1.1';
+						break;
+					default:
+						def_alpn = '';
+				}
+
+				tls_alpn.setValue(def_alpn);
+			}
+
+			return true;
+		}
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Flag, 'tls_disable_sni', _('Disable SNI'),
+			_('Not send server name in ClientHello.'));
+		so.default = so.disabled;
+		so.depends({tls: '1', type: /^(tuic)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Value, 'tls_sni', _('TLS SNI'),
+			_('Used to verify the hostname on the returned certificates unless insecure is given.'));
+		so.depends({tls: '1', type: /^(http|vmess|vless|trojan|hysteria|hysteria2)$/});
+		so.depends({tls: '1', tls_disable_sni: '0', type: /^(tuic)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.DynamicList, 'tls_alpn', _('TLS ALPN'),
+			_('List of supported application level protocols, in order of preference.'));
+		so.depends({tls: '1', type: /^(vmess|vless|trojan|hysteria|hysteria2|tuic)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Value, 'tls_fingerprint', _('Cert fingerprint'),
+			_('SHA256 certificate fingerprint. Used to implement SSL Pinning and prevent MitM.'));
+		so.validate = function(section_id, value) {
+			if (!value)
+				return true;
+			if (!((value.length === 64) && (value.match(/^[0-9a-fA-F]+$/))))
+				return _('Expecting: %s').format(_('valid SHA256 string with %d characters').format(64));
+
+			return true;
+		}
+		so.depends({tls: '1', type: /^(http|socks5|vmess|vless|trojan|hysteria|hysteria2)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Flag, 'tls_skip_cert_verify', _('Skip cert verify'),
+			_('Not verifying server certificate.') +
+			'<br/>' +
+			_('This is <strong>DANGEROUS</strong>, your traffic is almost like <strong>PLAIN TEXT</strong>! Use at your own risk!'));
+		so.default = so.disabled;
+		so.depends({tls: '1', type: /^(http|socks5|vmess|vless|trojan|hysteria|hysteria2|tuic)$/});
+		so.modalonly = true;
+
+		// uTLS fields
+		so = ss.taboption('field_tls', form.ListValue, 'tls_client_fingerprint', _('Client fingerprint'));
 		so.default = hm.tls_client_fingerprints[0][0];
 		hm.tls_client_fingerprints.forEach((res) => {
 			so.value.apply(so, res);
 		})
-		so.depends({type: /^(vmess|vless|trojan)$/});
+		so.depends({tls: '1', type: /^(vmess|vless|trojan)$/});
 		so.depends({type: 'ss', plugin: /^(shadow-tls|restls)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Flag, 'tls_reality', _('REALITY'));
+		so.default = so.disabled;
+		so.depends({tls: '1', type: /^(vmess|vless|trojan)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Value, 'tls_reality_public_key', _('REALITY public key'));
+		so.rmempty = false;
+		so.depends('tls_reality', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Value, 'tls_reality_short_id', _('REALITY short ID'));
+		so.rmempty = false;
+		so.depends('tls_reality', '1');
 		so.modalonly = true;
 
 		/* Transport fields */

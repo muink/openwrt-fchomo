@@ -260,6 +260,12 @@ return view.extend({
 		o.depends('type', 'tuic');
 		o.modalonly = true;
 
+		o = s.option(form.Value, 'tuic_max_udp_relay_packet_size', _('Max UDP relay packet size'));
+		o.datatype = 'uinteger';
+		o.default = '1500';
+		o.depends('type', 'tuic');
+		o.modalonly = true;
+
 		o = s.option(form.Value, 'tuic_max_idle_time', _('Idle timeout'),
 			_('In seconds.'));
 		o.default = '15000';
@@ -271,12 +277,6 @@ return view.extend({
 			_('In seconds.'));
 		o.default = '1000';
 		o.validate = L.bind(hm.validateTimeDuration, o);
-		o.depends('type', 'tuic');
-		o.modalonly = true;
-
-		o = s.option(form.Value, 'tuic_max_udp_relay_packet_size', _('Max UDP relay packet size'));
-		o.datatype = 'uinteger';
-		o.default = '1500';
 		o.depends('type', 'tuic');
 		o.modalonly = true;
 

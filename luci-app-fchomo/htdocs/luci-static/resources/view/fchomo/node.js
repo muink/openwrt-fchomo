@@ -192,8 +192,19 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Flag, 'tuic_udp_over_stream', _('UDP over stream'),
-			_('This is the TUIC port of the UDP over TCP protocol, designed to provide a QUIC stream based UDP relay mode that TUIC does not provide.'));
+			_('This is the TUIC port of the SUoT protocol, designed to provide a QUIC stream based UDP relay mode that TUIC does not provide.'));
 		so.default = so.disabled;
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'tuic_udp_over_stream_version', _('UDP over stream version'));
+		so.value('1', _('v1'));
+		so.depends({type: 'tuic', tuic_udp_over_stream: '1'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'tuic_max_udp_relay_packet_size', _('Max UDP relay packet size'));
+		so.datatype = 'uinteger';
+		so.placeholder = '1500';
 		so.depends('type', 'tuic');
 		so.modalonly = true;
 
@@ -205,9 +216,16 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Value, 'tuic_heartbeat', _('Heartbeat interval'),
-			_('In millisecond. <code>%s</code> will be used if empty.').format('10000'));
+			_('In millisecond.'));
 		so.datatype = 'uinteger';
 		so.placeholder = '10000';
+		so.depends('type', 'tuic');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'tuic_request_timeout', _('Request timeout'),
+			_('In millisecond.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '8000';
 		so.depends('type', 'tuic');
 		so.modalonly = true;
 

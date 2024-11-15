@@ -368,16 +368,9 @@ return view.extend({
 		so.depends('uot', '1');
 		so.modalonly = true;
 
-		so = ss.taboption('field_general', form.Flag, 'smux_enabled', _('Multiplex'));
-		so.default = so.disabled;
-		so.depends({type: /^(vmess|vless|trojan)$/});
-		so.depends({type: 'ss', uot: '0'});
-		so.modalonly = true;
-
 		/* TLS fields */
-		so = ss.taboption('field_tls', form.Flag, 'tls', _('TLS'));
+		so = ss.taboption('field_general', form.Flag, 'tls', _('TLS'));
 		so.default = so.disabled;
-		so.depends({type: /^(http|socks5|vmess|vless|trojan|hysteria|hysteria2|tuic)$/});
 		so.validate = function(section_id, value) {
 			var type = this.section.getOption('type').formvalue(section_id);
 			var tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
@@ -415,6 +408,7 @@ return view.extend({
 
 			return true;
 		}
+		so.depends({type: /^(http|socks5|vmess|vless|trojan|hysteria|hysteria2|tuic)$/});
 		so.modalonly = true;
 
 		so = ss.taboption('field_tls', form.Flag, 'tls_disable_sni', _('Disable SNI'),
@@ -483,6 +477,12 @@ return view.extend({
 		/* Transport fields */
 
 		/* Multiplex fields */ // TCP protocol only
+		so = ss.taboption('field_general', form.Flag, 'smux_enabled', _('Multiplex'));
+		so.default = so.disabled;
+		so.depends({type: /^(vmess|vless|trojan)$/});
+		so.depends({type: 'ss', uot: '0'});
+		so.modalonly = true;
+
 		so = ss.taboption('field_multiplex', form.ListValue, 'smux_protocol', _('Protocol'));
 		so.default = 'h2mux';
 		so.value('smux', _('smux'));

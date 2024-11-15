@@ -611,7 +611,7 @@ return view.extend({
 		so.datatype = 'uinteger';
 		so.modalonly = true;
 
-		so = ss.taboption('field_dial', form.ListValue, 'ip_version', _('ip-version'));
+		so = ss.taboption('field_dial', form.ListValue, 'ip_version', _('IP version'));
 		so.default = hm.ip_version[0][0];
 		hm.ip_version.forEach((res) => {
 			so.value.apply(so, res);
@@ -812,7 +812,7 @@ return view.extend({
 		so.datatype = 'uinteger';
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.ListValue, 'override_ip_version', _('ip-version'));
+		so = ss.taboption('field_override', form.ListValue, 'override_ip_version', _('IP version'));
 		so.default = hm.ip_version[0][0];
 		hm.ip_version.forEach((res) => {
 			so.value.apply(so, res);

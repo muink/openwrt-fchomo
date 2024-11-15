@@ -226,7 +226,7 @@ return view.extend({
 
 			return node;
 		}
-		so.validate = function(section_id, value) {
+		o.validate = function(section_id, value) {
 			var encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
 			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
 		}

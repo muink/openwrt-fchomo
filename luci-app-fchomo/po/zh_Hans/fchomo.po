@@ -922,6 +922,11 @@ msgstr ""
 msgid "IP override"
 msgstr "IP 覆写"
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:614
+#: htdocs/luci-static/resources/view/fchomo/node.js:815
+msgid "IP version"
+msgstr "IP 版本"
+
 #: htdocs/luci-static/resources/fchomo.js:71
 msgid "IPv4 only"
 msgstr "仅 IPv4"
@@ -1677,7 +1682,7 @@ msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:664
 msgid "SUB-RULE"
-msgstr ""
+msgstr "SUB-RULE"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:363
 msgid "SUoT version"
@@ -2237,11 +2242,6 @@ msgstr "gVisor"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:584
 msgid "h2mux"
-msgstr ""
-
-#: htdocs/luci-static/resources/view/fchomo/node.js:614
-#: htdocs/luci-static/resources/view/fchomo/node.js:815
-msgid "ip-version"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo.js:33

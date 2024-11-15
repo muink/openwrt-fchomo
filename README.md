@@ -2,7 +2,6 @@
 
 ## Todo
 
-- [ ] node
 - [ ] dialer-proxy
 - [ ] Any other improvements
 

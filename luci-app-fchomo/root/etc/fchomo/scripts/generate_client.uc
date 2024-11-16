@@ -463,7 +463,21 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 			host: cfg.plugin_opts_host,
 		},
 
-		/* HTTP / SOCKS */
+		/* TUIC */
+		ip: cfg.tuic_ip,
+		["congestion-controller"]: cfg.tuic_congestion_controller,
+		["udp-relay-mode"]: cfg.tuic_udp_relay_mode,
+		["udp-over-stream"]: strToBool(cfg.tuic_udp_over_stream),
+		["udp-over-stream-version"]: cfg.tuic_udp_over_stream_version,
+		["max-udp-relay-packet-size"]: strToInt(cfg.tuic_max_udp_relay_packet_size),
+		["reduce-rtt"]: strToBool(cfg.tuic_reduce_rtt),
+		["heartbeat-interval"]: strToInt(cfg.tuic_heartbeat),
+		["request-timeout"]: strToInt(cfg.tuic_request_timeout),
+		// fast-open: true
+		// max-open-streams: 20
+
+		/* HTTP / SOCKS / TUIC */
+		uuid: cfg.uuid,
 		username: cfg.username,
 		password: cfg.shadowsocks_password || cfg.password,
 		headers: cfg.headers,

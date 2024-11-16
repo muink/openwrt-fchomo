@@ -445,17 +445,20 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		["routing-mark"]: strToInt(cfg.routing_mark),
 		["ip-version"]: cfg.ip_version,
 
-		/* HTTP / SOCKS */
-		username: cfg.username,
-		password: cfg.password,
-		headers: cfg.headers,
-
 		/* Hysteria / Hysteria2 */
 		ports: isEmpty(cfg.hysteria_ports) ? null : join(',', cfg.hysteria_ports),
 		up: cfg.hysteria_up_mbps, // "30 Mbps"
 		down: cfg.hysteria_down_mbps, // "200 Mbps"
 		obfs: cfg.hysteria_obfs_type,
 		["obfs-password"]: cfg.hysteria_obfs_password,
+
+		/* Shadowsocks */
+		cipher: cfg.shadowsocks_chipher,
+
+		/* HTTP / SOCKS */
+		username: cfg.username,
+		password: cfg.shadowsocks_password || cfg.password,
+		headers: cfg.headers,
 
 		/* Plugin fields */
 		plugin: cfg.plugin,

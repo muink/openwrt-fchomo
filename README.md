@@ -2,13 +2,10 @@
 
 ## Todo
 
-- [ ] node
 - [ ] dialer-proxy
 - [ ] Any other improvements
 
 ## Known issues
-
-- [ ] The domain of QUIC traffic cannot be restored, recommended to use TUN (Tproxy)
 
 ## Screenshots
 

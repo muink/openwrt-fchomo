@@ -476,7 +476,14 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		// fast-open: true
 		// max-open-streams: 20
 
-		/* HTTP / SOCKS / TUIC */
+		/* Trojan */
+		["ss-opts"]: cfg.trojan_ss_enabled === '1' ? {
+			enabled: true,
+			method: cfg.trojan_ss_chipher,
+			password: cfg.trojan_ss_password
+		}: null,
+
+		/* HTTP / SOCKS / Trojan / TUIC */
 		uuid: cfg.uuid,
 		username: cfg.username,
 		password: cfg.shadowsocks_password || cfg.password,

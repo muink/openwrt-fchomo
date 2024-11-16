@@ -486,6 +486,14 @@ msgstr "不要在 ClientHello 中发送服务器名称。"
 msgid "Donot verifying server certificate."
 msgstr "不验证服务器证书。"
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:639
+msgid "Download bandwidth"
+msgstr "下载带宽"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:640
+msgid "Download bandwidth in Mbps."
+msgstr "下载带宽（单位：Mbps）。"
+
 #: htdocs/luci-static/resources/fchomo.js:532
 msgid "Download failed: %s"
 msgstr "下载失败: %s"
@@ -560,6 +568,26 @@ msgstr ""
 #: htdocs/luci-static/resources/view/fchomo/node.js:210
 msgid "Enable 0-RTT handshake"
 msgstr "启用 0-RTT 握手"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:626
+msgid "Enable TCP Brutal"
+msgstr "启用 TCP Brutal"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:627
+msgid "Enable TCP Brutal congestion control algorithm"
+msgstr "启用 TCP Brutal 拥塞控制算法。"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:615
+msgid "Enable multiplexing only for TCP."
+msgstr "仅为 TCP 启用多路复用。"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:609
+msgid "Enable padding"
+msgstr "启用填充"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:620
+msgid "Enable statistic"
+msgstr "启用统计"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:358
 #: htdocs/luci-static/resources/view/fchomo/node.js:780
@@ -1180,6 +1208,22 @@ msgstr "最大下载速度"
 msgid "Max upload speed"
 msgstr "最大上传速度"
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:588
+msgid "Maximum connections"
+msgstr "最大连接数"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:602
+msgid ""
+"Maximum multiplexed streams in a connection before opening a new connection."
+"<br/>Conflict with <code>%s</code> and <code>%s</code>."
+msgstr ""
+"在打开新连接之前，连接中的最大多路复用流数量。<br/>与 <code>%s</code> 和 "
+"<code>%s</code> 冲突。"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:601
+msgid "Maximum streams"
+msgstr "最大流数量"
+
 #: htdocs/luci-static/resources/view/fchomo/client.js:419
 #: htdocs/luci-static/resources/view/fchomo/log.js:100
 msgid "Mihomo client"
@@ -1189,6 +1233,15 @@ msgstr "Mihomo 客户端"
 #: htdocs/luci-static/resources/view/fchomo/server.js:58
 msgid "Mihomo server"
 msgstr "Mihomo 服务端"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:595
+msgid ""
+"Minimum multiplexed streams in a connection before opening a new connection."
+msgstr "在打开新连接之前，连接中的最小多路复用流数量。"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:594
+msgid "Minimum streams"
+msgstr "最小流数量"
 
 #: htdocs/luci-static/resources/fchomo.js:60
 #: htdocs/luci-static/resources/view/fchomo/global.js:389
@@ -1751,6 +1804,10 @@ msgstr "Shadowsocks 加密"
 msgid "Shadowsocks password"
 msgstr "Shadowsocks 密码"
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:622
+msgid "Show connections in the dashboard for breaking connections easier."
+msgstr "在面板中显示连接以便于打断连接。"
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:298
 msgid "Silent"
 msgstr "静音"
@@ -1844,6 +1901,10 @@ msgstr "TCP"
 #: htdocs/luci-static/resources/view/fchomo/global.js:314
 msgid "TCP concurrency"
 msgstr "TCP 并发"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:614
+msgid "TCP only"
+msgstr "仅 TCP"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:322
 msgid "TCP-Keep-Alive idle timeout"
@@ -2063,6 +2124,14 @@ msgstr "更新失败。"
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:260
 msgid "Update interval"
 msgstr "更新间隔"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:633
+msgid "Upload bandwidth"
+msgstr "上传带宽"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:634
+msgid "Upload bandwidth in Mbps."
+msgstr "上传带宽（单位：Mbps）。"
 
 #: htdocs/luci-static/resources/view/fchomo/server.js:343
 msgid "Upload certificate"

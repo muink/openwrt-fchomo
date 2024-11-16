@@ -585,6 +585,63 @@ return view.extend({
 		so.depends('smux_enabled', '1');
 		so.modalonly = true;
 
+		so = ss.taboption('field_multiplex', form.Value, 'smux_max_connections', _('Maximum connections'));
+		so.datatype = 'uinteger';
+		so.placeholder = '4';
+		so.depends('smux_enabled', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Value, 'smux_min_streams', _('Minimum streams'),
+			_('Minimum multiplexed streams in a connection before opening a new connection.'));
+		so.datatype = 'uinteger';
+		so.placeholder = '4';
+		so.depends('smux_enabled', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Value, 'smux_max_streams', _('Maximum streams'),
+			_('Maximum multiplexed streams in a connection before opening a new connection.<br/>' +
+			'Conflict with <code>%s</code> and <code>%s</code>.')
+			.format(_('Maximum connections'), _('Minimum streams')));
+		so.datatype = 'uinteger';
+		so.placeholder = '0';
+		so.depends({smux_enabled: '1', smux_max_connections: '', smux_min_streams: ''});
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Flag, 'smux_padding', _('Enable padding'));
+		so.default = so.disabled;
+		so.depends('smux_enabled', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Flag, 'smux_only_tcp', _('TCP only'),
+			_('Enable multiplexing only for TCP.'));
+		so.default = so.disabled;
+		so.depends('smux_enabled', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Flag, 'smux_statistic', _('Enable statistic'),
+			_('Show connections in the dashboard for breaking connections easier.'));
+		so.default = so.disabled;
+		so.depends('smux_enabled', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Flag, 'smux_brutal', _('Enable TCP Brutal'),
+			_('Enable TCP Brutal congestion control algorithm'));
+		so.default = o.disabled;
+		so.depends('smux_enabled', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Value, 'smux_brutal_up', _('Upload bandwidth'),
+			_('Upload bandwidth in Mbps.'));
+		so.datatype = 'uinteger';
+		so.depends('smux_brutal', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_multiplex', form.Value, 'smux_brutal_down', _('Download bandwidth'),
+			_('Download bandwidth in Mbps.'));
+		so.datatype = 'uinteger';
+		so.depends('smux_brutal', '1');
+		so.modalonly = true;
+
 		/* Dial fields */
 		so = ss.taboption('field_dial', form.Flag, 'tfo', _('TFO'));
 		so.default = so.disabled;

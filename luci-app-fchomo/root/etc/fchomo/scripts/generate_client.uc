@@ -450,6 +450,13 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		password: cfg.password,
 		headers: cfg.headers,
 
+		/* Hysteria / Hysteria2 */
+		ports: isEmpty(cfg.hysteria_ports) ? null : join(',', cfg.hysteria_ports),
+		up: cfg.hysteria_up_mbps, // "30 Mbps"
+		down: cfg.hysteria_down_mbps, // "200 Mbps"
+		obfs: cfg.hysteria_obfs_type,
+		["obfs-password"]: cfg.hysteria_obfs_password,
+
 		/* Plugin fields */
 		plugin: cfg.plugin,
 		["plugin-opts"]: cfg.plugin ? {

@@ -445,6 +445,11 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		["routing-mark"]: strToInt(cfg.routing_mark),
 		["ip-version"]: cfg.ip_version,
 
+		/* HTTP / SOCKS */
+		username: cfg.username,
+		password: cfg.password,
+		headers: cfg.headers,
+
 		/* Plugin fields */
 		plugin: cfg.plugin,
 		["plugin-opts"]: cfg.plugin ? {

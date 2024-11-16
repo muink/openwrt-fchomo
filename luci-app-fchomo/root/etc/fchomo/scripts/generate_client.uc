@@ -10,7 +10,7 @@ import { urldecode, urlencode } from 'luci.http';
 
 import {
 	isEmpty, strToBool, strToInt, durationToSecond,
-	removeBlankAttrs,
+	arrToObj, removeBlankAttrs,
 	HM_DIR, RUN_DIR, PRESET_OUTBOUND
 } from 'fchomo';
 
@@ -38,6 +38,7 @@ const ucisniff = 'sniff',
       ucidnser = 'dns_server',
       ucidnspoli = 'dns_policy',
       ucipgrp = 'proxy_group',
+      ucinode = 'node',
       uciprov = 'provider',
       ucirule = 'ruleset',
       ucirout = 'rules',
@@ -419,6 +420,99 @@ config.proxies = [
 		type: 'dns'
 	}
 ];
+uci.foreach(uciconf, ucinode, (cfg) => {
+	if (cfg.enabled === '0')
+		return null;
+
+	push(config.proxies, {
+		name: cfg.label,
+		type: cfg.type,
+
+		server: cfg.server,
+		port: strToInt(cfg.port),
+
+		/* Extra fields */
+		udp: strToBool(cfg.udp),
+		["udp-over-tcp"]: strToBool(cfg.uot),
+		["udp-over-tcp-version"]: cfg.uot_version,
+
+		/* Dial fields */
+		tfo: strToBool(cfg.tfo),
+		mptcp: strToBool(cfg.mptcp),
+		// dev: Features under development
+		["dialer-proxy"]: null, //cfg.dialer_proxy,
+		["interface-name"]: cfg.interface_name,
+		["routing-mark"]: strToInt(cfg.routing_mark),
+		["ip-version"]: cfg.ip_version,
+
+		/* Plugin fields */
+		plugin: cfg.plugin,
+		["plugin-opts"]: cfg.plugin ? {
+			mode: cfg.plugin_opts_obfsmode,
+			host: cfg.plugin_opts_host,
+			password: cfg.plugin_opts_thetlspassword,
+			version: cfg.plugin_opts_shadowtls_version,
+			["version-hint"]: cfg.plugin_opts_restls_versionhint,
+			["restls-script"]: cfg.plugin_opts_restls_script
+		} : null,
+
+		/* TLS fields */
+		tls: (cfg.type in ['trojan', 'hysteria', 'hysteria2', 'tuic']) ? null : strToBool(cfg.tls),
+		["disable-sni"]: strToBool(cfg.tls_disable_sni),
+		...arrToObj([[(cfg.type in ['vmess', 'vless']) ? 'servername' : 'sni', cfg.tls_sni]]),
+		fingerprint: cfg.tls_fingerprint,
+		alpn: cfg.tls_alpn, // Array
+		["skip-cert-verify"]: strToBool(cfg.tls_skip_cert_verify),
+		["client-fingerprint"]: cfg.tls_client_fingerprint,
+		["reality-opts"]: cfg.tls_reality === '1' ? {
+			["public-key"]: cfg.tls_reality_public_key,
+			["short-id"]: cfg.tls_reality_short_id
+		} : null,
+
+		/* Transport fields */
+		// https://github.com/muink/mihomo/blob/3e966e82c793ca99e3badc84bf3f2907b100edae/adapter/outbound/vmess.go#L74
+		...(cfg.transport_enabled === '1' ? {
+			network: cfg.transport_type,
+			["http-opts"]: cfg.transport_type === 'http' ? {
+				method: cfg.transport_http_method,
+				path: isEmpty(cfg.transport_paths) ? ['/'] : cfg.transport_paths, // Array
+				headers: cfg.transport_http_headers
+			} : null,
+			["h2-opts"]: cfg.transport_type === 'h2' ? {
+				host: cfg.transport_hosts, // Array
+				path: cfg.transport_path || '/',
+			} : null,
+			["grpc-opts"]: cfg.transport_type === 'grpc' ? {
+				["grpc-service-name"]: cfg.transport_grpc_servicename
+			} : null,
+			["ws-opts"]: cfg.transport_type === 'ws' ? {
+				path: cfg.transport_path || '/',
+				headers: cfg.transport_http_headers,
+				["max-early-data"]: strToInt(cfg.transport_ws_max_early_data),
+				["early-data-header-name"]: cfg.transport_ws_early_data_header,
+				["v2ray-http-upgrade"]: strToBool(cfg.transport_ws_v2ray_http_upgrade),
+				["v2ray-http-upgrade-fast-open"]: strToBool(cfg.transport_ws_v2ray_http_upgrade_fast_open)
+			} : null
+		} : {}),
+
+		/* Multiplex fields */
+		smux: cfg.smux_enabled === '1' ? {
+			enabled: true,
+			protocol: cfg.smux_protocol,
+			["max-connections"]: strToInt(cfg.smux_max_connections),
+			["min-streams"]: strToInt(cfg.smux_min_streams),
+			["max-streams"]: strToInt(cfg.smux_max_streams),
+			statistic: strToBool(cfg.smux_statistic),
+			["only-tcp"]: strToBool(cfg.smux_only_tcp),
+			padding: strToBool(cfg.smux_padding),
+			["brutal-opts"]: cfg.smux_brutal === '1' ? {
+				enabled: true,
+				up: strToInt(cfg.smux_brutal_up),
+				down: strToInt(cfg.smux_brutal_down)
+			} : null
+		} : null
+	});
+});
 /* Proxy Node END */
 
 /* Proxy Group START */

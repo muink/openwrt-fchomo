@@ -511,9 +511,10 @@ return view.extend({
 		so.depends('transport_enabled', '1');
 		so.modalonly = true;
 
-		so = ss.taboption('field_transport', form.DynamicList, 'transport_host', _('Server hostname'));
+		so = ss.taboption('field_transport', form.DynamicList, 'transport_hosts', _('Server hostname'));
 		so.datatype = 'list(hostname)';
-		so.depends({transport_enabled: '1', transport_type: /^(h2|ws)$/});
+		so.placeholder = 'example.com';
+		so.depends({transport_enabled: '1', transport_type: 'h2'});
 		so.modalonly = true;
 
 		so = ss.taboption('field_transport', form.Value, 'transport_http_method', _('HTTP request method'));
@@ -524,11 +525,18 @@ return view.extend({
 		so.depends({transport_enabled: '1', transport_type: 'http'});
 		so.modalonly = true;
 
-		so = ss.taboption('field_transport', form.DynamicList, 'transport_path', _('Request path'));
+		so = ss.taboption('field_transport', form.DynamicList, 'transport_paths', _('Request path'));
 		so.placeholder = '/video';
 		so.default = '/';
 		so.rmempty = false;
-		so.depends({transport_enabled: '1', transport_type: /^(http|h2|ws)$/});
+		so.depends({transport_enabled: '1', transport_type: 'http'});
+		so.modalonly = true;
+
+		so = ss.taboption('field_transport', form.Value, 'transport_path', _('Request path'));
+		so.placeholder = '/';
+		so.default = '/';
+		so.rmempty = false;
+		so.depends({transport_enabled: '1', transport_type: /^(h2|ws)$/});
 		so.modalonly = true;
 
 		so = ss.taboption('field_transport', form.TextValue, 'transport_http_headers', _('HTTP header'));
@@ -539,9 +547,9 @@ return view.extend({
 
 			return frameEl;
 		}
-		so.placeholder = '{\n  "User-Agent": [\n    "Clash/v1.18.0",\n    "mihomo/1.18.3"\n  ],\n  "Authorization": [\n    //"token 1231231"\n  ]\n}';
+		so.placeholder = '{\n  "Host": "example.com",\n  "Connection": [\n    "keep-alive"\n  ]\n}';
 		so.validate = L.bind(hm.validateJson, so);
-		so.depends({transport_enabled: '1', transport_type: 'http'});
+		so.depends({transport_enabled: '1', transport_type: /^(http|ws)$/});
 		so.modalonly = true;
 
 		so = ss.taboption('field_transport', form.Value, 'transport_grpc_servicename', _('gRPC service name'));
@@ -626,7 +634,7 @@ return view.extend({
 
 		so = ss.taboption('field_multiplex', form.Flag, 'smux_brutal', _('Enable TCP Brutal'),
 			_('Enable TCP Brutal congestion control algorithm'));
-		so.default = o.disabled;
+		so.default = so.disabled;
 		so.depends('smux_enabled', '1');
 		so.modalonly = true;
 

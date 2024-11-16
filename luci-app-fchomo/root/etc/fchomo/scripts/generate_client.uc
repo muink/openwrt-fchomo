@@ -454,6 +454,12 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		obfs: cfg.hysteria_obfs_type,
 		["obfs-password"]: cfg.hysteria_obfs_password,
 
+		/* SSH */
+		["private-key"]: cfg.ssh_priv_key,
+		["private-key-passphrase"]: cfg.ssh_priv_key_passphrase,
+		["host-key-algorithms"]: cfg.ssh_host_key_algorithms,
+		["host-key"]: cfg.ssh_host_key,
+
 		/* Shadowsocks */
 
 		/* Snell */

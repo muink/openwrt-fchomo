@@ -914,6 +914,14 @@ msgstr ""
 msgid "Host that supports TLS 1.3"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:144
+msgid "Host-key"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:139
+msgid "Host-key algorithms"
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/hosts.js:27
 #: root/usr/share/luci/menu.d/luci-app-fchomo.json:30
 msgid "Hosts"
@@ -1464,6 +1472,14 @@ msgstr ""
 #: htdocs/luci-static/resources/view/fchomo/node.js:874
 #: htdocs/luci-static/resources/view/fchomo/node.js:880
 msgid "Priority: Proxy Node > Proxy Group > Global."
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:130
+msgid "Priv-key"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:134
+msgid "Priv-key passphrase"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:291

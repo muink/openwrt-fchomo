@@ -928,6 +928,14 @@ msgstr "心跳间隔"
 msgid "Host that supports TLS 1.3"
 msgstr "主机名称 (支援 TLS 1.3)"
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:144
+msgid "Host-key"
+msgstr "主机密钥"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:139
+msgid "Host-key algorithms"
+msgstr "主机密钥算法"
+
 #: htdocs/luci-static/resources/view/fchomo/hosts.js:27
 #: root/usr/share/luci/menu.d/luci-app-fchomo.json:30
 msgid "Hosts"
@@ -1484,6 +1492,14 @@ msgstr "优先 IPv6"
 #: htdocs/luci-static/resources/view/fchomo/node.js:880
 msgid "Priority: Proxy Node > Proxy Group > Global."
 msgstr "优先级: 代理节点 > 策略组 > 全局。"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:130
+msgid "Priv-key"
+msgstr "密钥"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:134
+msgid "Priv-key passphrase"
+msgstr "密钥密码"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:291
 msgid "Process matching mode"

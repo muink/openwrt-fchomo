@@ -126,6 +126,26 @@ return view.extend({
 		so.depends({type: 'hysteria2', hysteria_obfs_type: /.+/});
 		so.modalonly = true;
 
+		/* SSH fields */
+		so = ss.taboption('field_general', form.TextValue, 'ssh_priv_key', _('Priv-key'));
+		so.depends('type', 'ssh');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'ssh_priv_key_passphrase', _('Priv-key passphrase'));
+		so.password = true;
+		so.depends({type: 'ssh', ssh_priv_key: /.+/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.DynamicList, 'ssh_host_key_algorithms', _('Host-key algorithms'));
+		so.placeholder = 'rsa';
+		so.depends('type', 'ssh');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.DynamicList, 'ssh_host_key', _('Host-key'));
+		so.placeholder = 'ssh-rsa AAAAB3NzaC1yc2EAA...';
+		so.depends({type: 'ssh', ssh_host_key_algorithms: /.+/});
+		so.modalonly = true;
+
 		/* Shadowsocks fields */
 		so = ss.taboption('field_general', form.ListValue, 'shadowsocks_chipher', _('Chipher'));
 		so.default = hm.shadowsocks_cipher_methods[1][0];

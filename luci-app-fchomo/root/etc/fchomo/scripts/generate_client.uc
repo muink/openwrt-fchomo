@@ -455,6 +455,14 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		/* Shadowsocks */
 		cipher: cfg.shadowsocks_chipher,
 
+		/* Snell */
+		psk: cfg.snell_psk,
+		version: cfg.snell_version,
+		["obfs-opts"]: {
+			mode: cfg.plugin_opts_obfsmode,
+			host: cfg.plugin_opts_host,
+		},
+
 		/* HTTP / SOCKS */
 		username: cfg.username,
 		password: cfg.shadowsocks_password || cfg.password,

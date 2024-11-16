@@ -431,11 +431,6 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		server: cfg.server,
 		port: strToInt(cfg.port),
 
-		/* Extra fields */
-		udp: strToBool(cfg.udp),
-		["udp-over-tcp"]: strToBool(cfg.uot),
-		["udp-over-tcp-version"]: cfg.uot_version,
-
 		/* Dial fields */
 		tfo: strToBool(cfg.tfo),
 		mptcp: strToBool(cfg.mptcp),
@@ -450,12 +445,12 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		uuid: cfg.vmess_uuid || cfg.uuid,
 		cipher: cfg.vmess_chipher || cfg.shadowsocks_chipher,
 		password: cfg.shadowsocks_password || cfg.password,
-		headers: cfg.headers,
+		headers: cfg.headers ? json(cfg.headers) : null,
 
 		/* Hysteria / Hysteria2 */
 		ports: isEmpty(cfg.hysteria_ports) ? null : join(',', cfg.hysteria_ports),
-		up: cfg.hysteria_up_mbps, // "30 Mbps"
-		down: cfg.hysteria_down_mbps, // "200 Mbps"
+		up: cfg.hysteria_up_mbps ? cfg.hysteria_up_mbps + ' Mbps' : null,
+		down: cfg.hysteria_down_mbps ? cfg.hysteria_down_mbps + ' Mbps' : null,
 		obfs: cfg.hysteria_obfs_type,
 		["obfs-password"]: cfg.hysteria_obfs_password,
 
@@ -464,10 +459,10 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		/* Snell */
 		psk: cfg.snell_psk,
 		version: cfg.snell_version,
-		["obfs-opts"]: {
+		["obfs-opts"]: cfg.type === 'snell' ? {
 			mode: cfg.plugin_opts_obfsmode,
 			host: cfg.plugin_opts_host,
-		},
+		} : null,
 
 		/* TUIC */
 		ip: cfg.tuic_ip,
@@ -492,7 +487,7 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		/* VMess / VLESS */
 		flow: cfg.vless_flow,
 		alterId: strToInt(cfg.vmess_alterid),
-		["global-padding"]: (cfg.vmess_global_padding === '0') ? false : true,
+		["global-padding"]: cfg.type === 'vmess' ? (cfg.vmess_global_padding === '0' ? false : true) : null,
 		["authenticated-length"]: strToBool(cfg.vmess_authenticated_length),
 		["packet-encoding"]: cfg.vmess_packet_encoding,
 
@@ -506,6 +501,11 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 			["version-hint"]: cfg.plugin_opts_restls_versionhint,
 			["restls-script"]: cfg.plugin_opts_restls_script
 		} : null,
+
+		/* Extra fields */
+		udp: strToBool(cfg.udp),
+		["udp-over-tcp"]: strToBool(cfg.uot),
+		["udp-over-tcp-version"]: cfg.uot_version,
 
 		/* TLS fields */
 		tls: (cfg.type in ['trojan', 'hysteria', 'hysteria2', 'tuic']) ? null : strToBool(cfg.tls),
@@ -527,7 +527,7 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 			["http-opts"]: cfg.transport_type === 'http' ? {
 				method: cfg.transport_http_method,
 				path: isEmpty(cfg.transport_paths) ? ['/'] : cfg.transport_paths, // Array
-				headers: cfg.transport_http_headers
+				headers: cfg.transport_http_headers ? json(cfg.transport_http_headers) : null,
 			} : null,
 			["h2-opts"]: cfg.transport_type === 'h2' ? {
 				host: cfg.transport_hosts, // Array
@@ -538,7 +538,7 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 			} : null,
 			["ws-opts"]: cfg.transport_type === 'ws' ? {
 				path: cfg.transport_path || '/',
-				headers: cfg.transport_http_headers,
+				headers: cfg.transport_http_headers ? json(cfg.transport_http_headers) : null,
 				["max-early-data"]: strToInt(cfg.transport_ws_max_early_data),
 				["early-data-header-name"]: cfg.transport_ws_early_data_header,
 				["v2ray-http-upgrade"]: strToBool(cfg.transport_ws_v2ray_http_upgrade),
@@ -558,8 +558,8 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 			padding: strToBool(cfg.smux_padding),
 			["brutal-opts"]: cfg.smux_brutal === '1' ? {
 				enabled: true,
-				up: strToInt(cfg.smux_brutal_up),
-				down: strToInt(cfg.smux_brutal_down)
+				up: strToInt(cfg.smux_brutal_up), // Mbps
+				down: strToInt(cfg.smux_brutal_down) // Mbps
 			} : null
 		} : null
 	});

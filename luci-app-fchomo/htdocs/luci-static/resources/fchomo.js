@@ -86,7 +86,7 @@ return baseclass.extend({
 		['socks5', _('SOCKS5')],
 		['ss', _('Shadowsocks')],
 		//['ssr', _('ShadowsocksR')], // Deprecated
-		//['snell', _('Snell')], // Not support UDP
+		['snell', _('Snell')],
 		['vmess', _('VMess')],
 		['vless', _('VLESS')],
 		['trojan', _('Trojan')],

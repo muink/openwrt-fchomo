@@ -156,7 +156,7 @@ return view.extend({
 		so.value('1', _('v1'));
 		so.value('2', _('v2'));
 		so.value('3', _('v3'));
-		so.default = '1';
+		so.default = '3';
 		so.depends('type', 'snell');
 		so.modalonly = true;
 
@@ -521,6 +521,7 @@ return view.extend({
 		so.value('GET', _('GET'));
 		so.value('POST', _('POST'));
 		so.value('PUT', _('PUT'));
+		so.default = 'GET';
 		so.rmempty = false;
 		so.depends({transport_enabled: '1', transport_type: 'http'});
 		so.modalonly = true;
@@ -856,7 +857,10 @@ return view.extend({
 		so.datatype = 'uinteger';
 		so.modalonly = true;
 
-		so = ss.taboption('field_override', form.Flag, 'override_skip_cert_verify', _('skip-cert-verify'));
+		so = ss.taboption('field_override', form.Flag, 'override_skip_cert_verify', _('Skip cert verify'),
+			_('Donot verifying server certificate.') +
+			'<br/>' +
+			_('This is <strong>DANGEROUS</strong>, your traffic is almost like <strong>PLAIN TEXT</strong>! Use at your own risk!'));
 		so.default = so.disabled;
 		so.modalonly = true;
 

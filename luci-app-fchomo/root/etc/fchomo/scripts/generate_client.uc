@@ -445,6 +445,13 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		["routing-mark"]: strToInt(cfg.routing_mark),
 		["ip-version"]: cfg.ip_version,
 
+		/* HTTP / SOCKS / Shadowsocks / VMess / VLESS / Trojan / hysteria2 / TUIC / SSH */
+		username: cfg.username,
+		uuid: cfg.vmess_uuid || cfg.uuid,
+		cipher: cfg.vmess_chipher || cfg.shadowsocks_chipher,
+		password: cfg.shadowsocks_password || cfg.password,
+		headers: cfg.headers,
+
 		/* Hysteria / Hysteria2 */
 		ports: isEmpty(cfg.hysteria_ports) ? null : join(',', cfg.hysteria_ports),
 		up: cfg.hysteria_up_mbps, // "30 Mbps"
@@ -453,7 +460,6 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		["obfs-password"]: cfg.hysteria_obfs_password,
 
 		/* Shadowsocks */
-		cipher: cfg.shadowsocks_chipher,
 
 		/* Snell */
 		psk: cfg.snell_psk,
@@ -483,11 +489,12 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 			password: cfg.trojan_ss_password
 		}: null,
 
-		/* HTTP / SOCKS / Trojan / TUIC */
-		uuid: cfg.uuid,
-		username: cfg.username,
-		password: cfg.shadowsocks_password || cfg.password,
-		headers: cfg.headers,
+		/* VMess / VLESS */
+		flow: cfg.vless_flow,
+		alterId: strToInt(cfg.vmess_alterid),
+		["global-padding"]: (cfg.vmess_global_padding === '0') ? false : true,
+		["authenticated-length"]: strToBool(cfg.vmess_authenticated_length),
+		["packet-encoding"]: cfg.vmess_packet_encoding,
 
 		/* Plugin fields */
 		plugin: cfg.plugin,

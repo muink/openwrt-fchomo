@@ -16,6 +16,10 @@
 
 You can find the prebuilt-ipks [here](https://fantastic-packages.github.io/packages/)
 
+## Installation
+
+If you have trouble downloading resource files after initial installation, you can upload the [initial resource pack][].
+
 ## Build
 
 ``` bash
@@ -38,3 +42,5 @@ make menuconfig
 # Start compiling
 make package/luci-app-fchomo/compile V=s BUILD_LOG=y -j$(nproc)
 ```
+
+[initial resource pack]: https://github.com/muink/openwrt-fchomo/raw/refs/heads/initialpack/initial.tgz

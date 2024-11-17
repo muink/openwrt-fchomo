@@ -447,11 +447,11 @@ return view.extend({
 
 		so = ss.option(form.Value, 'tls_cert_path', _('API TLS certificate path'));
 		so.datatype = 'file';
-		so.value('/etc/uhttpd.crt');
+		so.value('/etc/ssl/acme/example.crt');
 
 		so = ss.option(form.Value, 'tls_key_path', _('API TLS private key path'));
 		so.datatype = 'file';
-		so.value('/etc/uhttpd.key');
+		so.value('/etc/ssl/acme/example.key');
 		/* TLS END */
 
 		/* API START */

@@ -950,10 +950,11 @@ return view.extend({
 		so.default = so.disabled;
 		so.modalonly = true;
 
-		// dev: Features under development
+		/* Features are implemented in proxy chain
 		so = ss.taboption('field_override', form.Value, 'override_dialer_proxy', _('dialer-proxy'));
 		so.readonly = true;
 		so.modalonly = true;
+		*/
 
 		so = ss.taboption('field_override', widgets.DeviceSelect, 'override_interface_name', _('Bind interface'),
 			_('Bind outbound interface.</br>') +
@@ -1060,6 +1061,18 @@ return view.extend({
 		so.default = so.enabled;
 		so.editable = true;
 
+		so = ss.option(form.ListValue, 'type', _('Type'));
+		so.value('node', _('Proxy Node'));
+		so.value('provider', _('Provider'));
+		so.default = 'node';
+		so.textvalue = L.bind(hm.textvalue2Value, so);
+
+		so = ss.option(form.ListValue, 'chain_head_sub', _('Chain head'));
+		so.load = L.bind(hm.loadProviderLabel, so);
+		so.textvalue = L.bind(hm.textvalue2Value, so);
+		so.rmempty = false;
+		so.depends('type', 'provider');
+
 		so = ss.option(form.ListValue, 'chain_head', _('Chain head'),
 			_('Recommended to use UoT node.</br>such as <code>%s</code>.')
 			.format('ss|ssr|vmess|vless|trojan|tuic'));
@@ -1074,6 +1087,7 @@ return view.extend({
 
 			return true;
 		}
+		so.depends('type', 'node');
 
 		so = ss.option(hm.CBIStaticList, 'chain_body', _('Chain body'));
 		so.value('', _('-- Please choose --'));

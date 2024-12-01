@@ -1075,6 +1075,29 @@ return view.extend({
 			return true;
 		}
 
+		so = ss.option(hm.CBIStaticList, 'chain_body', _('Chain body'));
+		so.value('', _('-- Please choose --'));
+		so.load = L.bind(hm.loadNodeLabel, so);
+		so.validate = function(section_id, value) {
+			var chain_head = this.section.getUIElement(section_id, 'chain_head').getValue();
+			var chain_tail = this.section.getUIElement(section_id, 'chain_tail').getValue();
+			var value = this.getUIElement(section_id).getValue();
+
+			if (value.includes(chain_head) || value.includes(chain_tail))
+				return _('Expecting: %s').format(_('Different with chain head/tail'));
+
+			return true;
+		}
+		so.textvalue = function(section_id) {
+			var cvals = this.cfgvalue(section_id);
+			//alert(Array.prototype.join.call(cvals, ':'));
+			return cvals ? '» ' + cvals.map((cval) => {
+				var i = this.keylist.indexOf(cval);
+
+				return this.vallist[i];
+			}).join(' » ') + ' »' : '»';
+		}
+
 		so = ss.option(form.ListValue, 'chain_tail', _('Chain tail'),
 			_('Recommended to use UoT node.</br>such as <code>%s</code>.')
 			.format('ss|ssr|vmess|vless|trojan|tuic'));

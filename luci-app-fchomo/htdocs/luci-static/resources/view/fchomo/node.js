@@ -1059,6 +1059,36 @@ return view.extend({
 		so = ss.option(form.Flag, 'enabled', _('Enable'));
 		so.default = so.enabled;
 		so.editable = true;
+
+		so = ss.option(form.ListValue, 'chain_head', _('Chain head'),
+			_('Recommended to use UoT node.</br>such as <code>%s</code>.')
+			.format('ss|ssr|vmess|vless|trojan|tuic'));
+		so.load = L.bind(hm.loadNodeLabel, so);
+		so.textvalue = L.bind(hm.textvalue2Value, so);
+		so.rmempty = false;
+		so.validate = function(section_id, value) {
+			var chain_tail = this.section.getUIElement(section_id, 'chain_tail').getValue();
+
+			if (value === chain_tail)
+				return _('Expecting: %s').format(_('Different chain head/tail'));
+
+			return true;
+		}
+
+		so = ss.option(form.ListValue, 'chain_tail', _('Chain tail'),
+			_('Recommended to use UoT node.</br>such as <code>%s</code>.')
+			.format('ss|ssr|vmess|vless|trojan|tuic'));
+		so.load = L.bind(hm.loadNodeLabel, so);
+		so.textvalue = L.bind(hm.textvalue2Value, so);
+		so.rmempty = false;
+		so.validate = function(section_id, value) {
+			var chain_head = this.section.getUIElement(section_id, 'chain_head').getValue();
+
+			if (value === chain_head)
+				return _('Expecting: %s').format(_('Different chain head/tail'));
+
+			return true;
+		}
 		/* Proxy chain END */
 
 		return m.render();

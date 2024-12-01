@@ -745,10 +745,11 @@ return view.extend({
 		so.default = so.disabled;
 		so.modalonly = true;
 
-		// dev: Features under development
+		/* Features are implemented in proxy chain
 		so = ss.taboption('field_dial', form.Value, 'dialer_proxy', _('dialer-proxy'));
 		so.readonly = true;
 		so.modalonly = true;
+		*/
 
 		so = ss.taboption('field_dial', widgets.DeviceSelect, 'interface_name', _('Bind interface'),
 			_('Bind outbound interface.</br>') +
@@ -1033,6 +1034,32 @@ return view.extend({
 		so.editable = true;
 		so.modalonly = false;
 		/* Provider END */
+
+		/* Proxy chain START */
+		s.tab('dialer_proxy', _('Proxy chain'));
+
+		/* Proxy chain */
+		o = s.taboption('dialer_proxy', form.SectionValue, '_dialer_proxy', form.GridSection, 'dialer_proxy', null);
+		ss = o.subsection;
+		var prefmt = { 'prefix': 'chain_', 'suffix': '' };
+		ss.addremove = true;
+		ss.rowcolors = true;
+		ss.sortable = true;
+		ss.nodescriptions = true;
+		ss.modaltitle = L.bind(hm.loadModalTitle, ss, _('Proxy chain'), _('Add a proxy chain'));
+		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
+		ss.renderSectionAdd = L.bind(hm.renderSectionAdd, ss, prefmt, true);
+		ss.handleAdd = L.bind(hm.handleAdd, ss, prefmt);
+
+		so = ss.option(form.Value, 'label', _('Label'));
+		so.load = L.bind(hm.loadDefaultLabel, so);
+		so.validate = L.bind(hm.validateUniqueValue, so);
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'enabled', _('Enable'));
+		so.default = so.enabled;
+		so.editable = true;
+		/* Proxy chain END */
 
 		return m.render();
 	}

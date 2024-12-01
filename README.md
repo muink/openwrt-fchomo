@@ -2,7 +2,6 @@
 
 ## Todo
 
-- [ ] dialer-proxy
 - [ ] Any other improvements
 
 ## Known issues
@@ -18,11 +17,11 @@ You can find the prebuilt-ipks [here](https://fantastic-packages.github.io/packa
 ## Compatibility with MihomoTProxy
 
 Core:
- + The Mihomo core provided by FullCombo Mihomo only contains binaries and does not have daemons.  
- + So in theory you can use the mihomo core provided by MihomoTProxy.  
+ + The Mihomo core provided by FullCombo Mihomo only contains binaries and does not have daemons.
+ + So in theory you can use the mihomo core provided by MihomoTProxy.
 
 LuCI application:
- + FullCombo Mihomo and MihomoTProxy can be installed on the same device, but cannot be started as clients at the same time.  
+ + FullCombo Mihomo and MihomoTProxy can be installed on the same device, but cannot be started as clients at the same time.
 
 ## Installation
 

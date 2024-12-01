@@ -1098,6 +1098,13 @@ return view.extend({
 			}).join(' » ') + ' »' : '»';
 		}
 
+		so = ss.option(form.ListValue, 'chain_tail_group', _('Chain tail'));
+		so.value('', _('-- Please choose --'));
+		so.load = L.bind(hm.loadProxyGroupLabel, so, [['', _('-- Please choose --')]]);
+		so.textvalue = L.bind(hm.textvalue2Value, so);
+		so.rmempty = false;
+		so.depends({chain_tail: /.+/, '!reverse': true});
+
 		so = ss.option(form.ListValue, 'chain_tail', _('Chain tail'),
 			_('Recommended to use UoT node.</br>such as <code>%s</code>.')
 			.format('ss|ssr|vmess|vless|trojan|tuic'));
@@ -1112,6 +1119,7 @@ return view.extend({
 
 			return true;
 		}
+		so.depends({chain_tail_group: /.+/, '!reverse': true});
 		/* Proxy chain END */
 
 		return m.render();

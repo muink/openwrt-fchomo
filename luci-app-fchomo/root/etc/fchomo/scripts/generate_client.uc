@@ -10,7 +10,7 @@ import { urldecode, urlencode } from 'luci.http';
 
 import {
 	isEmpty, strToBool, strToInt, bytesizeToByte, durationToSecond,
-	arrToObj, removeBlankAttrs,
+	arrToObj, removeBlankAttrs, yaml,
 	HM_DIR, RUN_DIR, PRESET_OUTBOUND
 } from 'fchomo';
 
@@ -711,7 +711,8 @@ uci.foreach(uciconf, ucirule, (cfg) => {
 		type: cfg.type,
 		format: cfg.format,
 		behavior: cfg.behavior,
-		path: HM_DIR + '/ruleset/' + cfg['.name'],
+		path: trim(cfg.payload) ? null : HM_DIR + '/ruleset/' + cfg['.name'],
+		payload: trim(cfg.payload) ? yaml(trim(cfg.payload)) : null,
 		url: cfg.url,
 		"size-limit": bytesizeToByte(cfg.size_limit) || null,
 		interval: (cfg.type === 'http') ? durationToSecond(cfg.interval) || 259200 : null,

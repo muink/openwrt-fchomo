@@ -860,6 +860,12 @@ return view.extend({
 		so.depends('type', 'http');
 		so.modalonly = true;
 
+		so = ss.taboption('field_general', form.Value, 'size_limit', _('Size limit'),
+			_('In bytes. <code>%s</code> will be used if empty.').format('0'));
+		so.placeholder = '0';
+		so.validate = L.bind(hm.validateBytesize, so);
+		so.depends('type', 'http');
+
 		so = ss.taboption('field_general', form.Value, 'interval', _('Update interval'),
 			_('In seconds. <code>%s</code> will be used if empty.').format('86400'));
 		so.placeholder = '86400';

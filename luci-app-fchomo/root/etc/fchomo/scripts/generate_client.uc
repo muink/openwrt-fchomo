@@ -9,7 +9,7 @@ import { cursor } from 'uci';
 import { urldecode, urlencode } from 'luci.http';
 
 import {
-	isEmpty, strToBool, strToInt, durationToSecond,
+	isEmpty, strToBool, strToInt, bytesizeToByte, durationToSecond,
 	arrToObj, removeBlankAttrs,
 	HM_DIR, RUN_DIR, PRESET_OUTBOUND
 } from 'fchomo';
@@ -654,6 +654,7 @@ uci.foreach(uciconf, uciprov, (cfg) => {
 		type: cfg.type,
 		path: HM_DIR + '/provider/' + cfg['.name'],
 		url: cfg.url,
+		"size-limit": bytesizeToByte(cfg.size_limit) || null,
 		interval: (cfg.type === 'http') ? durationToSecond(cfg.interval) || 86400 : null,
 		proxy: get_proxygroup(cfg.proxy),
 		header: cfg.header ? json(cfg.header) : null,
@@ -712,6 +713,7 @@ uci.foreach(uciconf, ucirule, (cfg) => {
 		behavior: cfg.behavior,
 		path: HM_DIR + '/ruleset/' + cfg['.name'],
 		url: cfg.url,
+		"size-limit": bytesizeToByte(cfg.size_limit) || null,
 		interval: (cfg.type === 'http') ? durationToSecond(cfg.interval) || 259200 : null,
 		proxy: get_proxygroup(cfg.proxy)
 	};

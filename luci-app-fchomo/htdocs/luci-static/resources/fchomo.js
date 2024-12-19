@@ -746,6 +746,15 @@ return baseclass.extend({
 		return true;
 	},
 
+	validateBytesize: function(section_id, value) {
+		if (!value)
+			return true;
+
+		if (!value.match(/^(\d+)(k|m|g)?b?$/))
+			return _('Expecting: %s').format(_('/^(\\d+)(k|m|g)?b?$/'));
+
+		return true;
+	},
 	validateTimeDuration: function(section_id, value) {
 		if (!value)
 			return true;

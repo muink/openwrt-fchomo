@@ -185,13 +185,14 @@ return view.extend({
 		o = s.option(form.ListValue, 'type', _('Type'));
 		o.value('file', _('Local'));
 		o.value('http', _('Remote'));
+		o.value('inline', _('Inline'));
 		o.default = 'http';
 
 		o = s.option(form.ListValue, 'format', _('Format'));
 		o.value('text', _('Plain text'));
 		o.value('yaml', _('Yaml text'));
 		o.value('mrs', _('Binary file'));
-		o.default = 'mrs';
+		o.default = 'yaml';
 		o.validate = function(section_id, value) {
 			var behavior = this.section.getUIElement(section_id, 'behavior').getValue();
 
@@ -200,6 +201,15 @@ return view.extend({
 
 			return true;
 		}
+		o.textvalue = function(section_id) {
+			var cval = this.cfgvalue(section_id) || this.default;
+			var inline = L.bind(function() {
+				let cval = this.cfgvalue(section_id) || this.default;
+				return (cval === 'inline') ? true : false;
+			}, s.getOption('type'));
+			return inline() ? _('none') : cval;
+		};
+		o.depends({'type': 'inline', '!reverse': true});
 
 		o = s.option(form.ListValue, 'behavior', _('Behavior'));
 		o.value('classical');
@@ -224,6 +234,8 @@ return view.extend({
 					return uci.get(data[0], section_id, '.name');
 				case 'http':
 					return uci.get(data[0], section_id, 'url');
+				case 'inline':
+					return uci.get(data[0], section_id, '.name');
 				default:
 					return null;
 			}
@@ -249,6 +261,20 @@ return view.extend({
 		o.rmempty = false;
 		o.retain = true;
 		o.depends({'type': 'file', 'format': /^(text|yaml)$/});
+		o.modalonly = true;
+
+		o = s.option(form.TextValue, 'payload', 'payload:',
+			_('Please type <a target="_blank" href="https://wiki.metacubex.one/config/rule-providers/content/">Payload</a> directly.'));
+		o.renderWidget = function(/* ... */) {
+			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+
+			frameEl.firstChild.style.fontFamily = hm.monospacefonts.join(',');
+
+			return frameEl;
+		}
+		o.placeholder = '- DOMAIN-SUFFIX,google.com\n# ' + _('Content will not be verified, Please make sure you enter it correctly.');
+		o.rmempty = false;
+		o.depends('type', 'inline');
 		o.modalonly = true;
 
 		o = s.option(form.Value, 'url', _('Rule set URL'));

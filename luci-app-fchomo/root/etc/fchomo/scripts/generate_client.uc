@@ -711,7 +711,11 @@ uci.foreach(uciconf, ucirule, (cfg) => {
 		type: cfg.type,
 		format: cfg.format,
 		behavior: cfg.behavior,
-		path: HM_DIR + '/ruleset/' + cfg['.name'],
+		...(cfg.payload ? {
+			payload: trim(cfg.payload)
+		} : {
+			path: HM_DIR + '/ruleset/' + cfg['.name']
+		}),
 		url: cfg.url,
 		"size-limit": bytesizeToByte(cfg.size_limit) || null,
 		interval: (cfg.type === 'http') ? durationToSecond(cfg.interval) || 259200 : null,

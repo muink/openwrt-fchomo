@@ -34,7 +34,7 @@ function parseRulesetLink(uri) {
 					behavior: behavior,
 					url: String.format('%s://%s', uri[0], fullpath),
 					interval: interval,
-					href: hm.calcStringMD5(String.format('http://%s', fullpath))
+					id: hm.calcStringMD5(String.format('http://%s', fullpath))
 				};
 			}
 
@@ -54,9 +54,9 @@ function parseRulesetLink(uri) {
 					type: 'file',
 					format: format,
 					behavior: behavior,
-					href: hm.calcStringMD5(String.format('file://%s%s', url.host, url.pathname))
+					id: hm.calcStringMD5(String.format('file://%s%s', url.host, url.pathname))
 				};
-				hm.writeFile('ruleset', config.href, hm.decodeBase64Str(filler));
+				hm.writeFile('ruleset', config.id, hm.decodeBase64Str(filler));
 			}
 
 			break;
@@ -71,7 +71,7 @@ function parseRulesetLink(uri) {
 					type: 'inline',
 					behavior: behavior,
 					payload: payload,
-					href: hm.calcStringMD5(String.format('inline:%s', btoa(payload)))
+					id: hm.calcStringMD5(String.format('inline:%s', btoa(payload)))
 				};
 			}
 
@@ -80,10 +80,10 @@ function parseRulesetLink(uri) {
 	}
 
 	if (config) {
-		if (!config.type || !config.href)
+		if (!config.type || !config.id)
 			return null;
 		else if (!config.label)
-			config.label = config.href;
+			config.label = config.id;
 	}
 
 	return config;
@@ -142,8 +142,8 @@ return view.extend({
 								input_links.forEach((l) => {
 									var config = parseRulesetLink(l);
 									if (config) {
-										var sid = uci.add(data[0], 'ruleset', config.href);
-										config.href = null;
+										var sid = uci.add(data[0], 'ruleset', config.id);
+										config.id = null;
 										Object.keys(config).forEach((k) => {
 											uci.set(data[0], sid, k, config[k] || '');
 										});

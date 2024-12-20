@@ -60,6 +60,22 @@ function parseRulesetLink(uri) {
 			}
 
 			break;
+		case 'inline':
+			var url = new URL('inline:' + uri[1]);
+			var behavior = url.searchParams.get('behav');
+			var payload = hm.decodeBase64Str(url.pathname).trim();
+
+			if (filebehav.test(behavior) && payload && payload.length) {
+				config = {
+					label: url.hash ? decodeURIComponent(url.hash.slice(1)) : null,
+					type: 'inline',
+					behavior: behavior,
+					payload: payload,
+					href: hm.calcStringMD5(String.format('inline:%s', btoa(payload)))
+				};
+			}
+
+			break;
 		}
 	}
 
@@ -67,7 +83,7 @@ function parseRulesetLink(uri) {
 		if (!config.type || !config.href)
 			return null;
 		else if (!config.label)
-			config.label = hm.calcStringMD5(config.href);
+			config.label = config.href;
 	}
 
 	return config;
@@ -99,10 +115,11 @@ return view.extend({
 		s.handleLinkImport = function() {
 			var textarea = new ui.Textarea('', {
 				'placeholder': 'http(s)://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/Providers/BanAD.yaml?fmt=yaml&behav=classical&rawq=good%3Djob#BanAD\n' +
-							   'file:///example.txt?fmt=text&behav=domain&fill=LmNuCg#CN%20TLD\n'
+							   'file:///example.txt?fmt=text&behav=domain&fill=LmNuCg#CN%20TLD\n' +
+							   'inline://LSAnLmhrJwoK?behav=domain#HK%20TLD\n'
 			});
 			ui.showModal(_('Import rule-set links'), [
-				E('p', _('Supports rule-set links of type: <code>file, http</code> and format: <code>text, yaml, mrs</code>.</br>') +
+				E('p', _('Supports rule-set links of type: <code>file, http, inline</code> and format: <code>text, yaml, mrs</code>.</br>') +
 							_('Please refer to <a href="%s" target="_blank">%s</a> for link format standards.')
 								.format(hm.rulesetdoc, _('Ruleset-URI-Scheme'))),
 				textarea.render(),

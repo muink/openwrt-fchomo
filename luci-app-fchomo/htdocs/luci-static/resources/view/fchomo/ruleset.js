@@ -119,7 +119,8 @@ return view.extend({
 							   'inline://LSAnLmhrJwoK?behav=domain#HK%20TLD\n'
 			});
 			ui.showModal(_('Import rule-set links'), [
-				E('p', _('Supports rule-set links of type: <code>file, http, inline</code> and format: <code>text, yaml, mrs</code>.</br>') +
+				E('p', _('Supports rule-set links of type: <code>%s</code> and format: <code>%s</code>.</br>')
+						.format('file, http, inline', 'text, yaml, mrs') +
 							_('Please refer to <a href="%s" target="_blank">%s</a> for link format standards.')
 								.format(hm.rulesetdoc, _('Ruleset-URI-Scheme'))),
 				textarea.render(),
@@ -281,7 +282,8 @@ return view.extend({
 		o.modalonly = true;
 
 		o = s.option(form.TextValue, 'payload', 'payload:',
-			_('Please type <a target="_blank" href="https://wiki.metacubex.one/config/rule-providers/content/">Payload</a> directly.'));
+			_('Please type <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
+				.format('https://wiki.metacubex.one/config/rule-providers/content/', _('Payload')));
 		o.renderWidget = function(/* ... */) {
 			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 

@@ -752,7 +752,7 @@ return baseclass.extend({
 			return true;
 
 		if (!value.match(/^(\d+)(k|m|g)?b?$/))
-			return _('Expecting: %s').format(_('/^(\\d+)(k|m|g)?b?$/'));
+			return _('Expecting: %s').format('^(\\d+)(k|m|g)?b?$');
 
 		return true;
 	},
@@ -761,7 +761,7 @@ return baseclass.extend({
 			return true;
 
 		if (!value.match(/^(\d+)(s|m|h|d)?$/))
-			return _('Expecting: %s').format(_('/^(\\d+)(s|m|h|d)?$/'));
+			return _('Expecting: %s').format('^(\\d+)(s|m|h|d)?$');
 
 		return true;
 	},

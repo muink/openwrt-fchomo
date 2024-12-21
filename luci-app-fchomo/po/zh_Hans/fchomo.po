@@ -26,10 +26,6 @@ msgstr "%s 日志"
 msgid "-- Please choose --"
 msgstr "-- 请选择 --"
 
-#: htdocs/luci-static/resources/fchomo.js:754
-msgid "/^(\\d+)(s|m|h|d)?$/"
-msgstr ""
-
 #: htdocs/luci-static/resources/fchomo.js:48
 msgid "163Music"
 msgstr "网抑云"
@@ -1072,6 +1068,11 @@ msgstr "导入 rule-set 链接"
 msgid "In Mbps."
 msgstr "单位为 Mbps。"
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:885
+#: htdocs/luci-static/resources/view/fchomo/ruleset.js:305
+msgid "In bytes. <code>%s</code> will be used if empty."
+msgstr "单位为字节。留空则使用 <code>%s</code>。"
+
 #: htdocs/luci-static/resources/view/fchomo/node.js:238
 #: htdocs/luci-static/resources/view/fchomo/node.js:245
 msgid "In millisecond."
@@ -1129,6 +1130,10 @@ msgstr "引入所有代理节点。"
 #: htdocs/luci-static/resources/view/fchomo/global.js:312
 msgid "Info"
 msgstr "信息"
+
+#: htdocs/luci-static/resources/view/fchomo/ruleset.js:205
+msgid "Inline"
+msgstr "内嵌"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:584
 msgid "Interface Control"
@@ -1308,6 +1313,10 @@ msgstr ""
 msgid "Maximum streams"
 msgstr "最大流数量"
 
+#: htdocs/luci-static/resources/fchomo.js:91
+msgid "Mieru"
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/client.js:419
 #: htdocs/luci-static/resources/view/fchomo/log.js:100
 msgid "Mihomo client"
@@ -1348,6 +1357,10 @@ msgstr "多路复用"
 #: htdocs/luci-static/resources/view/fchomo/node.js:43
 msgid "Multiplex fields"
 msgstr "多路复用字段"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:179
+msgid "Multiplexing"
+msgstr "多路复用"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:870
 msgid "Name of the Proxy group to download provider."
@@ -1491,6 +1504,10 @@ msgstr "数据包编码"
 msgid "Password"
 msgstr "密码"
 
+#: htdocs/luci-static/resources/view/fchomo/ruleset.js:285
+msgid "Payload"
+msgstr "Payload"
+
 #: htdocs/luci-static/resources/view/fchomo/node.js:343
 msgid "Peer pubkic key"
 msgstr "对端公钥"
@@ -1539,6 +1556,10 @@ msgstr "端口"
 #: htdocs/luci-static/resources/fchomo.js:698
 msgid "Port %s alrealy exists!"
 msgstr "端口 %s 已存在！"
+
+#: htdocs/luci-static/resources/view/fchomo/node.js:168
+msgid "Port range"
+msgstr "端口范围"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:550
 msgid "Ports"
@@ -1939,6 +1960,11 @@ msgstr "静音"
 msgid "Simple round-robin all nodes"
 msgstr "简单轮替所有节点"
 
+#: htdocs/luci-static/resources/view/fchomo/node.js:884
+#: htdocs/luci-static/resources/view/fchomo/ruleset.js:304
+msgid "Size limit"
+msgstr "大小限制"
+
 #: htdocs/luci-static/resources/view/fchomo/node.js:528
 #: htdocs/luci-static/resources/view/fchomo/node.js:946
 msgid "Skip cert verify"
@@ -2012,11 +2038,11 @@ msgstr "已成功上传。"
 
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:105
 msgid ""
-"Supports rule-set links of type: <code>file, http</code> and format: "
-"<code>text, yaml, mrs</code>.</br>"
+"Supports rule-set links of type: <code>%s</code> and format: <code>%s</code>."
+"</br>"
 msgstr ""
-"支持规则集类型为: <code>file, http</code> 并且格式为: <code>text, yaml, mrs</"
-"code> 的规则集链接。</br>"
+"支持规则集类型为: <code>%s</code> 并且格式为: <code>%s</code> 的规则集链接。"
+"</br>"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:397
 msgid "System"

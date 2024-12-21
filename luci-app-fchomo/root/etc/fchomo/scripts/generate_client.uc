@@ -481,6 +481,11 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 
 		/* Shadowsocks */
 
+		/* Mieru */
+		"port-range": cfg.mieru_port_range,
+		transport: cfg.mieru_transport,
+		multiplexing: cfg.mieru_multiplexing,
+
 		/* Snell */
 		psk: cfg.snell_psk,
 		version: cfg.snell_version,

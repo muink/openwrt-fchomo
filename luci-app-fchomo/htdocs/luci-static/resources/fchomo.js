@@ -88,6 +88,7 @@ return baseclass.extend({
 		['socks5', _('SOCKS5')],
 		['ss', _('Shadowsocks')],
 		//['ssr', _('ShadowsocksR')], // Deprecated
+		['mieru', _('Mieru')],
 		['snell', _('Snell')],
 		['vmess', _('VMess')],
 		['vless', _('VLESS')],

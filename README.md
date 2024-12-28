@@ -1,5 +1,15 @@
 # FullCombo Mihomo
 
+## Features
+
+- Gateway level Transparent proxy
+- Gateway level FullCone NAT
+- Access control Whitelist/Blacklist
+- Routing control based on Port/IP/FQDN
+- Complete DNS hijacking prevents any 53 port query behavior that bypasses the gateway
+- DNS requests intelligent routing based on EDNS-Client-Subnet/Policy
+- Based on mihomo documentation, fully visual configuration GUI
+
 ## Todo
 
 - [ ] Any other improvements

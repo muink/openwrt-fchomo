@@ -301,6 +301,10 @@ msgstr "链尾"
 msgid "Check"
 msgstr "检查"
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:240
+msgid "Check routerself NAT Behavior"
+msgstr "检测路由器自身 NAT 行为"
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:75
 msgid "Check update"
 msgstr "检查更新"
@@ -682,6 +686,10 @@ msgstr ""
 #: htdocs/luci-static/resources/view/fchomo/node.js:1050
 msgid "Exclude nodes that meet keywords or regexps."
 msgstr "排除匹配关键词或表达式的节点。"
+
+#: htdocs/luci-static/resources/view/fchomo/global.js:117
+msgid "Expand/Collapse result"
+msgstr "展开/收起 结果"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:594
 #: htdocs/luci-static/resources/view/fchomo/node.js:1037
@@ -2153,6 +2161,13 @@ msgid ""
 msgstr ""
 "这是 TUIC 的 SUoT 协议移植， 旨在提供 TUIC 不提供的基于 QUIC 流的 UDP 中继模"
 "式。"
+
+#: htdocs/luci-static/resources/view/fchomo/global.js:247
+msgid ""
+"To check NAT Behavior you need to install <a href=\"%s\"><b>stuntman-client</"
+"b></a> first"
+msgstr ""
+"检测 NAT 行为需要先安装 <a href=\"%s\"><b>stuntman-client</b></a> first"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:387
 msgid ""

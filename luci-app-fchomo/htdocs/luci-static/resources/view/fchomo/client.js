@@ -125,12 +125,19 @@ class RulesEntry {
 		return this.payload[n] || {};
 	}
 
-	setPayload(n, obj) {
+	getPayloads() {
+		return this.payload || [];
+	}
+
+	setPayload(n, obj, limit) {
 		this.payload[n] ||= {};
 
 		Object.keys(obj).forEach((key) => {
 			this.payload[n][key] = obj[key] || null;
 		});
+
+		if (limit)
+			this.payload.splice(limit);
 
 		return this
 	}
@@ -215,8 +222,32 @@ function renderPayload(s, total, uciconfig) {
 		o.rmempty = false;
 		o.modalonly = true;
 	}
+	var initDynamicPayload = function(o, n, key, uciconfig) {
+		o.load = L.bind(function(n, key, uciconfig, section_id) {
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
+		}, o, n, key, uciconfig);
+		o.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+			var rule = new RulesEntry(UIEl.getValue());
+
+			let n = this.option.match(/^payload(\d+)_/)[1];
+			let limit = rule.getPayloads().length;
+			value.forEach((val) => {
+				rule.setPayload(n, {factor: val}); n++;
+			});
+			rule.setPayload(limit, {factor: null}, limit);
+			var newvalue = rule.toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			return UIEl.setValue(newvalue);
+		}
+		o.write = function() {};
+		o.rmempty = true;
+		o.modalonly = true;
+	}
 
 	var o, prefix;
+	// StaticList payload
 	for (var n=0; n<total; n++) {
 		prefix = `payload${n}_`;
 
@@ -297,6 +328,65 @@ function renderPayload(s, total, uciconfig) {
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key];
 		}, o, n, 'factor', uciconfig)
 	}
+
+	// DynamicList payload
+	var extenbox = {};
+	Object.entries(hm.rules_logical_payload_count).filter(e => e[1].opt === undefined).forEach((e) => {
+		let n = e[1].req;
+		if (!Array.isArray(extenbox[n]))
+			extenbox[n] = [];
+		extenbox[n].push(e[0]);
+	})
+	Object.keys(extenbox).forEach((n) => {
+		prefix = `payload${n}_`;
+
+		o = s.option(form.DynamicList, prefix + 'type', _('Type') + ' ++');
+		o.default = hm.rules_type[0][0];
+		hm.rules_type.forEach((res) => {
+			o.value.apply(o, res);
+		})
+		extenbox[n].forEach((type) => {
+			o.depends('type', type);
+		})
+		initDynamicPayload(o, n, 'type', uciconfig);
+		o.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+			var rule = new RulesEntry(UIEl.getValue());
+
+			let n = this.option.match(/^payload(\d+)_/)[1];
+			value.forEach((val) => {
+				rule.setPayload(n, {type: val}); n++;
+			});
+			rule.setPayload(n, {factor: null}, n);
+			var newvalue = rule.toString();
+
+			UIEl.node.previousSibling.innerText = newvalue;
+			return UIEl.setValue(newvalue);
+		}
+
+		o = s.option(form.DynamicList, prefix + 'fused', _('Factor') + ' ++',
+			_('Content will not be verified, Please make sure you enter it correctly.'));
+		o.value('', _('-- Please choose --'));
+		extenbox[n].forEach((type) => {
+			o.depends(Object.fromEntries([['type', type], [prefix + 'type', /.+/]]));
+		})
+		initDynamicPayload(o, n, 'factor', uciconfig);
+		o.load = L.bind(function(n, key, uciconfig, section_id) {
+			let fusedval = [
+				['', _('-- Please choose --')],
+				['NETWORK', '-- NETWORK --'],
+				['udp', _('UDP')],
+				['tcp', _('TCP')],
+				['RULESET', '-- RULE-SET --']
+			];
+			hm.loadRulesetLabel.call(this, null, section_id);
+			this.keylist = [...fusedval.map(e => e[0]), ...this.keylist];
+			this.vallist = [...fusedval.map(e => e[1]), ...this.vallist];
+			this.super('load', section_id);
+
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
+		}, o, n, 'factor', uciconfig)
+	})
 }
 
 function renderRules(s, uciconfig) {

@@ -226,7 +226,8 @@ function renderPayload(s, total, uciconfig) {
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
 		}, o, n, key, uciconfig);
-		o.onchange = function(ev, section_id, value) {
+		o.validate = function(section_id, value) {
+			value = this.formvalue(section_id);
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 			var rule = new RulesEntry(UIEl.getValue());
 
@@ -239,7 +240,9 @@ function renderPayload(s, total, uciconfig) {
 			var newvalue = rule.toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.setValue(newvalue);
+
+			return true;
 		}
 		o.write = function() {};
 		o.rmempty = true;
@@ -349,7 +352,8 @@ function renderPayload(s, total, uciconfig) {
 			o.depends('type', type);
 		})
 		initDynamicPayload(o, n, 'type', uciconfig);
-		o.onchange = function(ev, section_id, value) {
+		o.validate = function(section_id, value) {
+			value = this.formvalue(section_id);
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 			var rule = new RulesEntry(UIEl.getValue());
 
@@ -361,7 +365,9 @@ function renderPayload(s, total, uciconfig) {
 			var newvalue = rule.toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.setValue(newvalue);
+
+			return true;
 		}
 
 		o = s.option(form.DynamicList, prefix + 'fused', _('Factor') + ' ++',

@@ -1114,7 +1114,7 @@ return view.extend({
 		so.rmempty = false;
 		so.editable = true;
 
-		so = ss.option(form.ListValue, 'proxy', _('Proxy group'),
+		so = ss.option(form.ListValue, 'proxy', _('Proxy group override'),
 			_('Override the Proxy group of DNS server.'));
 		so.renderWidget = function(/* ... */) {
 			var frameEl = form.ListValue.prototype.renderWidget.apply(this, arguments);

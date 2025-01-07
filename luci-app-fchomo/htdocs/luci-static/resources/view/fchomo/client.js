@@ -159,7 +159,7 @@ class RulesEntry {
 		var logical = hm.rules_logical_type.map(e => e[0] || e).includes(this.type),
 		    factor = '';
 		if (logical) {
-			let n = hm.rules_logical_payload_count[this.type] ? hm.rules_logical_payload_count[this.type].opt : 0;
+			let n = hm.rules_logical_payload_count[this.type] ? hm.rules_logical_payload_count[this.type].high : 0;
 			factor = '(%s)'.format(this.payload.slice(0, n).map((payload) => {
 				return '(%s‚%s)'.format(payload.type || '', payload.factor || '');
 			}).join('ꓹ'));
@@ -260,7 +260,7 @@ function renderPayload(s, total, uciconfig) {
 			o.value.apply(o, res);
 		})
 		Object.keys(hm.rules_logical_payload_count).forEach((key) => {
-			if (n < hm.rules_logical_payload_count[key].req)
+			if (n < hm.rules_logical_payload_count[key].low)
 				o.depends('type', key);
 		})
 		initPayload(o, n, 'type', uciconfig);
@@ -334,8 +334,8 @@ function renderPayload(s, total, uciconfig) {
 
 	// DynamicList payload
 	var extenbox = {};
-	Object.entries(hm.rules_logical_payload_count).filter(e => e[1].opt === undefined).forEach((e) => {
-		let n = e[1].req;
+	Object.entries(hm.rules_logical_payload_count).filter(e => e[1].high === undefined).forEach((e) => {
+		let n = e[1].low;
 		if (!Array.isArray(extenbox[n]))
 			extenbox[n] = [];
 		extenbox[n].push(e[0]);
@@ -452,7 +452,7 @@ function renderRules(s, uciconfig) {
 	o.rmempty = false;
 	o.modalonly = true;
 
-	renderPayload(s, Math.max(...Object.values(hm.rules_logical_payload_count).map(e => e.req)), uciconfig);
+	renderPayload(s, Math.max(...Object.values(hm.rules_logical_payload_count).map(e => e.low)), uciconfig);
 
 	o = s.option(form.ListValue, 'detour', _('Proxy group'));
 	o.renderWidget = function(/* ... */) {

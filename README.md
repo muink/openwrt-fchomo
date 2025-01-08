@@ -16,6 +16,10 @@
 
 ## Known issues
 
+- The **Routing rule** and **Sub rule** of the LuCI app have been migrated from `mihomo` format to `json` format.</br>
+  If find `option oldentry` in `/etc/config/fchomo` file, the selected config may not be migrated correctly.</br>
+  You need to manually reset the selected config and remove the `oldentry` option when you are done.
+
 ## Screenshots
 
 ![global](assets/img/global.png "global")
@@ -27,11 +31,13 @@ You can find the prebuilt-ipks [here](https://fantastic-packages.github.io/packa
 ## Compatibility with MihomoTProxy
 
 Core:
- + The Mihomo core provided by FullCombo Mihomo only contains binaries and does not have daemons.
- + So in theory you can use the mihomo core provided by MihomoTProxy.
+
+- The Mihomo core provided by FullCombo Mihomo only contains binaries and does not have daemons.
+- So in theory you can use the mihomo core provided by MihomoTProxy.
 
 LuCI application:
- + FullCombo Mihomo and MihomoTProxy can be installed on the same device, but cannot be started as clients at the same time.
+
+- FullCombo Mihomo and MihomoTProxy can be installed on the same device, but cannot be started as clients at the same time.
 
 ## Installation
 

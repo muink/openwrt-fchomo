@@ -219,8 +219,8 @@ function renderPayload(s, total, uciconfig) {
 			let n = this.option.match(/^payload(\d+)_/)[1];
 			var rule = new RulesEntry(UIEl.getValue()).setPayload(n, {factor: value});
 
-			UIEl.node.previousSibling.innerText = rule.toString();
-			UIEl.setValue(rule.toString());
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
 		}
 		o.write = function() {};
 		o.rmempty = false;
@@ -242,8 +242,8 @@ function renderPayload(s, total, uciconfig) {
 			});
 			rule.setPayload(limit, {factor: null}, limit);
 
-			UIEl.node.previousSibling.innerText = rule.toString();
-			UIEl.setValue(rule.toString());
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
 
 			return true;
 		}
@@ -273,8 +273,8 @@ function renderPayload(s, total, uciconfig) {
 			let n = this.option.match(/^payload(\d+)_/)[1];
 			var rule = new RulesEntry(UIEl.getValue()).setPayload(n, {type: value});
 
-			UIEl.node.previousSibling.innerText = rule.toString();
-			UIEl.setValue(rule.toString());
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
 		}
 
 		o = s.option(form.Value, prefix + 'general', _('Factor') + ` ${n+1}`);
@@ -366,8 +366,8 @@ function renderPayload(s, total, uciconfig) {
 			});
 			rule.setPayload(n, {factor: null}, n);
 
-			UIEl.node.previousSibling.innerText = rule.toString();
-			UIEl.setValue(rule.toString());
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
 
 			return true;
 		}
@@ -436,8 +436,8 @@ function renderRules(s, uciconfig) {
 
 			var rule = new RulesEntry(UIEl.getValue()).setParam('no-resolve').setParam('src');
 
-			UIEl.node.previousSibling.innerText = rule.toString();
-			UIEl.setValue(rule.toString());
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
 		}
 
 		return true;
@@ -447,8 +447,8 @@ function renderRules(s, uciconfig) {
 
 		var rule = new RulesEntry(UIEl.getValue()).setKey('type', value);
 
-		UIEl.node.previousSibling.innerText = rule.toString();
-		UIEl.setValue(rule.toString());
+		UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
 	o.rmempty = false;
@@ -474,8 +474,8 @@ function renderRules(s, uciconfig) {
 
 		var rule = new RulesEntry(UIEl.getValue()).setKey('detour', value);
 
-		UIEl.node.previousSibling.innerText = rule.toString();
-		UIEl.setValue(rule.toString());
+		UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
 	//o.depends('SUB-RULE', '0');
@@ -491,8 +491,8 @@ function renderRules(s, uciconfig) {
 
 		var rule = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value));
 
-		UIEl.node.previousSibling.innerText = rule.toString();
-		UIEl.setValue(rule.toString());
+		UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
 	o.depends('SUB-RULE', '0');
@@ -508,8 +508,8 @@ function renderRules(s, uciconfig) {
 
 		var rule = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value));
 
-		UIEl.node.previousSibling.innerText = rule.toString();
-		UIEl.setValue(rule.toString());
+		UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
 	o.depends('SUB-RULE', '0');
@@ -791,8 +791,8 @@ return view.extend({
 
 			var rule = new RulesEntry(UIEl.getValue()).setKey('subrule', value === '1' ? ' ' : false);
 
-			UIEl.node.previousSibling.innerText = rule.toString();
-			UIEl.setValue(rule.toString());
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
 		}
 		so.write = function() {};
 		so.modalonly = true;
@@ -808,8 +808,8 @@ return view.extend({
 
 			var rule = new RulesEntry(UIEl.getValue()).setKey('subrule', value);
 
-			UIEl.node.previousSibling.innerText = rule.toString();
-			UIEl.setValue(rule.toString());
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
 		}
 		so.rmempty = false;
 		so.write = function() {};

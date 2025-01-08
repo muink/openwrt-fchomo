@@ -182,26 +182,28 @@ class RulesEntry {
 	}
 }
 
-function strToFlag(string) {
-	if (!string)
+function boolToFlag(boolean) {
+	if (typeof(boolean) !== 'boolean')
 		return null;
 
-	switch(string) {
-	case 'true':
+	switch(boolean) {
+	case true:
 		return '1';
-	case 'false':
+	case false:
 		return '0';
 	default:
 		return null;
 	}
 }
-function flagToStr(flag) {
+function flagToBool(flag) {
 	if (!flag)
 		return null;
 
 	switch(flag) {
 	case '1':
-		return 'true';
+		return true;
+	case '0':
+		return false;
 	default:
 		return null;
 	}
@@ -491,12 +493,12 @@ function renderRules(s, uciconfig) {
 	o = s.option(form.Flag, 'src', _('src'));
 	o.default = o.disabled;
 	o.load = function(section_id) {
-		return strToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('src'));
+		return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('src'));
 	}
 	o.onchange = function(ev, section_id, value) {
 		var UIEl = this.section.getUIElement(section_id, 'entry');
 
-		var rule = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value));
+		var rule = new RulesEntry(UIEl.getValue()).setParam('src', flagToBool(value) || null);
 
 		UIEl.node.previousSibling.innerText = rule.toString('mihomo');
 		UIEl.setValue(rule.toString('json'));
@@ -508,12 +510,12 @@ function renderRules(s, uciconfig) {
 	o = s.option(form.Flag, 'no-resolve', _('no-resolve'));
 	o.default = o.disabled;
 	o.load = function(section_id) {
-		return strToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('no-resolve'));
+		return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('no-resolve'));
 	}
 	o.onchange = function(ev, section_id, value) {
 		var UIEl = this.section.getUIElement(section_id, 'entry');
 
-		var rule = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value));
+		var rule = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToBool(value) || null);
 
 		UIEl.node.previousSibling.innerText = rule.toString('mihomo');
 		UIEl.setValue(rule.toString('json'));
@@ -784,7 +786,7 @@ return view.extend({
 		so = ss.option(form.Flag, 'SUB-RULE', _('SUB-RULE'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
-			return strToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule ? 'true' : 'false');
+			return boolToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule ? 'true' : 'false');
 		}
 		so.validate = function(section_id, value) {
 			value = this.formvalue(section_id);
@@ -1011,12 +1013,12 @@ return view.extend({
 		so = ss.option(form.Flag, 'h3', _('HTTP/3'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
-			return strToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('h3'));
+			return boolToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('h3'));
 		}
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'address');
 
-			var newvalue = new DNSAddress(UIEl.getValue()).setParam('h3', flagToStr(value)).toString();
+			var newvalue = new DNSAddress(UIEl.getValue()).setParam('h3', flagToBool(value) || null).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
 			UIEl.setValue(newvalue);
@@ -1044,12 +1046,12 @@ return view.extend({
 			_('Override ECS in original request.'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
-			return strToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('ecs-override'));
+			return boolToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('ecs-override'));
 		}
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'address');
 
-			var newvalue = new DNSAddress(UIEl.getValue()).setParam('ecs-override', flagToStr(value)).toString();
+			var newvalue = new DNSAddress(UIEl.getValue()).setParam('ecs-override', flagToBool(value) || null).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
 			UIEl.setValue(newvalue);

@@ -66,53 +66,19 @@ class DNSAddress {
 class RulesEntry {
 	constructor(entry) {
 		this.input = entry || '';
-		var content = this.input;
-		this.subrule = content.split(',');
-		if (this.subrule.shift() === 'SUB-RULE') {
-			var subrule_payload = this.subrule.join(',').match(/^\(.*\)/);
-			if (subrule_payload) {
-				content = subrule_payload[0].slice(1, -1);
-				this.subrule = this.subrule.pop() || ' ';
-			} else {
-				content = this.subrule.join(',');
-				this.subrule = ' ';
-			}
-		} else
-			this.subrule = false;
-		this.rawparams = content.split(',');
-		this.type = this.rawparams.shift() || '';
-		var logical_payload, rawfactor;
-		(function(rawparams_typecuted) {
-			logical_payload = rawparams_typecuted.match(/^\(.*\)/);
-			if (logical_payload) {
-				rawfactor = logical_payload[0];
-				this.rawparams = rawparams_typecuted.replace(/^\(.*\),?/, '').split(',');
-			} else
-				rawfactor = this.rawparams.shift() || '';
-		}.call(this, this.rawparams.join(',')));
-		this.detour = this.rawparams.shift() || '';
-		if (this.type === 'MATCH')
-			this.detour = rawfactor;
+		try {
+			let content = JSON.parse(this.input.trim());
+			Object.keys(content).forEach(key => this[key] = content[key]);
+		} catch {}
 
-		this.payload = [];
-		if (logical_payload) { // ꓹ ႇ ❟
-			if (rawfactor.match(/^\(.*\)$/)) // LOGICAL_TPYE,()
-				rawfactor.slice(1, -1).split('ꓹ').forEach((payload) => { // U+A4F9
-					if (payload.match(/^\(.*\)$/)) { // (payload)
-						let arr = payload.slice(1, -1).split('‚'); // U+201A
-						this.payload.push({ type: arr[0] || '', factor: arr[1] || '' });
-					}
-				});
-		} else
-			this.payload[0] = { type: this.type, factor: rawfactor };
-
-		this.params = {};
-		if (this.rawparams.length > 0) {
-			this.rawparams.forEach((k) => {
-				this.params[k] = 'true';
-			});
-		}
-		this.rawparams = this.rawparams.join(',');
+		this.type ||= hm.rules_type[0][0];
+		this.payload ||= [
+			{type: hm.rules_type[0][0], factor: '', /* deny: false */},
+			//{type: 'DOMAIN-SUFFIX', factor: '.google.com', deny: true}
+		];
+		this.detour ||= hm.preset_outbound.full[0][0];
+		this.params ||= {/* src: false, no-resolve: true */};
+		this.subrule ||= false;
 	}
 
 	setKey(key, value) {
@@ -143,7 +109,7 @@ class RulesEntry {
 	}
 
 	getParam(param) {
-		return this.params[param] || null;
+		return this.params?.[param] || null;
 	}
 
 	setParam(param, value) {
@@ -155,26 +121,64 @@ class RulesEntry {
 		return this
 	}
 
-	toString() {
-		var logical = hm.rules_logical_type.map(e => e[0] || e).includes(this.type),
-		    factor = '';
+	_payloadStrategy(payload) {
+		// LOGIC_TYPE,((payload1),(payload2))
+		if (payload.factor === null || ['undefined', 'boolean', 'number', 'string'].includes(typeof(payload.factor))) {
+			return (payload.deny ? 'NOT,((%s))' : '%s').format([payload.type, payload.factor ?? ''].join(','));
+		} else if (payload.factor?.constructor === Array) {
+			return `${payload.type},(%s)`.format(payload.factor.map(p => `(${this._payloadStrategy(p)})`).join(','));
+		} else if (payload.factor?.constructor === Object) {
+			throw new Error(`Factor type cannot be an object: '${JSON.stringify(payload.factor)}'`);
+		} else
+			throw new Error(`Factor type is incorrect: '${payload.factor}'`);
+	}
+
+	_toMihomo(rule, logical) {
+		let payload = this._payloadStrategy(logical ? {type: rule.type, factor: rule.payload} : rule.payload[0]);
+
+		if (rule.subrule)
+			return 'SUB-RULE,(%s),%s'.format(payload, rule.subrule);
+		else
+			if (rule.type === 'MATCH')
+				return [rule.type, rule.detour].join(',');
+			else
+				return [payload, rule.detour].concat(
+					rule.params ? ['no-resolve', 'src'].filter(k => rule.params[k]) : []
+				).join(',');
+	}
+
+	toString(format) {
+		format ||= 'json';
+		let logical = hm.rules_logical_type.map(e => e[0] || e).includes(this.type);
+		let rule, factor, detour, params;
+
 		if (logical) {
 			let n = hm.rules_logical_payload_count[this.type] ? hm.rules_logical_payload_count[this.type].high : 0;
-			factor = '(%s)'.format(this.payload.slice(0, n).map((payload) => {
-				return '(%s‚%s)'.format(payload.type || '', payload.factor || '');
-			}).join('ꓹ'));
+			factor = this.payload.slice(0, n);
 		} else
-			factor = this.payload[0].factor;
+			factor = [ {...this.payload[0], ...{type: this.type}} ];
 
-		if (this.subrule) {
-			return 'SUB-RULE,(%s),%s'.format([this.type, factor].join(','), this.subrule);
-		} else
-			if (this.type === 'MATCH') {
-				return [this.type, this.detour].join(',');
-			} else
-				return [this.type, factor, this.detour].concat(
-					['no-resolve', 'src'].filter(k => this.params[k])
-				).join(',');
+		if (!this.subrule) {
+			detour = this.detour;
+			params = this.params;
+			if (this.type === 'MATCH')
+				factor = [{type: 'MATCH'}];
+		}
+
+		rule = hm.removeBlankAttrs(hm, {
+			type: this.type,
+			payload: factor,
+			detour: detour || null,
+			params: Object.values(params || {}).filter(v => v).length > 0 ? params : null,
+			subrule: this.subrule || null,
+		});
+
+		if (format === 'json')
+			return JSON.stringify(rule);
+		else if (format === 'mihomo')
+			return this._toMihomo(rule, logical);
+		else
+			throw new Error(`Unknown format: '${format}'`);
 	}
 }
 

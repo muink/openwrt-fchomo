@@ -361,6 +361,31 @@ return baseclass.extend({
 		};
 	},
 
+	removeBlankAttrs: function(self, res) {
+		let content;
+
+		if (res?.constructor === Object) {
+			content = {};
+			Object.keys(res).map((k) => {
+				if ([Array, Object].includes(res[k]?.constructor))
+					content[k] = self.removeBlankAttrs(self, res[k]);
+				else if (res[k] !== null && res[k] !== '')
+					content[k] = res[k];
+			});
+		} else if (res?.constructor === Array) {
+			content = [];
+			res.map((k, i) => {
+				if ([Array, Object].includes(k?.constructor))
+					content.push(self.removeBlankAttrs(self, k));
+				else if (k !== null && k !== '')
+					content.push(k);
+			});
+		} else
+			return res;
+
+		return content;
+	},
+
 	getFeatures: function() {
 		const callGetFeatures = rpc.declare({
 			object: 'luci.fchomo',

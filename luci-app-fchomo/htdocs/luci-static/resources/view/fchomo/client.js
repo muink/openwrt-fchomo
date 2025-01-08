@@ -401,8 +401,15 @@ function renderRules(s, uciconfig) {
 	var o;
 
 	o = s.option(form.DummyValue, 'entry', _('Entry'));
+	o.renderWidget = function(/* ... */) {
+		var El = form.DummyValue.prototype.renderWidget.apply(this, arguments);
+
+		El.firstChild.innerText = new RulesEntry(El.querySelector('input').value).toString('mihomo');
+
+		return El;
+	}
 	o.load = function(section_id) {
-		return form.DummyValue.prototype.load.call(this, section_id) || '%s,%s,%s'.format(hm.rules_type[0][0], '', hm.preset_outbound.full[0][0]);
+		return form.DummyValue.prototype.load.call(this, section_id) || new RulesEntry().toString('json');
 	}
 	o.write = L.bind(form.AbstractValue.prototype.write, o);
 	o.remove = L.bind(form.AbstractValue.prototype.remove, o);

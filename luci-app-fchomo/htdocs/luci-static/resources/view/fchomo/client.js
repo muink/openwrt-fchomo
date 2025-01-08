@@ -213,7 +213,8 @@ function renderPayload(s, total, uciconfig) {
 	// common payload
 	var initPayload = function(o, n, key, uciconfig) {
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
-			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key];
+			let value = new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key];
+			return typeof(value) === 'boolean' ? boolToFlag(value) : value;
 		}, o, n, key, uciconfig);
 		o.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
@@ -230,7 +231,8 @@ function renderPayload(s, total, uciconfig) {
 	}
 	var initDynamicPayload = function(o, n, key, uciconfig) {
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
-			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
+			let value = new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
+			return typeof(value) === 'boolean' ? boolToFlag(value) : value;
 		}, o, n, key, uciconfig);
 		o.validate = function(section_id, value) {
 			value = this.formvalue(section_id);
@@ -335,6 +337,20 @@ function renderPayload(s, total, uciconfig) {
 
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key];
 		}, o, n, 'factor', uciconfig)
+
+		o = s.option(form.Flag, prefix + 'NOT', _('NOT') + ` ${n+1}`);
+		o.default = o.disabled;
+		o.depends(Object.fromEntries([[prefix + 'type', /.+/]]));
+		initPayload(o, n, 'deny', uciconfig);
+		o.onchange = function(ev, section_id, value) {
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+
+			let n = this.option.match(/^payload(\d+)_/)[1];
+			var rule = new RulesEntry(UIEl.getValue()).setPayload(n, {deny: flagToBool(value) || null});
+
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
+		}
 	}
 
 	// DynamicList payload
@@ -396,6 +412,32 @@ function renderPayload(s, total, uciconfig) {
 
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
 		}, o, n, 'factor', uciconfig)
+
+		o = s.option(form.DynamicList, prefix + 'NOTs', _('NOT') + ' ++',
+			_('<code>0</code> or <code>1</code> only.'));
+		o.value('0');
+		o.value('1');
+		extenbox[n].forEach((type) => {
+			o.depends(Object.fromEntries([['type', type], [prefix + 'type', /.+/]]));
+		})
+		initDynamicPayload(o, n, 'deny', uciconfig);
+		o.validate = function(section_id, value) {
+			value = this.formvalue(section_id);
+			var UIEl = this.section.getUIElement(section_id, 'entry');
+			var rule = new RulesEntry(UIEl.getValue());
+
+			let n = this.option.match(/^payload(\d+)_/)[1];
+			let limit = rule.getPayloads().length;
+			value.forEach((val) => {
+				rule.setPayload(n, {deny: flagToBool(val) || null}); n++;
+			});
+			rule.setPayload(limit, {deny: null}, limit);
+
+			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
+			UIEl.setValue(rule.toString('json'));
+
+			return true;
+		}
 	})
 }
 

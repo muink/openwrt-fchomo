@@ -213,10 +213,10 @@ function renderPayload(s, total, uciconfig) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
 			let n = this.option.match(/^payload(\d+)_/)[1];
-			var newvalue = new RulesEntry(UIEl.getValue()).setPayload(n, {factor: value}).toString();
+			var rule = new RulesEntry(UIEl.getValue()).setPayload(n, {factor: value});
 
-			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.node.previousSibling.innerText = rule.toString();
+			UIEl.setValue(rule.toString());
 		}
 		o.write = function() {};
 		o.rmempty = false;
@@ -237,10 +237,9 @@ function renderPayload(s, total, uciconfig) {
 				rule.setPayload(n, {factor: val}); n++;
 			});
 			rule.setPayload(limit, {factor: null}, limit);
-			var newvalue = rule.toString();
 
-			UIEl.node.previousSibling.innerText = newvalue;
-			UIEl.setValue(newvalue);
+			UIEl.node.previousSibling.innerText = rule.toString();
+			UIEl.setValue(rule.toString());
 
 			return true;
 		}
@@ -268,10 +267,10 @@ function renderPayload(s, total, uciconfig) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
 			let n = this.option.match(/^payload(\d+)_/)[1];
-			var newvalue = new RulesEntry(UIEl.getValue()).setPayload(n, {type: value}).toString();
+			var rule = new RulesEntry(UIEl.getValue()).setPayload(n, {type: value});
 
-			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.node.previousSibling.innerText = rule.toString();
+			UIEl.setValue(rule.toString());
 		}
 
 		o = s.option(form.Value, prefix + 'general', _('Factor') + ` ${n+1}`);
@@ -362,10 +361,9 @@ function renderPayload(s, total, uciconfig) {
 				rule.setPayload(n, {type: val}); n++;
 			});
 			rule.setPayload(n, {factor: null}, n);
-			var newvalue = rule.toString();
 
-			UIEl.node.previousSibling.innerText = newvalue;
-			UIEl.setValue(newvalue);
+			UIEl.node.previousSibling.innerText = rule.toString();
+			UIEl.setValue(rule.toString());
 
 			return true;
 		}
@@ -432,10 +430,10 @@ function renderRules(s, uciconfig) {
 
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
-			var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve').setParam('src').toString();
+			var rule = new RulesEntry(UIEl.getValue()).setParam('no-resolve').setParam('src');
 
-			UIEl.node.previousSibling.innerText = newvalue;
-			UIEl.setValue(newvalue);
+			UIEl.node.previousSibling.innerText = rule.toString();
+			UIEl.setValue(rule.toString());
 		}
 
 		return true;
@@ -443,10 +441,10 @@ function renderRules(s, uciconfig) {
 	o.onchange = function(ev, section_id, value) {
 		var UIEl = this.section.getUIElement(section_id, 'entry');
 
-		var newvalue = new RulesEntry(UIEl.getValue()).setKey('type', value).toString();
+		var rule = new RulesEntry(UIEl.getValue()).setKey('type', value);
 
-		UIEl.node.previousSibling.innerText = newvalue;
-		return UIEl.setValue(newvalue);
+		UIEl.node.previousSibling.innerText = rule.toString();
+		UIEl.setValue(rule.toString());
 	}
 	o.write = function() {};
 	o.rmempty = false;
@@ -470,10 +468,10 @@ function renderRules(s, uciconfig) {
 	o.onchange = function(ev, section_id, value) {
 		var UIEl = this.section.getUIElement(section_id, 'entry');
 
-		var newvalue = new RulesEntry(UIEl.getValue()).setKey('detour', value).toString();
+		var rule = new RulesEntry(UIEl.getValue()).setKey('detour', value);
 
-		UIEl.node.previousSibling.innerText = newvalue;
-		return UIEl.setValue(newvalue);
+		UIEl.node.previousSibling.innerText = rule.toString();
+		UIEl.setValue(rule.toString());
 	}
 	o.write = function() {};
 	//o.depends('SUB-RULE', '0');
@@ -487,10 +485,10 @@ function renderRules(s, uciconfig) {
 	o.onchange = function(ev, section_id, value) {
 		var UIEl = this.section.getUIElement(section_id, 'entry');
 
-		var newvalue = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value)).toString();
+		var rule = new RulesEntry(UIEl.getValue()).setParam('src', flagToStr(value));
 
-		UIEl.node.previousSibling.innerText = newvalue;
-		UIEl.setValue(newvalue);
+		UIEl.node.previousSibling.innerText = rule.toString();
+		UIEl.setValue(rule.toString());
 	}
 	o.write = function() {};
 	o.depends('SUB-RULE', '0');
@@ -504,10 +502,10 @@ function renderRules(s, uciconfig) {
 	o.onchange = function(ev, section_id, value) {
 		var UIEl = this.section.getUIElement(section_id, 'entry');
 
-		var newvalue = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value)).toString();
+		var rule = new RulesEntry(UIEl.getValue()).setParam('no-resolve', flagToStr(value));
 
-		UIEl.node.previousSibling.innerText = newvalue;
-		UIEl.setValue(newvalue);
+		UIEl.node.previousSibling.innerText = rule.toString();
+		UIEl.setValue(rule.toString());
 	}
 	o.write = function() {};
 	o.depends('SUB-RULE', '0');
@@ -787,10 +785,10 @@ return view.extend({
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
-			var newvalue = new RulesEntry(UIEl.getValue()).setKey('subrule', value === '1' ? ' ' : false).toString();
+			var rule = new RulesEntry(UIEl.getValue()).setKey('subrule', value === '1' ? ' ' : false);
 
-			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.node.previousSibling.innerText = rule.toString();
+			UIEl.setValue(rule.toString());
 		}
 		so.write = function() {};
 		so.modalonly = true;
@@ -804,10 +802,10 @@ return view.extend({
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
-			var newvalue = new RulesEntry(UIEl.getValue()).setKey('subrule', value).toString();
+			var rule = new RulesEntry(UIEl.getValue()).setKey('subrule', value);
 
-			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.node.previousSibling.innerText = rule.toString();
+			UIEl.setValue(rule.toString());
 		}
 		so.rmempty = false;
 		so.write = function() {};
@@ -969,7 +967,7 @@ return view.extend({
 			var newvalue = ('N' + UIEl.getValue()).replace(/^[^#]+/, value);
 
 			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
 		so.rmempty = false;
@@ -994,7 +992,7 @@ return view.extend({
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('detour', value).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
 		so.editable = true;
@@ -1010,7 +1008,7 @@ return view.extend({
 			var newvalue = new DNSAddress(UIEl.getValue()).setParam('h3', flagToStr(value)).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
-			return UIEl.setValue(newvalue);
+			UIEl.setValue(newvalue);
 		}
 		so.write = function() {};
 		so.modalonly = true;

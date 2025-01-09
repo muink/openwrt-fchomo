@@ -213,8 +213,7 @@ function renderPayload(s, total, uciconfig) {
 	// common payload
 	var initPayload = function(o, n, key, uciconfig) {
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
-			let value = new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key];
-			return typeof(value) === 'boolean' ? boolToFlag(value) : value;
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key];
 		}, o, n, key, uciconfig);
 		o.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
@@ -231,8 +230,7 @@ function renderPayload(s, total, uciconfig) {
 	}
 	var initDynamicPayload = function(o, n, key, uciconfig) {
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
-			let value = new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
-			return typeof(value) === 'boolean' ? boolToFlag(value) : value;
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key] ?? '');
 		}, o, n, key, uciconfig);
 		o.validate = function(section_id, value) {
 			value = this.formvalue(section_id);
@@ -342,6 +340,9 @@ function renderPayload(s, total, uciconfig) {
 		o.default = o.disabled;
 		o.depends(Object.fromEntries([[prefix + 'type', /.+/]]));
 		initPayload(o, n, 'deny', uciconfig);
+		o.load = L.bind(function(n, key, uciconfig, section_id) {
+			return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key]);
+		}, o, n, 'deny', uciconfig);
 		o.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
@@ -421,6 +422,9 @@ function renderPayload(s, total, uciconfig) {
 			o.depends(Object.fromEntries([['type', type], [prefix + 'type', /.+/]]));
 		})
 		initDynamicPayload(o, n, 'deny', uciconfig);
+		o.load = L.bind(function(n, key, uciconfig, section_id) {
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => boolToFlag(e[key] ? true : false));
+		}, o, n, 'deny', uciconfig);
 		o.validate = function(section_id, value) {
 			value = this.formvalue(section_id);
 			var UIEl = this.section.getUIElement(section_id, 'entry');

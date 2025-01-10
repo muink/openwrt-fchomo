@@ -230,6 +230,16 @@ return baseclass.extend({
 		['random']
 	],
 
+	CBIListValue: form.ListValue.extend({
+		renderWidget: function(/* ... */) {
+			var frameEl = form.ListValue.prototype.renderWidget.apply(this, arguments);
+
+			frameEl.querySelector('select').style["min-width"] = '10em';
+
+			return frameEl;
+		}
+	}),
+
 	CBIStaticList: form.DynamicList.extend({
 		__name__: 'CBI.StaticList',
 

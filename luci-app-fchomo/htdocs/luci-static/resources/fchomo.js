@@ -7,27 +7,28 @@
 'require ui';
 'require validation';
 
-var rulesetdoc = 'data:text/html;base64,' + 'cmxzdHBsYWNlaG9sZGVy';
+const rulesetdoc = 'data:text/html;base64,' + 'cmxzdHBsYWNlaG9sZGVy';
 
-var sharktaikogif = function() {
+const sharktaikogif = function() {
 	return 'data:image/gif;base64,' +
 'c2hhcmstdGFpa28uZ2lm'
 }()
 
+const monospacefonts = [
+	'"Cascadia Code"',
+	'"Cascadia Mono"',
+	'Menlo',
+	'Monaco',
+	'Consolas',
+	'"Liberation Mono"',
+	'"Courier New"',
+	'monospace'
+];
+
 return baseclass.extend({
 	rulesetdoc: rulesetdoc,
 	sharktaikogif: sharktaikogif,
-
-	monospacefonts: [
-		'"Cascadia Code"',
-		'"Cascadia Mono"',
-		'Menlo',
-		'Monaco',
-		'Consolas',
-		'"Liberation Mono"',
-		'"Courier New"',
-		'monospace'
-	],
+	monospacefonts: monospacefonts,
 
 	dashrepos: [
 		['zephyruso/zashboard', _('zashboard')],
@@ -229,14 +230,25 @@ return baseclass.extend({
 		['random']
 	],
 
-	// thanks to homeproxy
 	CBIStaticList: form.DynamicList.extend({
 		__name__: 'CBI.StaticList',
 
 		renderWidget: function(/* ... */) {
-			var dl = form.DynamicList.prototype.renderWidget.apply(this, arguments);
-			dl.querySelector('.add-item ul > li[data-value="-"]').remove();
-			return dl;
+			var El = form.DynamicList.prototype.renderWidget.apply(this, arguments);
+
+			El.querySelector('.add-item ul > li[data-value="-"]').remove();
+
+			return El;
+		}
+	}),
+
+	CBITextValue: form.TextValue.extend({
+		renderWidget: function(/* ... */) {
+			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+
+			frameEl.querySelector('textarea').style.fontFamily = monospacefonts.join(',');
+
+			return frameEl;
 		}
 	}),
 

@@ -169,7 +169,7 @@ class RulesEntry {
 			type: this.type,
 			payload: factor,
 			detour: detour || null,
-			params: Object.values(params || {}).filter(v => v).length > 0 ? params : null,
+			params: params || null,
 			subrule: this.subrule || null,
 		});
 

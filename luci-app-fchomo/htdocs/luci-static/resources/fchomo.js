@@ -361,29 +361,29 @@ return baseclass.extend({
 		};
 	},
 
-	removeBlankAttrs: function(self, res) {
-		let content;
+	isEmpty: function(res) {
+		if (res == null || res === '') return true;                           // null, undefined, ''
+		if (Array.isArray(res)) return res.length === 0;                      // empty Array
+		if (typeof res === 'object') return Object.keys(res).length === 0;    // empty Object
+		if (res instanceof Map || res instanceof Set) return res.size === 0;  // empty Map/Set
+		return false;
+	},
 
-		if (res?.constructor === Object) {
-			content = {};
-			Object.keys(res).map((k) => {
-				if ([Array, Object].includes(res[k]?.constructor))
-					content[k] = self.removeBlankAttrs(self, res[k]);
-				else if (res[k] !== null && res[k] !== '')
-					content[k] = res[k];
-			});
-		} else if (res?.constructor === Array) {
-			content = [];
-			res.map((k, i) => {
-				if ([Array, Object].includes(k?.constructor))
-					content.push(self.removeBlankAttrs(self, k));
-				else if (k !== null && k !== '')
-					content.push(k);
-			});
+	removeBlankAttrs: function(self, res) {
+		if (Array.isArray(res)) {
+			return res
+				.filter(item => !self.isEmpty(item))
+				.map(item => self.removeBlankAttrs(self, item));
+		} else if (res !== null && typeof res === 'object') {
+			const obj = {};
+			for (const key in res) {
+				const val = self.removeBlankAttrs(self, res[key]);
+				if (!self.isEmpty(val))
+					obj[key] = val;
+			}
+			return obj;
 		} else
 			return res;
-
-		return content;
 	},
 
 	getFeatures: function() {

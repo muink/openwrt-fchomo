@@ -383,11 +383,13 @@ return baseclass.extend({
 		};
 	},
 
-	isEmpty: function(res) {
-		if (res == null || res === '') return true;                           // null, undefined, ''
-		if (Array.isArray(res)) return res.length === 0;                      // empty Array
-		if (typeof res === 'object') return Object.keys(res).length === 0;    // empty Object
-		if (res instanceof Map || res instanceof Set) return res.size === 0;  // empty Map/Set
+	isEmpty(res) {
+		if (res == null) return true;                                                // null, undefined
+		if (typeof res === 'string' || Array.isArray(res)) return res.length === 0;  // empty String/Array
+		if (typeof res === 'object') {
+			if (res instanceof Map || res instanceof Set) return res.size === 0;     // empty Map/Set
+			return Object.keys(res).length === 0;                                    // empty Object
+		}
 		return false;
 	},
 
@@ -396,7 +398,8 @@ return baseclass.extend({
 			return res
 				.filter(item => !self.isEmpty(item))
 				.map(item => self.removeBlankAttrs(self, item));
-		} else if (res !== null && typeof res === 'object') {
+		}
+		if (res !== null && typeof res === 'object') {
 			const obj = {};
 			for (const key in res) {
 				const val = self.removeBlankAttrs(self, res[key]);
@@ -404,8 +407,8 @@ return baseclass.extend({
 					obj[key] = val;
 			}
 			return obj;
-		} else
-			return res;
+		}
+		return res;
 	},
 
 	getFeatures: function() {
@@ -647,7 +650,7 @@ return baseclass.extend({
 	},
 
 	handleReload: function(instance, ev, section_id) {
-		var instance = instance || '';
+		instance = instance || '';
 		return fs.exec('/etc/init.d/fchomo', ['reload', instance])
 			.then((res) => { /* return window.location = window.location.href.split('#')[0] */ })
 			.catch((e) => {

@@ -1128,7 +1128,7 @@ return view.extend({
 		so.validate = function(section_id, value) {
 			var chain_head = this.section.getUIElement(section_id, 'chain_head').getValue();
 			var chain_tail = this.section.getUIElement(section_id, 'chain_tail').getValue();
-			var value = this.getUIElement(section_id).getValue();
+			value = this.getUIElement(section_id).getValue();
 
 			if (value.includes(chain_head) || value.includes(chain_tail))
 				return _('Expecting: %s').format(_('Different with chain head/tail'));

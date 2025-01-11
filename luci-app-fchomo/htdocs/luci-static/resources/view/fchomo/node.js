@@ -471,8 +471,8 @@ return view.extend({
 		so.default = so.disabled;
 		so.validate = function(section_id, value) {
 			var type = this.section.getOption('type').formvalue(section_id);
-			var tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
-			var tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
+			let tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
+			let tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
 
 			// Force enabled
 			if (['trojan', 'hysteria', 'hysteria2', 'tuic'].includes(type)) {
@@ -793,7 +793,7 @@ return view.extend({
 		ss.sectiontitle = L.bind(hm.loadDefaultLabel, ss);
 		/* Remove idle files start */
 		ss.renderSectionAdd = function(/* ... */) {
-			var el = hm.renderSectionAdd.apply(this, [prefmt, false].concat(Array.prototype.slice.call(arguments)));
+			let el = hm.renderSectionAdd.apply(this, [prefmt, false].concat(Array.prototype.slice.call(arguments)));
 
 			el.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
@@ -1136,10 +1136,10 @@ return view.extend({
 			return true;
 		}
 		so.textvalue = function(section_id) {
-			var cvals = this.cfgvalue(section_id);
+			let cvals = this.cfgvalue(section_id);
 			//alert(Array.prototype.join.call(cvals, ':'));
 			return cvals ? '» ' + cvals.map((cval) => {
-				var i = this.keylist.indexOf(cval);
+				let i = this.keylist.indexOf(cval);
 
 				return this.vallist[i];
 			}).join(' » ') + ' »' : '»';

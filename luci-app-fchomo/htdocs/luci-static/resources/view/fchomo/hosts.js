@@ -12,7 +12,7 @@ return view.extend({
 	},
 
 	handleSave(ev) {
-		var value = (document.querySelector('textarea').value || '').trim().replace(/\r\n/g, '\n') + '\n';
+		let value = (document.querySelector('textarea').value || '').trim().replace(/\r\n/g, '\n') + '\n';
 
 		return hm.writeFile('templates', 'hosts.yaml', value).then(function(rc) {
 			document.querySelector('textarea').value = value;

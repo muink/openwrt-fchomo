@@ -45,10 +45,10 @@ function handleResUpdate(type, repo) {
 	});
 
 	// Dynamic repo
-	var label;
+	let label;
 	if (repo) {
 		var section_id = this.section.section;
-		var weight = document.getElementById(this.cbid(section_id));
+		let weight = document.getElementById(this.cbid(section_id));
 		if (weight)
 			repo = weight.firstChild.value,
 			label = weight.firstChild.selectedOptions[0].label;
@@ -79,7 +79,7 @@ function handleResUpdate(type, repo) {
 
 function renderResVersion(El, type, repo) {
 	return L.resolveDefault(callResVersion(type, repo), {}).then((res) => {
-		var resEl = E([
+		let resEl = E([
 			E('button', {
 				'class': 'cbi-button cbi-button-apply',
 				'click': ui.createHandlerFn(this, handleResUpdate, type, repo)
@@ -107,7 +107,7 @@ function updateResVersion(El, version) {
 }
 
 function renderNATBehaviorTest(El) {
-	var resEl = E('div',  { 'class': 'control-group' }, [
+	let resEl = E('div',  { 'class': 'control-group' }, [
 		E('select', {
 			'id': '_status_nattest_l4proto',
 			'class': 'cbi-input-select',
@@ -230,7 +230,7 @@ return view.extend({
 				E('button', {
 					'class': 'cbi-button cbi-button-apply',
 					'click': ui.createHandlerFn(this, function() {
-						var weight = document.getElementById(ElId);
+						let weight = document.getElementById(ElId);
 
 						weight.innerHTML = '';
 						return hm.checkurls.forEach((site) => {
@@ -258,7 +258,7 @@ return view.extend({
 			so.readonly = true;
 		} else {
 			so.renderWidget = function(/* ... */) {
-				var El = form.Value.prototype.renderWidget.apply(this, arguments);
+				let El = form.Value.prototype.renderWidget.apply(this, arguments);
 
 				return renderNATBehaviorTest.call(this, El);
 			}
@@ -317,7 +317,7 @@ return view.extend({
 			so.value.apply(so, repo);
 		})
 		so.renderWidget = function(/* ... */) {
-			var El = form.ListValue.prototype.renderWidget.apply(this, arguments);
+			let El = form.ListValue.prototype.renderWidget.apply(this, arguments);
 
 			El.classList.add('control-group');
 			El.firstChild.style.width = '10em';
@@ -327,7 +327,7 @@ return view.extend({
 		so.onchange = function(ev, section_id, value) {
 			this.default = value;
 
-			var weight = ev.target;
+			let weight = ev.target;
 			if (weight)
 				return L.resolveDefault(callResVersion('dashboard', value), {}).then((res) => {
 					updateResVersion(weight.lastChild, res.version);

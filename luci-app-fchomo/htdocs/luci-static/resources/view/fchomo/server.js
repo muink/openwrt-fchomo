@@ -10,8 +10,8 @@
 function handleGenKey(option) {
 	var section_id = this.section.section;
 	var type = this.section.getOption('type').formvalue(section_id);
-	var widget = this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
-	var password, required_method;
+	let widget = this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
+	let password, required_method;
 
 	if (option === 'uuid' || option.match(/_uuid/))
 		required_method = 'uuid';
@@ -45,7 +45,7 @@ const CBIPWGenValue = form.Value.extend({
 	__name__: 'CBI.PWGenValue',
 
 	renderWidget() {
-		var node = form.Value.prototype.renderWidget.apply(this, arguments);
+		let node = form.Value.prototype.renderWidget.apply(this, arguments);
 
 		(node.querySelector('.control-group') || node).appendChild(E('button', {
 			'class': 'cbi-button cbi-button-add',
@@ -271,8 +271,8 @@ return view.extend({
 		o.default = o.disabled;
 		o.validate = function(section_id, value) {
 			var type = this.section.getOption('type').formvalue(section_id);
-			var tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
-			var tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
+			let tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
+			let tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
 
 			// Force enabled
 			if (['tuic', 'hysteria2'].includes(type)) {

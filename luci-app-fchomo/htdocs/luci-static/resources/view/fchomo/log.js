@@ -33,13 +33,13 @@ function getRuntimeLog(name, filename) {
 		expect: { '': {} }
 	});
 
-	var log_textarea = E('div', { 'id': 'log_textarea' },
+	let log_textarea = E('div', { 'id': 'log_textarea' },
 		E('pre', {
 			'class': 'spinning'
 		}, _('Collecting data...'))
 	);
 
-	var log;
+	let log;
 	poll.add(L.bind(function() {
 		return fs.read_direct(String.format('%s/%s.log', hm_dir, filename), 'text')
 		.then(function(res) {

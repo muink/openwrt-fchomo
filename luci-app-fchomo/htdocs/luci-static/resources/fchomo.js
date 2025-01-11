@@ -232,7 +232,7 @@ return baseclass.extend({
 
 	CBIListValue: form.ListValue.extend({
 		renderWidget(/* ... */) {
-			var frameEl = form.ListValue.prototype.renderWidget.apply(this, arguments);
+			let frameEl = form.ListValue.prototype.renderWidget.apply(this, arguments);
 
 			frameEl.querySelector('select').style["min-width"] = '10em';
 
@@ -244,7 +244,7 @@ return baseclass.extend({
 		__name__: 'CBI.StaticList',
 
 		renderWidget(/* ... */) {
-			var El = form.DynamicList.prototype.renderWidget.apply(this, arguments);
+			let El = form.DynamicList.prototype.renderWidget.apply(this, arguments);
 
 			El.querySelector('.add-item ul > li[data-value="-"]')?.remove();
 
@@ -254,7 +254,7 @@ return baseclass.extend({
 
 	CBITextValue: form.TextValue.extend({
 		renderWidget(/* ... */) {
-			var frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+			let frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 
 			frameEl.querySelector('textarea').style.fontFamily = monospacefonts.join(',');
 
@@ -351,7 +351,7 @@ return baseclass.extend({
 
 		/* Thanks to luci-app-ssr-plus */
 		str = str.replace(/-/g, '+').replace(/_/g, '/');
-		var padding = (4 - (str.length % 4)) % 4;
+		let padding = (4 - (str.length % 4)) % 4;
 		if (padding)
 			str = str + Array(padding + 1).join('=');
 
@@ -361,7 +361,7 @@ return baseclass.extend({
 	},
 
 	generateRand(type, length) {
-		var byteArr;
+		let byteArr;
 		if (['base64', 'hex'].includes(type))
 			byteArr = crypto.getRandomValues(new Uint8Array(length));
 		switch (type) {
@@ -432,7 +432,7 @@ return baseclass.extend({
 
 		return L.resolveDefault(callServiceList(conf), {})
 			.then((res) => {
-				var isRunning = false;
+				let isRunning = false;
 				try {
 					isRunning = res[conf]['instances'][instance].running;
 				} catch (e) {}
@@ -593,7 +593,7 @@ return baseclass.extend({
 			url = uci.get(this.config, section_id, 'url'),
 			header = uci.get(this.config, section_id, 'header');
 
-		var El = E([
+		let El = E([
 			E('button', {
 				class: 'cbi-button cbi-button-add',
 				disabled: (type !== 'http') || null,
@@ -614,10 +614,10 @@ return baseclass.extend({
 	},
 
 	renderSectionAdd(prefmt, LC, extra_class) {
-		var el = form.GridSection.prototype.renderSectionAdd.apply(this, [ extra_class ]),
+		let el = form.GridSection.prototype.renderSectionAdd.apply(this, [ extra_class ]),
 			nameEl = el.querySelector('.cbi-section-create-name');
 		ui.addValidator(nameEl, 'uciname', true, (v) => {
-			var button = el.querySelector('.cbi-section-create > .cbi-button-add');
+			let button = el.querySelector('.cbi-section-create > .cbi-button-add');
 			var prefix = prefmt?.prefix ? prefmt.prefix : '',
 				suffix = prefmt?.suffix ? prefmt.suffix : '';
 
@@ -703,8 +703,8 @@ return baseclass.extend({
 	},
 
 	textvalue2Value(section_id) {
-		var cval = this.cfgvalue(section_id);
-		var i = this.keylist.indexOf(cval);
+		let cval = this.cfgvalue(section_id);
+		let i = this.keylist.indexOf(cval);
 
 		return this.vallist[i];
 	},
@@ -736,7 +736,7 @@ return baseclass.extend({
 
 	validateCommonPort(section_id, value) {
 		// thanks to homeproxy
-		var stubValidator = {
+		let stubValidator = {
 			factory: validation,
 			apply(type, value, args) {
 				if (value != null)
@@ -750,8 +750,8 @@ return baseclass.extend({
 		};
 
 		if (value && !value.match(/common(_stun)?/)) {
-			var ports = [];
-			for (var i of value.split(',')) {
+			let ports = [];
+			for (let i of value.split(',')) {
 				if (!stubValidator.apply('port', i) && !stubValidator.apply('portrange', i))
 					return _('Expecting: %s').format(_('valid port value'));
 				if (ports.includes(i))
@@ -768,7 +768,7 @@ return baseclass.extend({
 			return true;
 
 		try {
-			var obj = JSON.parse(value.trim());
+			let obj = JSON.parse(value.trim());
 			if (!obj)
 				return _('Expecting: %s').format(_('valid JSON format'));
 		}
@@ -789,7 +789,7 @@ return baseclass.extend({
 	},
 
 	validateShadowsocksPassword(self, encmode, section_id, value) {
-		var length = self.shadowsocks_cipher_length[encmode];
+		let length = self.shadowsocks_cipher_length[encmode];
 		if (typeof length !== 'undefined') {
 			length = Math.ceil(length/3)*4;
 			if (encmode.match(/^2022-/)) {
@@ -829,7 +829,7 @@ return baseclass.extend({
 		if (!value)
 			return _('Expecting: %s').format(_('non-empty value'));
 
-		var duplicate = false;
+		let duplicate = false;
 		uci.sections(this.config, this.section.sectiontype, (res) => {
 			if (res['.name'] !== section_id)
 				if (res[this.option] === value)
@@ -846,7 +846,7 @@ return baseclass.extend({
 			return true;
 
 		try {
-			var url = new URL(value);
+			let url = new URL(value);
 			if (!url.hostname)
 				return _('Expecting: %s').format(_('valid URL'));
 		}

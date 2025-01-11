@@ -566,13 +566,13 @@ function renderRules(s, uciconfig) {
 }
 
 return view.extend({
-	load: function() {
+	load() {
 		return Promise.all([
 			uci.load('fchomo')
 		]);
 	},
 
-	render: function(data) {
+	render(data) {
 		var dashboard_repo = uci.get(data[0], 'api', 'dashboard_repo');
 
 		let m, s, o, ss, so;

@@ -90,13 +90,13 @@ function parseRulesetLink(uri) {
 }
 
 return view.extend({
-	load: function() {
+	load() {
 		return Promise.all([
 			uci.load('fchomo')
 		]);
 	},
 
-	render: function(data) {
+	render(data) {
 		let m, s, o;
 
 		m = new form.Map('fchomo', _('Edit ruleset'));

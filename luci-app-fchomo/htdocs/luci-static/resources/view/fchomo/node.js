@@ -8,13 +8,13 @@
 'require tools.widgets as widgets';
 
 return view.extend({
-	load: function() {
+	load() {
 		return Promise.all([
 			uci.load('fchomo')
 		]);
 	},
 
-	render: function(data) {
+	render(data) {
 		let m, s, o, ss, so;
 
 		m = new form.Map('fchomo', _('Edit node'));

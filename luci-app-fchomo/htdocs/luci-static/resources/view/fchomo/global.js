@@ -144,7 +144,7 @@ function renderNATBehaviorTest(El) {
 }
 
 return view.extend({
-	load: function() {
+	load() {
 		return Promise.all([
 			uci.load('fchomo'),
 			hm.getFeatures(),
@@ -158,7 +158,7 @@ return view.extend({
 		]);
 	},
 
-	render: function(data) {
+	render(data) {
 		var features = data[1],
 		    hosts = data[2]?.hosts,
 		    CisRunning = data[3],

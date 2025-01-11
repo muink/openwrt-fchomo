@@ -86,7 +86,7 @@ function getRuntimeLog(name, filename) {
 }
 
 return view.extend({
-	render: function(data) {
+	render(data) {
 		let m, s, o, ss, so;
 
 		m = new form.Map('fchomo');

@@ -44,7 +44,7 @@ function handleGenKey(option) {
 const CBIPWGenValue = form.Value.extend({
 	__name__: 'CBI.PWGenValue',
 
-	renderWidget: function() {
+	renderWidget() {
 		var node = form.Value.prototype.renderWidget.apply(this, arguments);
 
 		(node.querySelector('.control-group') || node).appendChild(E('button', {
@@ -58,14 +58,14 @@ const CBIPWGenValue = form.Value.extend({
 });
 
 return view.extend({
-	load: function() {
+	load() {
 		return Promise.all([
 			uci.load('fchomo'),
 			hm.getFeatures()
 		]);
 	},
 
-	render: function(data) {
+	render(data) {
 		var dashboard_repo = uci.get(data[0], 'api', 'dashboard_repo'),
 		    features = data[1];
 

@@ -151,7 +151,7 @@ return view.extend({
 		so = ss.taboption('field_general', form.Value, 'shadowsocks_password', _('Password'));
 		so.password = true;
 		so.validate = function(section_id, value) {
-			var encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
+			const encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
 			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
 		}
 		so.depends({type: 'ss', shadowsocks_chipher: /.+/});
@@ -278,7 +278,7 @@ return view.extend({
 		so = ss.taboption('field_general', form.Value, 'trojan_ss_password', _('Shadowsocks password'));
 		so.password = true;
 		so.validate = function(section_id, value) {
-			var encmode = this.section.getOption('trojan_ss_chipher').formvalue(section_id);
+			const encmode = this.section.getOption('trojan_ss_chipher').formvalue(section_id);
 			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
 		}
 		so.depends({type: 'trojan', trojan_ss_enabled: '1'});
@@ -470,7 +470,7 @@ return view.extend({
 		so = ss.taboption('field_general', form.Flag, 'tls', _('TLS'));
 		so.default = so.disabled;
 		so.validate = function(section_id, value) {
-			var type = this.section.getOption('type').formvalue(section_id);
+			const type = this.section.getOption('type').formvalue(section_id);
 			let tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
 			let tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
 
@@ -585,7 +585,7 @@ return view.extend({
 		so.value('grpc', _('gRPC'));
 		so.value('ws', _('WebSocket'));
 		so.validate = function(section_id, value) {
-			var type = this.section.getOption('type').formvalue(section_id);
+			const type = this.section.getOption('type').formvalue(section_id);
 
 			switch (type) {
 				case 'vmess':
@@ -828,7 +828,7 @@ return view.extend({
 
 		so = ss.option(form.DummyValue, '_value', _('Value'));
 		so.load = function(section_id) {
-			var option = uci.get(data[0], section_id, 'type');
+			const option = uci.get(data[0], section_id, 'type');
 
 			switch (option) {
 				case 'file':
@@ -1079,8 +1079,8 @@ return view.extend({
 
 		so = ss.option(form.DummyValue, '_value', _('Value'));
 		so.load = function(section_id) {
-			var type = uci.get(data[0], section_id, 'type');
-			var detour = uci.get(data[0], section_id, 'chain_tail_group') || uci.get(data[0], section_id, 'chain_tail');
+			const type = uci.get(data[0], section_id, 'type');
+			const detour = uci.get(data[0], section_id, 'chain_tail_group') || uci.get(data[0], section_id, 'chain_tail');
 
 			switch (type) {
 				case 'node':
@@ -1111,7 +1111,7 @@ return view.extend({
 		so.load = L.bind(hm.loadNodeLabel, so);
 		so.rmempty = false;
 		so.validate = function(section_id, value) {
-			var chain_tail = this.section.getUIElement(section_id, 'chain_tail').getValue();
+			const chain_tail = this.section.getUIElement(section_id, 'chain_tail').getValue();
 
 			if (value === chain_tail)
 				return _('Expecting: %s').format(_('Different chain head/tail'));
@@ -1126,8 +1126,8 @@ return view.extend({
 		so.value('', _('-- Please choose --'));
 		so.load = L.bind(hm.loadNodeLabel, so);
 		so.validate = function(section_id, value) {
-			var chain_head = this.section.getUIElement(section_id, 'chain_head').getValue();
-			var chain_tail = this.section.getUIElement(section_id, 'chain_tail').getValue();
+			const chain_head = this.section.getUIElement(section_id, 'chain_head').getValue();
+			const chain_tail = this.section.getUIElement(section_id, 'chain_tail').getValue();
 			value = this.getUIElement(section_id).getValue();
 
 			if (value.includes(chain_head) || value.includes(chain_tail))
@@ -1159,7 +1159,7 @@ return view.extend({
 		so.load = L.bind(hm.loadNodeLabel, so);
 		so.rmempty = false;
 		so.validate = function(section_id, value) {
-			var chain_head = this.section.getUIElement(section_id, 'chain_head').getValue();
+			const chain_head = this.section.getUIElement(section_id, 'chain_head').getValue();
 
 			if (value === chain_head)
 				return _('Expecting: %s').format(_('Different chain head/tail'));

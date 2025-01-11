@@ -4,7 +4,7 @@
 
 'require fchomo as hm';
 
-var isReadonlyView = !L.hasViewPermission() || null;
+const isReadonlyView = !L.hasViewPermission() || null;
 
 return view.extend({
 	load() {

@@ -9,7 +9,7 @@
 'require view';
 
 /* Thanks to luci-app-aria2 */
-var css = '				\
+const css = '				\
 #log_textarea {				\
 	padding: 10px;			\
 	text-align: left;		\
@@ -23,7 +23,7 @@ var css = '				\
 	background-color: #33ccff;	\
 }';
 
-var hm_dir = '/var/run/fchomo';
+const hm_dir = '/var/run/fchomo';
 
 function getRuntimeLog(name, filename) {
 	const callLogClean = rpc.declare({

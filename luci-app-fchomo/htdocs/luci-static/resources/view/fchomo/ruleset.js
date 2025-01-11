@@ -212,7 +212,7 @@ return view.extend({
 		o.value('mrs', _('Binary file'));
 		o.default = 'yaml';
 		o.validate = function(section_id, value) {
-			var behavior = this.section.getUIElement(section_id, 'behavior').getValue();
+			const behavior = this.section.getUIElement(section_id, 'behavior').getValue();
 
 			if (value === 'mrs' && behavior === 'classical')
 				return _('Expecting: %s').format(_('Binary format only supports domain / ipcidr'));
@@ -235,7 +235,7 @@ return view.extend({
 		o.value('ipcidr');
 		o.default = 'classical';
 		o.validate = function(section_id, value) {
-			var format = this.section.getUIElement(section_id, 'format').getValue();
+			const format = this.section.getUIElement(section_id, 'format').getValue();
 
 			if (value === 'classical' && format === 'mrs')
 				return _('Expecting: %s').format(_('Binary format only supports domain / ipcidr'));
@@ -245,7 +245,7 @@ return view.extend({
 
 		o = s.option(form.DummyValue, '_value', _('Value'));
 		o.load = function(section_id) {
-			var option = uci.get(data[0], section_id, 'type');
+			const option = uci.get(data[0], section_id, 'type');
 
 			switch (option) {
 				case 'file':

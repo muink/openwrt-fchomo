@@ -573,7 +573,7 @@ return view.extend({
 	},
 
 	render(data) {
-		var dashboard_repo = uci.get(data[0], 'api', 'dashboard_repo');
+		const dashboard_repo = uci.get(data[0], 'api', 'dashboard_repo');
 
 		let m, s, o, ss, so;
 
@@ -1144,7 +1144,7 @@ return view.extend({
 
 		so = ss.option(form.DummyValue, '_entry', _('Entry'));
 		so.load = function(section_id) {
-			var option = uci.get(data[0], section_id, 'type');
+			const option = uci.get(data[0], section_id, 'type');
 
 			return uci.get(data[0], section_id, option)?.join(',');
 		}

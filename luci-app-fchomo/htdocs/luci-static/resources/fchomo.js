@@ -453,7 +453,7 @@ return baseclass.extend({
 
 	// thanks to homeproxy
 	loadDefaultLabel(section_id) {
-		var label = uci.get(this.config, section_id, 'label');
+		const label = uci.get(this.config, section_id, 'label');
 		if (label) {
 			return label;
 		} else {
@@ -464,7 +464,7 @@ return baseclass.extend({
 
 	// thanks to homeproxy
 	loadModalTitle(title, addtitle, section_id) {
-		var label = uci.get(this.config, section_id, 'label');
+		const label = uci.get(this.config, section_id, 'label');
 		return label ? title + ' » ' + label : addtitle;
 	},
 
@@ -541,7 +541,7 @@ return baseclass.extend({
 	},
 
 	renderStatus(self, ElId, isRunning, instance, noGlobal) {
-		var visible = isRunning && (isRunning.http || isRunning.https);
+		const visible = isRunning && (isRunning.http || isRunning.https);
 
 		return E([
 			E('button', {
@@ -577,21 +577,21 @@ return baseclass.extend({
 		return El;
 	},
 	getDashURL(self, isRunning) {
-		var tls = isRunning.https ? 's' : '',
-			host = window.location.hostname,
-			port = isRunning.https ? isRunning.https.split(':').pop() : isRunning.http.split(':').pop(),
-			secret = isRunning.secret,
-			repo = isRunning.dashboard_repo;
+		const tls = isRunning.https ? 's' : '';
+		const host = window.location.hostname;
+		const port = isRunning.https ? isRunning.https.split(':').pop() : isRunning.http.split(':').pop();
+		const secret = isRunning.secret;
+		const repo = isRunning.dashboard_repo;
 
 		return 'http%s://%s:%s/ui/'.format(tls, host, port) +
 			String.format(self.dashrepos_urlparams[repo] || '', host, port, secret)
 	},
 
 	renderResDownload(self, section_id) {
-		var section_type = this.section.sectiontype;
-		var type = uci.get(this.config, section_id, 'type'),
-			url = uci.get(this.config, section_id, 'url'),
-			header = uci.get(this.config, section_id, 'header');
+		const section_type = this.section.sectiontype;
+		const type = uci.get(this.config, section_id, 'type');
+		const url = uci.get(this.config, section_id, 'url');
+		const header = uci.get(this.config, section_id, 'header');
 
 		let El = E([
 			E('button', {
@@ -618,8 +618,8 @@ return baseclass.extend({
 			nameEl = el.querySelector('.cbi-section-create-name');
 		ui.addValidator(nameEl, 'uciname', true, (v) => {
 			let button = el.querySelector('.cbi-section-create > .cbi-button-add');
-			var prefix = prefmt?.prefix ? prefmt.prefix : '',
-				suffix = prefmt?.suffix ? prefmt.suffix : '';
+			const prefix = prefmt?.prefix ? prefmt.prefix : '';
+			const suffix = prefmt?.suffix ? prefmt.suffix : '';
 
 			if (!v) {
 				button.disabled = true;
@@ -643,8 +643,8 @@ return baseclass.extend({
 	},
 
 	handleAdd(prefmt, ev, name) {
-		var prefix = prefmt?.prefix ? prefmt.prefix : '',
-			suffix = prefmt?.suffix ? prefmt.suffix : '';
+		const prefix = prefmt?.prefix ? prefmt.prefix : '';
+		const suffix = prefmt?.suffix ? prefmt.suffix : '';
 
 		return form.GridSection.prototype.handleAdd.apply(this, [ ev, prefix + name + suffix ]);
 	},
@@ -659,7 +659,7 @@ return baseclass.extend({
 	},
 
 	handleRemoveIdles(self) {
-		var section_type = this.sectiontype;
+		const section_type = this.sectiontype;
 
 		let loaded = [];
 		uci.sections(this.config, section_type, (section, sid) => loaded.push(sid));

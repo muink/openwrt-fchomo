@@ -229,6 +229,7 @@ function renderPayload(s, total, uciconfig) {
 		o.modalonly = true;
 	}
 	let initDynamicPayload = function(o, n, key, uciconfig) {
+		o.allowduplicates = true;
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key] ?? '');
 		}, o, n, key, uciconfig);
@@ -366,7 +367,7 @@ function renderPayload(s, total, uciconfig) {
 	Object.keys(extenbox).forEach((n) => {
 		prefix = `payload${n}_`;
 
-		o = s.option(form.DynamicList, prefix + 'type', _('Type') + ' ++');
+		o = s.option(hm.CBIStaticList, prefix + 'type', _('Type') + ' ++');
 		o.default = hm.rules_type[0][0];
 		hm.rules_type.forEach((res) => {
 			o.value.apply(o, res);
@@ -384,7 +385,7 @@ function renderPayload(s, total, uciconfig) {
 			value.forEach((val) => {
 				rule.setPayload(n, {type: val}); n++;
 			});
-			rule.setPayload(n, {factor: null}, n);
+			rule.setPayload(n, {type: null}, n);
 
 			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
 			UIEl.setValue(rule.toString('json'));
@@ -412,10 +413,10 @@ function renderPayload(s, total, uciconfig) {
 			this.vallist = [...fusedval.map(e => e[1]), ...this.vallist];
 			this.super('load', section_id);
 
-			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key]);
+			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key] ?? '');
 		}, o, n, 'factor', uciconfig)
 
-		o = s.option(form.DynamicList, prefix + 'NOTs', _('NOT') + ' ++',
+		o = s.option(hm.CBIStaticList, prefix + 'NOTs', _('NOT') + ' ++',
 			_('<code>0</code> or <code>1</code> only.'));
 		o.value('0');
 		o.value('1');
@@ -433,8 +434,8 @@ function renderPayload(s, total, uciconfig) {
 
 			let n = this.option.match(/^payload(\d+)_/)[1];
 			let limit = rule.getPayloads().length;
-			value.forEach((val) => {
-				rule.setPayload(n, {deny: flagToBool(val) || null}); n++;
+			value.forEach((value) => {
+				rule.setPayload(n, {deny: flagToBool(value) || null}); n++;
 			});
 			rule.setPayload(limit, {deny: null}, limit);
 

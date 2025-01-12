@@ -246,7 +246,7 @@ return baseclass.extend({
 		renderWidget: function(/* ... */) {
 			var El = form.DynamicList.prototype.renderWidget.apply(this, arguments);
 
-			El.querySelector('.add-item ul > li[data-value="-"]').remove();
+			El.querySelector('.add-item ul > li[data-value="-"]')?.remove();
 
 			return El;
 		}

@@ -44,6 +44,11 @@ LuCI application:
 
 If you have trouble downloading resource files after initial installation, you can upload the [initial resource pack][].
 
+## Example
+
+[bypasscn](./luci-app-fchomo/docs/example/bypasscn.config)</br>
+[gfwlist](./luci-app-fchomo/docs/example/gfwlist.config)
+
 ## Build
 
 ``` bash

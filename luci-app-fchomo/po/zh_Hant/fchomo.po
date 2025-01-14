@@ -1491,6 +1491,12 @@ msgstr "打開面板"
 msgid "Operation mode"
 msgstr "運作模式"
 
+#: htdocs/luci-static/resources/view/fchomo/client.js:708
+#: htdocs/luci-static/resources/view/fchomo/client.js:716
+msgid ""
+"Option will soon be deprecated, please use the same option in proxy node."
+msgstr "該選項即將被棄用，請在代理節點中使用相同的選項。"
+
 #: htdocs/luci-static/resources/view/fchomo/client.js:939
 msgid "Override ECS in original request."
 msgstr "覆蓋原始請求中的 ECS。"

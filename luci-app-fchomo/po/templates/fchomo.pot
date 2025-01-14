@@ -1469,6 +1469,12 @@ msgstr ""
 msgid "Operation mode"
 msgstr ""
 
+#: htdocs/luci-static/resources/view/fchomo/client.js:708
+#: htdocs/luci-static/resources/view/fchomo/client.js:716
+msgid ""
+"Option will soon be deprecated, please use the same option in proxy node."
+msgstr ""
+
 #: htdocs/luci-static/resources/view/fchomo/client.js:939
 msgid "Override ECS in original request."
 msgstr ""

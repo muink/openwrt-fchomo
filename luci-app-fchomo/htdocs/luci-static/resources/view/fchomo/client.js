@@ -326,13 +326,12 @@ function renderPayload(s, total, uciconfig) {
 		initPayload(o, n, 'factor', uciconfig);
 
 		o = s.option(form.ListValue, prefix + 'rule_set', _('Factor') + ` ${n+1}`);
-		o.value('', _('-- Please choose --'));
 		if (n === 0)
 			o.depends('type', 'RULE-SET');
 		o.depends(prefix + 'type', 'RULE-SET');
 		initPayload(o, n, 'factor', uciconfig);
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
-			hm.loadRulesetLabel.call(this, null, section_id);
+			hm.loadRulesetLabel.call(this, [], null, section_id);
 
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key];
 		}, o, n, 'factor', uciconfig)
@@ -395,22 +394,18 @@ function renderPayload(s, total, uciconfig) {
 
 		o = s.option(form.DynamicList, prefix + 'fused', _('Factor') + ' ++',
 			_('Content will not be verified, Please make sure you enter it correctly.'));
-		o.value('', _('-- Please choose --'));
 		extenbox[n].forEach((type) => {
 			o.depends(Object.fromEntries([['type', type], [prefix + 'type', /.+/]]));
 		})
 		initDynamicPayload(o, n, 'factor', uciconfig);
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
 			let fusedval = [
-				['', _('-- Please choose --')],
 				['NETWORK', '-- NETWORK --'],
 				['udp', _('UDP')],
 				['tcp', _('TCP')],
 				['RULESET', '-- RULE-SET --']
 			];
-			hm.loadRulesetLabel.call(this, null, section_id);
-			this.keylist = [...fusedval.map(e => e[0]), ...this.keylist];
-			this.vallist = [...fusedval.map(e => e[1]), ...this.vallist];
+			hm.loadRulesetLabel.call(this, fusedval, null, section_id);
 			this.super('load', section_id);
 
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key] ?? '');
@@ -656,7 +651,7 @@ return view.extend({
 
 		so = ss.taboption('field_general', form.MultiValue, 'proxies', _('Node'));
 		so.value('', _('-- Please choose --'));
-		so.load = L.bind(hm.loadNodeLabel, so);
+		so.load = L.bind(hm.loadNodeLabel, so, [['', _('-- Please choose --')]]);
 		so.validate = function(section_id, value) {
 			if (this.section.getOption('include_all').formvalue(section_id) === '1' ||
 			    this.section.getOption('include_all_proxies').formvalue(section_id) === '1')
@@ -670,7 +665,7 @@ return view.extend({
 
 		so = ss.taboption('field_general', form.MultiValue, 'use', _('Provider'));
 		so.value('', _('-- Please choose --'));
-		so.load = L.bind(hm.loadProviderLabel, so);
+		so.load = L.bind(hm.loadProviderLabel, so, [['', _('-- Please choose --')]]);
 		so.validate = function(section_id, value) {
 			if (this.section.getOption('include_all').formvalue(section_id) === '1' ||
 			    this.section.getOption('include_all_providers').formvalue(section_id) === '1')
@@ -849,7 +844,7 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'sub_rule', _('Sub rule'));
 		so.load = function(section_id) {
-			hm.loadSubRuleGroup.call(this, section_id);
+			hm.loadSubRuleGroup.call(this, [['', _('-- Please choose --')]], section_id);
 
 			return new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule || '';
 		}
@@ -1139,7 +1134,7 @@ return view.extend({
 		so = ss.option(form.MultiValue, 'rule_set', _('Rule set'),
 			_('Match rule set.'));
 		so.value('', _('-- Please choose --'));
-		so.load = L.bind(hm.loadRulesetLabel, so, ['domain', 'classical']);
+		so.load = L.bind(hm.loadRulesetLabel, so, [['', _('-- Please choose --')]], ['domain', 'classical']);
 		so.depends('type', 'rule_set');
 		so.modalonly = true;
 

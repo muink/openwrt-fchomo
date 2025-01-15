@@ -19,8 +19,8 @@ config fchomo 'resources'
 	option auto_update '0'
 
 config fchomo 'routing'
-	option routing_tcpport 'common'
-	option routing_udpport 'common'
+	list routing_tcpport 'common_tcpport'
+	list routing_udpport 'common_udpport'
 
 config fchomo 'global'
 	option mode 'rule'

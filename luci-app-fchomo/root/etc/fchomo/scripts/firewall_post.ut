@@ -79,22 +79,30 @@
 
 	let client_enabled, routing_tcpport, routing_udpport, routing_mode, routing_domain, routing_dscp_mode, routing_dscp_list;
 	client_enabled = uci.get(cfgname, 'routing', 'client_enabled') || '0',
-	routing_tcpport = uci.get(cfgname, 'routing', 'routing_tcpport') || null;
-	routing_udpport = uci.get(cfgname, 'routing', 'routing_udpport') || null;
+	routing_tcpport = uci.get(cfgname, 'routing', 'routing_tcpport') || [];
+	routing_udpport = uci.get(cfgname, 'routing', 'routing_udpport') || [];
 	routing_mode = uci.get(cfgname, 'routing', 'routing_mode') || null;
 	routing_domain = uci.get(cfgname, 'routing', 'routing_domain') || '0';
 	routing_dscp_mode = uci.get(cfgname, 'routing', 'routing_dscp_mode') || null;
 	routing_dscp_list = uci.get(cfgname, 'routing', 'routing_dscp_list') || null;
 
-	if (routing_tcpport === 'common')
-		routing_tcpport = common_tcpport;
-	else if (routing_tcpport === 'common_stun')
-		routing_tcpport = `${common_tcpport},${stun_port}`;
+	function resolve_routing_port(arr) {
+		if (isEmpty(arr))
+			return null;
 
-	if (routing_udpport === 'common')
-		routing_udpport =  common_udpport;
-	else if (routing_udpport === 'common_stun')
-		routing_udpport = `${common_udpport},${stun_port}`;
+		if ('all' in arr)
+			return null;
+
+		return join(',', map(arr, (val) => {
+			if (val === 'common_tcpport') return common_tcpport;
+			if (val === 'common_udpport') return common_udpport;
+			if (val === 'stun_port') return stun_port;
+			return val;
+		}));
+	}
+
+	routing_tcpport = resolve_routing_port(routing_tcpport);
+	routing_udpport = resolve_routing_port(routing_udpport);
 
 	if (!routing_mode)
 		routing_domain = '0';

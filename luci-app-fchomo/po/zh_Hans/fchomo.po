@@ -358,8 +358,8 @@ msgstr "收集数据中..."
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:733
 #: htdocs/luci-static/resources/view/fchomo/global.js:740
-msgid "Common and STUN ports"
-msgstr "常用端口和 STUN 端口"
+msgid "STUN ports"
+msgstr "STUN 端口"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:732
 #: htdocs/luci-static/resources/view/fchomo/global.js:739
@@ -1066,6 +1066,10 @@ msgstr "IPv6 支持"
 #: htdocs/luci-static/resources/view/fchomo/server.js:269
 msgid "Idle timeout"
 msgstr "空闲超时"
+
+#: htdocs/luci-static/resources/fchomo.js:762
+msgid "If All ports is selected, uncheck others"
+msgstr "如果选择了“所有端口”，则取消选中“其他”"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:27
 msgid "If Block is selected, uncheck others"

@@ -2167,13 +2167,13 @@ msgstr "預設值為每天 2:00。"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:1051
 msgid "The matching <code>%s</code> will be deemed as not-poisoned."
-msgstr "匹配的 <code>%s</code> 將被視為未被污染。"
+msgstr "匹配的 <code>%s</code> 將被視為未被汙染。"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:1060
 #: htdocs/luci-static/resources/view/fchomo/client.js:1064
 #: htdocs/luci-static/resources/view/fchomo/client.js:1069
 msgid "The matching <code>%s</code> will be deemed as poisoned."
-msgstr "匹配的 <code>%s</code> 將被視為已被污染。"
+msgstr "匹配的 <code>%s</code> 將被視為已被汙染。"
 
 #: htdocs/luci-static/resources/view/fchomo/server.js:352
 msgid "The server private key, in PEM format."

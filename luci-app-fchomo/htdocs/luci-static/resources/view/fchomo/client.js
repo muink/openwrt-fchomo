@@ -523,7 +523,7 @@ function renderRules(s, uciconfig) {
 		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
-	//o.depends('SUB-RULE', '0');
+	//o.depends('SUB-RULE', '');
 	o.editable = true;
 
 	o = s.option(form.Flag, 'src', _('src'));
@@ -540,7 +540,7 @@ function renderRules(s, uciconfig) {
 		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
-	o.depends('SUB-RULE', '0');
+	o.depends('SUB-RULE', '');
 	o.modalonly = true;
 
 	o = s.option(form.Flag, 'no-resolve', _('no-resolve'));
@@ -557,7 +557,7 @@ function renderRules(s, uciconfig) {
 		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
-	o.depends('SUB-RULE', '0');
+	o.depends('SUB-RULE', '');
 	o.modalonly = true;
 }
 
@@ -819,34 +819,18 @@ return view.extend({
 
 		renderRules(ss, data[0]);
 
-		so = ss.option(form.Flag, 'SUB-RULE', _('SUB-RULE'));
-		so.default = so.disabled;
-		so.load = function(section_id) {
-			return boolToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule ? true : false);
-		}
-		so.validate = function(section_id, value) {
-			value = this.formvalue(section_id);
-
-			this.section.getUIElement(section_id, 'detour').node.querySelector('select').disabled = (value === '1') ? 'true' : null;
-
-			return true;
-		}
-		so.onchange = function(ev, section_id, value) {
-			let UIEl = this.section.getUIElement(section_id, 'entry');
-
-			let rule = new RulesEntry(UIEl.getValue()).setKey('subrule', value === '1' ? ' ' : false);
-
-			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
-			UIEl.setValue(rule.toString('json'));
-		}
-		so.write = function() {};
-		so.modalonly = true;
-
-		so = ss.option(form.ListValue, 'sub_rule', _('Sub rule'));
+		so = ss.option(form.ListValue, 'SUB-RULE', _('SUB-RULE'));
 		so.load = function(section_id) {
 			hm.loadSubRuleGroup.call(this, [['', _('-- Please choose --')]], section_id);
 
 			return new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule || '';
+		}
+		so.validate = function(section_id, value) {
+			value = this.formvalue(section_id);
+
+			this.section.getUIElement(section_id, 'detour').node.querySelector('select').disabled = value ? 'true' : null;
+
+			return true;
 		}
 		so.onchange = function(ev, section_id, value) {
 			let UIEl = this.section.getUIElement(section_id, 'entry');
@@ -856,9 +840,7 @@ return view.extend({
 			UIEl.node.previousSibling.innerText = rule.toString('mihomo');
 			UIEl.setValue(rule.toString('json'));
 		}
-		so.rmempty = false;
 		so.write = function() {};
-		so.depends('SUB-RULE', '1');
 		so.modalonly = true;
 		/* Routing rules END */
 

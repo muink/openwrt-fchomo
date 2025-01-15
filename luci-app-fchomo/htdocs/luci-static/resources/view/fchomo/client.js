@@ -341,7 +341,7 @@ function renderPayload(s, total, uciconfig) {
 		o.depends(Object.fromEntries([[prefix + 'type', /.+/]]));
 		initPayload(o, n, 'deny', uciconfig);
 		o.load = L.bind(function(n, key, uciconfig, section_id) {
-			return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key]);
+			return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayload(n)[key] ? true : false);
 		}, o, n, 'deny', uciconfig);
 		o.onchange = function(ev, section_id, value) {
 			let UIEl = this.section.getUIElement(section_id, 'entry');
@@ -533,7 +533,7 @@ function renderRules(s, uciconfig) {
 	o = s.option(form.Flag, 'src', _('src'));
 	o.default = o.disabled;
 	o.load = function(section_id) {
-		return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('src'));
+		return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('src') ? true : false);
 	}
 	o.onchange = function(ev, section_id, value) {
 		let UIEl = this.section.getUIElement(section_id, 'entry');
@@ -550,7 +550,7 @@ function renderRules(s, uciconfig) {
 	o = s.option(form.Flag, 'no-resolve', _('no-resolve'));
 	o.default = o.disabled;
 	o.load = function(section_id) {
-		return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('no-resolve'));
+		return boolToFlag(new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getParam('no-resolve') ? true : false);
 	}
 	o.onchange = function(ev, section_id, value) {
 		let UIEl = this.section.getUIElement(section_id, 'entry');
@@ -826,7 +826,7 @@ return view.extend({
 		so = ss.option(form.Flag, 'SUB-RULE', _('SUB-RULE'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
-			return boolToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule ? 'true' : 'false');
+			return boolToFlag(new RulesEntry(uci.get(data[0], section_id, 'entry')).subrule ? true : false);
 		}
 		so.validate = function(section_id, value) {
 			value = this.formvalue(section_id);
@@ -1046,7 +1046,7 @@ return view.extend({
 		so = ss.option(form.Flag, 'h3', _('HTTP/3'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
-			return boolToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('h3'));
+			return boolToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('h3') ? true : false);
 		}
 		so.onchange = function(ev, section_id, value) {
 			let UIEl = this.section.getUIElement(section_id, 'address');
@@ -1079,7 +1079,7 @@ return view.extend({
 			_('Override ECS in original request.'));
 		so.default = so.disabled;
 		so.load = function(section_id) {
-			return boolToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('ecs-override'));
+			return boolToFlag(new DNSAddress(uci.get(data[0], section_id, 'address')).parseParam('ecs-override') ? true : false);
 		}
 		so.onchange = function(ev, section_id, value) {
 			let UIEl = this.section.getUIElement(section_id, 'address');

@@ -19,7 +19,7 @@
 - The **Routing rule** and **Sub rule** of the LuCI app have been migrated from `mihomo` format to `json` format.</br>
   If find `option oldentry` in `/etc/config/fchomo` file, the selected config may not be migrated correctly.</br>
   You need to manually reset the selected config and remove the `oldentry` option when you are done.
-- In systems lower than OpenWrt 24.10, unable to add more than 3 identical factors in the routing rules.
+- In systems lower than OpenWrt 24.10, unable to add more than 3 identical factors in the **Routing rule** and **Sub rule**.
 
 ## Screenshots
 

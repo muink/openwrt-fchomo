@@ -722,6 +722,7 @@ return view.extend({
 		so.value('all', _('All ports'));
 		so.value('common_tcpport', _('Common ports only (bypass P2P traffic)'));
 		so.value('stun_port', _('STUN ports'));
+		so.value('turn_port', _('TURN ports'));
 		so.validate = L.bind(hm.validateCommonPort, so);
 
 		so = ss.taboption('routing_control', form.MultiValue, 'routing_udpport', _('Routing ports') + ' (UDP)',
@@ -730,6 +731,7 @@ return view.extend({
 		so.value('all', _('All ports'));
 		so.value('common_udpport', _('Common ports only (bypass P2P traffic)'));
 		so.value('stun_port', _('STUN ports'));
+		so.value('turn_port', _('TURN ports'));
 		so.validate = L.bind(hm.validateCommonPort, so);
 
 		so = ss.taboption('routing_control', form.ListValue, 'routing_mode', _('Routing mode'),

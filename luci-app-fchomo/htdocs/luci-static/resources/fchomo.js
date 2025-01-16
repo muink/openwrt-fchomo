@@ -766,7 +766,7 @@ return baseclass.extend({
 			return _('Expecting: %s').format(_('If All ports is selected, uncheck others'));
 
 		for (let custom of arr) {
-			if (!['all', 'common_tcpport', 'common_udpport', 'stun_port'].includes(custom)) {
+			if (!['all', 'common_tcpport', 'common_udpport', 'stun_port', 'turn_port'].includes(custom)) {
 				let ports = [];
 				for (let i of custom.split(',')) {
 					if (!stubValidator.apply('port', i) && !stubValidator.apply('portrange', i))

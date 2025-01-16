@@ -356,13 +356,8 @@ msgstr "客戶端狀態"
 msgid "Collecting data..."
 msgstr "收集資料中..."
 
-#: htdocs/luci-static/resources/view/fchomo/global.js:733
-#: htdocs/luci-static/resources/view/fchomo/global.js:740
-msgid "STUN ports"
-msgstr "STUN 連接埠"
-
+#: htdocs/luci-static/resources/view/fchomo/global.js:723
 #: htdocs/luci-static/resources/view/fchomo/global.js:732
-#: htdocs/luci-static/resources/view/fchomo/global.js:739
 msgid "Common ports only (bypass P2P traffic)"
 msgstr "僅常用連接埠（繞過 P2P 流量）"
 
@@ -1936,7 +1931,12 @@ msgstr ""
 msgid "SSH"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:679
+#: htdocs/luci-static/resources/view/fchomo/global.js:724
+#: htdocs/luci-static/resources/view/fchomo/global.js:733
+msgid "STUN ports"
+msgstr "STUN 連接埠"
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:828
 msgid "SUB-RULE"
 msgstr "SUB-RULE"
 
@@ -2161,7 +2161,12 @@ msgstr "TLS欄位"
 msgid "TUIC"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/server.js:171
+#: htdocs/luci-static/resources/view/fchomo/global.js:725
+#: htdocs/luci-static/resources/view/fchomo/global.js:734
+msgid "TURN ports"
+msgstr "TURN 連接埠"
+
+#: htdocs/luci-static/resources/view/fchomo/server.js:176
 msgid ""
 "Tell the client to use the BBR flow control algorithm instead of Hysteria CC."
 msgstr "讓客戶端使用 BBR 流控演算法。"

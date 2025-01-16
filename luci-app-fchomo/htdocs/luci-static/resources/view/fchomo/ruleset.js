@@ -260,7 +260,7 @@ return view.extend({
 		}
 		o.modalonly = false;
 
-		o = s.option(hm.CBITextValue, '_editer', _('Editer'),
+		o = s.option(hm.TextValue, '_editer', _('Editer'),
 			_('Please type <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
 				.format('https://wiki.metacubex.one/config/rule-providers/content/', _('Contents')));
 		o.placeholder = _('Content will not be verified, Please make sure you enter it correctly.');
@@ -274,7 +274,7 @@ return view.extend({
 		o.depends({'type': 'file', 'format': /^(text|yaml)$/});
 		o.modalonly = true;
 
-		o = s.option(hm.CBITextValue, 'payload', 'payload:',
+		o = s.option(hm.TextValue, 'payload', 'payload:',
 			_('Please type <a target="_blank" href="%s" rel="noreferrer noopener">%s</a>.')
 				.format('https://wiki.metacubex.one/config/rule-providers/content/', _('Payload')));
 		o.placeholder = '- DOMAIN-SUFFIX,google.com\n# ' + _('Content will not be verified, Please make sure you enter it correctly.');

@@ -366,7 +366,7 @@ function renderPayload(s, total, uciconfig) {
 	Object.keys(extenbox).forEach((n) => {
 		prefix = `payload${n}_`;
 
-		o = s.option(hm.CBIStaticList, prefix + 'type', _('Type') + ' ++');
+		o = s.option(hm.StaticList, prefix + 'type', _('Type') + ' ++');
 		o.default = hm.rules_type[0][0];
 		hm.rules_type.forEach((res) => {
 			o.value.apply(o, res);
@@ -411,7 +411,7 @@ function renderPayload(s, total, uciconfig) {
 			return new RulesEntry(uci.get(uciconfig, section_id, 'entry')).getPayloads().slice(n).map(e => e[key] ?? '');
 		}, o, n, 'factor', uciconfig)
 
-		o = s.option(hm.CBIStaticList, prefix + 'NOTs', _('NOT') + ' ++',
+		o = s.option(hm.StaticList, prefix + 'NOTs', _('NOT') + ' ++',
 			_('<code>0</code> or <code>1</code> only.'));
 		o.value('0');
 		o.value('1');
@@ -508,7 +508,7 @@ function renderRules(s, uciconfig) {
 
 	renderPayload(s, Math.max(...Object.values(hm.rules_logical_payload_count).map(e => e.low)), uciconfig);
 
-	o = s.option(hm.CBIListValue, 'detour', _('Proxy group'));
+	o = s.option(hm.ListValue, 'detour', _('Proxy group'));
 	o.load = function(section_id) {
 		hm.loadProxyGroupLabel.call(this, hm.preset_outbound.full, section_id);
 
@@ -1010,7 +1010,7 @@ return view.extend({
 		so.rmempty = false;
 		so.modalonly = true;
 
-		so = ss.option(hm.CBIListValue, 'detour', _('Proxy group'));
+		so = ss.option(hm.ListValue, 'detour', _('Proxy group'));
 		so.load = function(section_id) {
 			hm.loadProxyGroupLabel.call(this, hm.preset_outbound.dns, section_id);
 
@@ -1142,7 +1142,7 @@ return view.extend({
 		so.rmempty = false;
 		so.editable = true;
 
-		so = ss.option(hm.CBIListValue, 'proxy', _('Proxy group override'),
+		so = ss.option(hm.ListValue, 'proxy', _('Proxy group override'),
 			_('Override the Proxy group of DNS server.'));
 		so.default = hm.preset_outbound.direct[0][0];
 		hm.preset_outbound.direct.forEach((res) => {

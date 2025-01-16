@@ -719,19 +719,19 @@ return view.extend({
 		so = ss.taboption('routing_control', form.MultiValue, 'routing_tcpport', _('Routing ports') + ' (TCP)',
 			_('Specify target ports to be proxied. Multiple ports must be separated by commas.'));
 		so.create = true;
-		so.value('all', _('All ports'));
-		so.value('common_tcpport', _('Common ports only (bypass P2P traffic)'));
-		so.value('stun_port', _('STUN ports'));
-		so.value('turn_port', _('TURN ports'));
+		hm.routing_port_type.forEach((res) => {
+			if (res[0] !== 'common_udpport')
+				so.value.apply(so, res);
+		})
 		so.validate = L.bind(hm.validateCommonPort, so);
 
 		so = ss.taboption('routing_control', form.MultiValue, 'routing_udpport', _('Routing ports') + ' (UDP)',
 			_('Specify target ports to be proxied. Multiple ports must be separated by commas.'));
 		so.create = true;
-		so.value('all', _('All ports'));
-		so.value('common_udpport', _('Common ports only (bypass P2P traffic)'));
-		so.value('stun_port', _('STUN ports'));
-		so.value('turn_port', _('TURN ports'));
+		hm.routing_port_type.forEach((res) => {
+			if (res[0] !== 'common_tcpport')
+				so.value.apply(so, res);
+		})
 		so.validate = L.bind(hm.validateCommonPort, so);
 
 		so = ss.taboption('routing_control', form.ListValue, 'routing_mode', _('Routing mode'),

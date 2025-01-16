@@ -234,6 +234,39 @@ const tls_client_fingerprints = [
 	['random']
 ];
 
+/* Prototype */
+const CBIListValue = form.ListValue.extend({
+	renderWidget(/* ... */) {
+		let frameEl = form.ListValue.prototype.renderWidget.apply(this, arguments);
+
+		frameEl.querySelector('select').style["min-width"] = '10em';
+
+		return frameEl;
+	}
+});
+
+const CBIStaticList = form.DynamicList.extend({
+	__name__: 'CBI.StaticList',
+
+	renderWidget(/* ... */) {
+		let El = form.DynamicList.prototype.renderWidget.apply(this, arguments);
+
+		El.querySelector('.add-item ul > li[data-value="-"]')?.remove();
+
+		return El;
+	}
+});
+
+const CBITextValue = form.TextValue.extend({
+	renderWidget(/* ... */) {
+		let frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
+
+		frameEl.querySelector('textarea').style.fontFamily = monospacefonts.join(',');
+
+		return frameEl;
+	}
+});
+
 return baseclass.extend({
 	/* Member */
 	rulesetdoc,
@@ -258,37 +291,10 @@ return baseclass.extend({
 	stunserver,
 	tls_client_fingerprints,
 
-	CBIListValue: form.ListValue.extend({
-		renderWidget(/* ... */) {
-			let frameEl = form.ListValue.prototype.renderWidget.apply(this, arguments);
-
-			frameEl.querySelector('select').style["min-width"] = '10em';
-
-			return frameEl;
-		}
-	}),
-
-	CBIStaticList: form.DynamicList.extend({
-		__name__: 'CBI.StaticList',
-
-		renderWidget(/* ... */) {
-			let El = form.DynamicList.prototype.renderWidget.apply(this, arguments);
-
-			El.querySelector('.add-item ul > li[data-value="-"]')?.remove();
-
-			return El;
-		}
-	}),
-
-	CBITextValue: form.TextValue.extend({
-		renderWidget(/* ... */) {
-			let frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
-
-			frameEl.querySelector('textarea').style.fontFamily = monospacefonts.join(',');
-
-			return frameEl;
-		}
-	}),
+	/* Prototype */
+	ListValue: CBIListValue,
+	StaticList: CBIStaticList,
+	TextValue: CBITextValue,
 
 	// thanks to homeproxy
 	calcStringMD5(e) {

@@ -7,6 +7,7 @@
 'require ui';
 'require validation';
 
+/* Member */
 const rulesetdoc = 'data:text/html;base64,' + 'cmxzdHBsYWNlaG9sZGVy';
 
 const sharktaikogif = function() {
@@ -25,6 +26,103 @@ const monospacefonts = [
 	'monospace'
 ];
 
+const dashrepos = [
+	['zephyruso/zashboard', _('zashboard')],
+	['metacubex/metacubexd', _('metacubexd')],
+	['metacubex/yacd-meta', _('yacd-meta')],
+	['metacubex/razord-meta', _('razord-meta')]
+];
+
+const dashrepos_urlparams = {
+	'zephyruso/zashboard':   '#/setup' + '?hostname=%s&port=%s&secret=%s',
+	'metacubex/metacubexd':  '#/setup' + '?hostname=%s&port=%s&secret=%s',
+	'metacubex/yacd-meta':   '?hostname=%s&port=%s&secret=%s',
+	'metacubex/razord-meta': '?host=%s&port=%s&secret=%s'
+};
+
+const checkurls = [
+	['https://www.baidu.com', _('Baidu')],
+	['https://s1.music.126.net/style/favicon.ico', _('163Music')],
+	['https://www.google.com/generate_204', _('Google')],
+	['https://github.com', _('GitHub')],
+	['https://www.youtube.com', _('YouTube')]
+];
+
+const health_checkurls = [
+	['https://cp.cloudflare.com'],
+	['https://www.gstatic.com/generate_204']
+];
+
+const inbound_type = [
+	['http', _('HTTP')],
+	['socks', _('SOCKS')],
+	['mixed', _('Mixed')],
+	['shadowsocks', _('Shadowsocks')],
+	['vmess', _('VMess')],
+	['tuic', _('TUIC')],
+	['hysteria2', _('Hysteria2')],
+	//['tunnel', _('Tunnel')]
+];
+
+const ip_version = [
+	['', _('Keep default')],
+	['dual', _('Dual stack')],
+	['ipv4', _('IPv4 only')],
+	['ipv6', _('IPv6 only')],
+	['ipv4-prefer', _('Prefer IPv4')],
+	['ipv6-prefer', _('Prefer IPv6')]
+];
+
+const load_balance_strategy = [
+	['round-robin', _('Simple round-robin all nodes')],
+	['consistent-hashing', _('Same dstaddr requests. Same node')],
+	['sticky-sessions', _('Same srcaddr and dstaddr requests. Same node')]
+];
+
+const outbound_type = [
+	['direct', _('DIRECT')],
+	['http', _('HTTP')],
+	['socks5', _('SOCKS5')],
+	['ss', _('Shadowsocks')],
+	//['ssr', _('ShadowsocksR')], // Deprecated
+	['mieru', _('Mieru')],
+	['snell', _('Snell')],
+	['vmess', _('VMess')],
+	['vless', _('VLESS')],
+	['trojan', _('Trojan')],
+	//['hysteria', _('Hysteria')],
+	['hysteria2', _('Hysteria2')],
+	['tuic', _('TUIC')],
+	['wireguard', _('WireGuard')],
+	['ssh', _('SSH')]
+];
+
+const preset_outbound = {
+	full: [
+		['DIRECT'],
+		['REJECT'],
+		['REJECT-DROP'],
+		['PASS'],
+		['COMPATIBLE']
+	],
+	direct: [
+		['', _('null')],
+		['DIRECT']
+	],
+	dns: [
+		['', 'RULES'],
+		['DIRECT']
+	]
+};
+
+const proxy_group_type = [
+	['select', _('Select')],
+	['fallback', _('Fallback')],
+	['url-test', _('URL test')],
+	['load-balance', _('Load balance')],
+	//['relay', _('Relay')], // Deprecated
+];
+
 const routing_port_type = [
 	['all', _('All ports')],
 	['common_tcpport', _('Common ports only (bypass P2P traffic)')],
@@ -33,212 +131,132 @@ const routing_port_type = [
 	['turn_port', _('TURN ports')],
 ];
 
+const rules_type = [
+	['DOMAIN'],
+	['DOMAIN-SUFFIX'],
+	['DOMAIN-KEYWORD'],
+	['DOMAIN-REGEX'],
+	['GEOSITE'],
+
+	['IP-CIDR'],
+	['IP-CIDR6'],
+	['IP-SUFFIX'],
+	['IP-ASN'],
+	['GEOIP'],
+
+	['SRC-GEOIP'],
+	['SRC-IP-ASN'],
+	['SRC-IP-CIDR'],
+	['SRC-IP-SUFFIX'],
+
+	['DST-PORT'],
+	['SRC-PORT'],
+
+	//['IN-PORT'],
+	//['IN-TYPE'],
+	//['IN-USER'],
+	//['IN-NAME'],
+
+	['PROCESS-PATH'],
+	['PROCESS-PATH-REGEX'],
+	['PROCESS-NAME'],
+	['PROCESS-NAME-REGEX'],
+	//['UID'],
+
+	['NETWORK'],
+	['DSCP'],
+
+	['RULE-SET'],
+
+	['MATCH']
+];
+
+const rules_logical_type = [
+	['AND'],
+	['OR'],
+	['NOT'],
+	//['SUB-RULE'],
+];
+
+const rules_logical_payload_count = {
+	'AND': { low: 2, high: undefined },
+	'OR': { low: 2, high: undefined },
+	'NOT': { low: 1, high: 1 },
+	//'SUB-RULE': 0,
+};
+
+const shadowsocks_cipher_methods = [
+	/* Stream */
+	['none', _('none')],
+	/* AEAD */
+	['aes-128-gcm', _('aes-128-gcm')],
+	['aes-192-gcm', _('aes-192-gcm')],
+	['aes-256-gcm', _('aes-256-gcm')],
+	['chacha20-ietf-poly1305', _('chacha20-ietf-poly1305')],
+	['xchacha20-ietf-poly1305', _('xchacha20-ietf-poly1305')],
+	/* AEAD 2022 */
+	['2022-blake3-aes-128-gcm', _('2022-blake3-aes-128-gcm')],
+	['2022-blake3-aes-256-gcm', _('2022-blake3-aes-256-gcm')],
+	['2022-blake3-chacha20-poly1305', _('2022-blake3-chacha20-poly1305')]
+];
+
+const shadowsocks_cipher_length = {
+	/* AEAD */
+	'aes-128-gcm': 0,
+	'aes-192-gcm': 0,
+	'aes-256-gcm': 0,
+	'chacha20-ietf-poly1305': 0,
+	'xchacha20-ietf-poly1305': 0,
+	/* AEAD 2022 */
+	'2022-blake3-aes-128-gcm': 16,
+	'2022-blake3-aes-256-gcm': 32,
+	'2022-blake3-chacha20-poly1305': 32
+};
+
+const stunserver = [
+	['stun.fitauto.ru:3478'],
+	['stun.hot-chilli.net:3478'],
+	['stun.pure-ip.com:3478'],
+	['stun.voipgate.com:3478'],
+	['stun.voipia.net:3478'],
+	['stunserver2024.stunprotocol.org:3478']
+];
+
+const tls_client_fingerprints = [
+	['chrome'],
+	['firefox'],
+	['safari'],
+	['iOS'],
+	['android'],
+	['edge'],
+	['360'],
+	['qq'],
+	['random']
+];
+
 return baseclass.extend({
+	/* Member */
 	rulesetdoc,
 	sharktaikogif,
 	monospacefonts,
-
-	dashrepos: [
-		['zephyruso/zashboard', _('zashboard')],
-		['metacubex/metacubexd', _('metacubexd')],
-		['metacubex/yacd-meta', _('yacd-meta')],
-		['metacubex/razord-meta', _('razord-meta')]
-	],
-
-	dashrepos_urlparams: {
-		'zephyruso/zashboard':   '#/setup' + '?hostname=%s&port=%s&secret=%s',
-		'metacubex/metacubexd':  '#/setup' + '?hostname=%s&port=%s&secret=%s',
-		'metacubex/yacd-meta':   '?hostname=%s&port=%s&secret=%s',
-		'metacubex/razord-meta': '?host=%s&port=%s&secret=%s'
-	},
-
-	checkurls: [
-		['https://www.baidu.com', _('Baidu')],
-		['https://s1.music.126.net/style/favicon.ico', _('163Music')],
-		['https://www.google.com/generate_204', _('Google')],
-		['https://github.com', _('GitHub')],
-		['https://www.youtube.com', _('YouTube')]
-	],
-
-	health_checkurls: [
-		['https://cp.cloudflare.com'],
-		['https://www.gstatic.com/generate_204']
-	],
-
-	inbound_type: [
-		['http', _('HTTP')],
-		['socks', _('SOCKS')],
-		['mixed', _('Mixed')],
-		['shadowsocks', _('Shadowsocks')],
-		['vmess', _('VMess')],
-		['tuic', _('TUIC')],
-		['hysteria2', _('Hysteria2')],
-		//['tunnel', _('Tunnel')]
-	],
-
-	ip_version: [
-		['', _('Keep default')],
-		['dual', _('Dual stack')],
-		['ipv4', _('IPv4 only')],
-		['ipv6', _('IPv6 only')],
-		['ipv4-prefer', _('Prefer IPv4')],
-		['ipv6-prefer', _('Prefer IPv6')]
-	],
-
-	load_balance_strategy: [
-		['round-robin', _('Simple round-robin all nodes')],
-		['consistent-hashing', _('Same dstaddr requests. Same node')],
-		['sticky-sessions', _('Same srcaddr and dstaddr requests. Same node')]
-	],
-
-	outbound_type: [
-		['direct', _('DIRECT')],
-		['http', _('HTTP')],
-		['socks5', _('SOCKS5')],
-		['ss', _('Shadowsocks')],
-		//['ssr', _('ShadowsocksR')], // Deprecated
-		['mieru', _('Mieru')],
-		['snell', _('Snell')],
-		['vmess', _('VMess')],
-		['vless', _('VLESS')],
-		['trojan', _('Trojan')],
-		//['hysteria', _('Hysteria')],
-		['hysteria2', _('Hysteria2')],
-		['tuic', _('TUIC')],
-		['wireguard', _('WireGuard')],
-		['ssh', _('SSH')]
-	],
-
-	preset_outbound: {
-		full: [
-			['DIRECT'],
-			['REJECT'],
-			['REJECT-DROP'],
-			['PASS'],
-			['COMPATIBLE']
-		],
-		direct: [
-			['', _('null')],
-			['DIRECT']
-		],
-		dns: [
-			['', 'RULES'],
-			['DIRECT']
-		]
-	},
-
-	proxy_group_type: [
-		['select', _('Select')],
-		['fallback', _('Fallback')],
-		['url-test', _('URL test')],
-		['load-balance', _('Load balance')],
-		//['relay', _('Relay')], // Deprecated
-	],
-
+	dashrepos,
+	dashrepos_urlparams,
+	checkurls,
+	health_checkurls,
+	inbound_type,
+	ip_version,
+	load_balance_strategy,
+	outbound_type,
+	preset_outbound,
+	proxy_group_type,
 	routing_port_type,
-
-	rules_type: [
-		['DOMAIN'],
-		['DOMAIN-SUFFIX'],
-		['DOMAIN-KEYWORD'],
-		['DOMAIN-REGEX'],
-		['GEOSITE'],
-
-		['IP-CIDR'],
-		['IP-CIDR6'],
-		['IP-SUFFIX'],
-		['IP-ASN'],
-		['GEOIP'],
-
-		['SRC-GEOIP'],
-		['SRC-IP-ASN'],
-		['SRC-IP-CIDR'],
-		['SRC-IP-SUFFIX'],
-
-		['DST-PORT'],
-		['SRC-PORT'],
-
-		//['IN-PORT'],
-		//['IN-TYPE'],
-		//['IN-USER'],
-		//['IN-NAME'],
-
-		['PROCESS-PATH'],
-		['PROCESS-PATH-REGEX'],
-		['PROCESS-NAME'],
-		['PROCESS-NAME-REGEX'],
-		//['UID'],
-
-		['NETWORK'],
-		['DSCP'],
-
-		['RULE-SET'],
-
-		['MATCH']
-	],
-
-	rules_logical_type: [
-		['AND'],
-		['OR'],
-		['NOT'],
-		//['SUB-RULE'],
-	],
-
-	rules_logical_payload_count: {
-		'AND': { low: 2, high: undefined },
-		'OR': { low: 2, high: undefined },
-		'NOT': { low: 1, high: 1 },
-		//'SUB-RULE': 0,
-	},
-
-	shadowsocks_cipher_methods: [
-		/* Stream */
-		['none', _('none')],
-		/* AEAD */
-		['aes-128-gcm', _('aes-128-gcm')],
-		['aes-192-gcm', _('aes-192-gcm')],
-		['aes-256-gcm', _('aes-256-gcm')],
-		['chacha20-ietf-poly1305', _('chacha20-ietf-poly1305')],
-		['xchacha20-ietf-poly1305', _('xchacha20-ietf-poly1305')],
-		/* AEAD 2022 */
-		['2022-blake3-aes-128-gcm', _('2022-blake3-aes-128-gcm')],
-		['2022-blake3-aes-256-gcm', _('2022-blake3-aes-256-gcm')],
-		['2022-blake3-chacha20-poly1305', _('2022-blake3-chacha20-poly1305')]
-	],
-
-	shadowsocks_cipher_length: {
-		/* AEAD */
-		'aes-128-gcm': 0,
-		'aes-192-gcm': 0,
-		'aes-256-gcm': 0,
-		'chacha20-ietf-poly1305': 0,
-		'xchacha20-ietf-poly1305': 0,
-		/* AEAD 2022 */
-		'2022-blake3-aes-128-gcm': 16,
-		'2022-blake3-aes-256-gcm': 32,
-		'2022-blake3-chacha20-poly1305': 32
-	},
-
-	stunserver: [
-		['stun.fitauto.ru:3478'],
-		['stun.hot-chilli.net:3478'],
-		['stun.pure-ip.com:3478'],
-		['stun.voipgate.com:3478'],
-		['stun.voipia.net:3478'],
-		['stunserver2024.stunprotocol.org:3478']
-	],
-
-	tls_client_fingerprints: [
-		['chrome'],
-		['firefox'],
-		['safari'],
-		['iOS'],
-		['android'],
-		['edge'],
-		['360'],
-		['qq'],
-		['random']
-	],
+	rules_type,
+	rules_logical_type,
+	rules_logical_payload_count,
+	shadowsocks_cipher_methods,
+	shadowsocks_cipher_length,
+	stunserver,
+	tls_client_fingerprints,
 
 	CBIListValue: form.ListValue.extend({
 		renderWidget(/* ... */) {

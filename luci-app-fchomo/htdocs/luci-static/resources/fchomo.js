@@ -348,7 +348,7 @@ function calcStringMD5(e) {
 		c = n(c, d, a, b, f[e +  2], 15,  718787259), b = n(b, c, d, a, f[e +  9], 21, 3951481745),
 		a = h(a, q), b = h(b, r), c = h(c, s), d = h(d, t);
 	return (p(a) + p(b) + p(c) + p(d)).toLowerCase();
-};
+}
 
 // thanks to homeproxy
 function decodeBase64Str(str) {
@@ -364,7 +364,7 @@ function decodeBase64Str(str) {
 	return decodeURIComponent(Array.prototype.map.call(atob(str), (c) =>
 		'%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
 	).join(''));
-};
+}
 
 function generateRand(type, length) {
 	let byteArr;
@@ -387,7 +387,7 @@ function generateRand(type, length) {
 		default:
 			return null;
 	};
-};
+}
 
 function isEmpty(res) {
 	if (res == null) return true;                                                // null, undefined
@@ -397,7 +397,7 @@ function isEmpty(res) {
 		return Object.keys(res).length === 0;                                    // empty Object
 	}
 	return false;
-};
+}
 
 function removeBlankAttrs(res) {
 	if (Array.isArray(res)) {
@@ -415,7 +415,7 @@ function removeBlankAttrs(res) {
 		return obj;
 	}
 	return res;
-};
+}
 
 function getFeatures() {
 	const callGetFeatures = rpc.declare({
@@ -425,7 +425,7 @@ function getFeatures() {
 	});
 
 	return L.resolveDefault(callGetFeatures(), {});
-};
+}
 
 function getServiceStatus(instance) {
 	var conf = 'fchomo';
@@ -444,7 +444,7 @@ function getServiceStatus(instance) {
 			} catch (e) {}
 			return isRunning;
 		});
-};
+}
 
 function getClashAPI(instance) {
 	const callGetClashAPI = rpc.declare({
@@ -455,7 +455,7 @@ function getClashAPI(instance) {
 	});
 
 	return L.resolveDefault(callGetClashAPI(instance), {});
-};
+}
 
 // thanks to homeproxy
 function loadDefaultLabel(section_id) {
@@ -466,13 +466,13 @@ function loadDefaultLabel(section_id) {
 		uci.set(this.config, section_id, 'label', section_id);
 		return section_id;
 	}
-};
+}
 
 // thanks to homeproxy
 function loadModalTitle(title, addtitle, section_id) {
 	const label = uci.get(this.config, section_id, 'label');
 	return label ? title + ' » ' + label : addtitle;
-};
+}
 
 function loadProxyGroupLabel(preadds, section_id) {
 	delete this.keylist;
@@ -487,7 +487,7 @@ function loadProxyGroupLabel(preadds, section_id) {
 	});
 
 	return this.super('load', section_id);
-};
+}
 
 function loadNodeLabel(preadds, section_id) {
 	delete this.keylist;
@@ -502,7 +502,7 @@ function loadNodeLabel(preadds, section_id) {
 	});
 
 	return this.super('load', section_id);
-};
+}
 
 function loadProviderLabel(preadds, section_id) {
 	delete this.keylist;
@@ -517,7 +517,7 @@ function loadProviderLabel(preadds, section_id) {
 	});
 
 	return this.super('load', section_id);
-};
+}
 
 function loadRulesetLabel(preadds, behaviors, section_id) {
 	delete this.keylist;
@@ -533,7 +533,7 @@ function loadRulesetLabel(preadds, behaviors, section_id) {
 	});
 
 	return this.super('load', section_id);
-};
+}
 
 function loadSubRuleGroup(preadds, section_id) {
 	delete this.keylist;
@@ -552,7 +552,7 @@ function loadSubRuleGroup(preadds, section_id) {
 	});
 
 	return this.super('load', section_id);
-};
+}
 
 function renderStatus(ElId, isRunning, instance, noGlobal) {
 	const visible = isRunning && (isRunning.http || isRunning.https);
@@ -570,7 +570,7 @@ function renderStatus(ElId, isRunning, instance, noGlobal) {
 			'rel': 'noreferrer noopener'
 		}, [ _('Open Dashboard') ])
 	]);
-};
+}
 function updateStatus(El, isRunning, instance, noGlobal) {
 	if (El) {
 		El.style.color = isRunning ? 'green' : 'red';
@@ -589,7 +589,7 @@ function updateStatus(El, isRunning, instance, noGlobal) {
 	}
 
 	return El;
-};
+}
 function getDashURL(isRunning) {
 	const tls = isRunning.https ? 's' : '';
 	const host = window.location.hostname;
@@ -599,7 +599,7 @@ function getDashURL(isRunning) {
 
 	return 'http%s://%s:%s/ui/'.format(tls, host, port) +
 		String.format(dashrepos_urlparams[repo] || '', host, port, secret)
-};
+}
 
 function renderResDownload(section_id) {
 	const section_type = this.section.sectiontype;
@@ -625,7 +625,7 @@ function renderResDownload(section_id) {
 	]);
 
 	return El;
-};
+}
 
 function renderSectionAdd(prefmt, LC, extra_class) {
 	let el = form.GridSection.prototype.renderSectionAdd.apply(this, [ extra_class ]),
@@ -654,14 +654,14 @@ function renderSectionAdd(prefmt, LC, extra_class) {
 	}, 'blur', 'keyup');
 
 	return el;
-};
+}
 
 function handleAdd(prefmt, ev, name) {
 	const prefix = prefmt?.prefix ? prefmt.prefix : '';
 	const suffix = prefmt?.suffix ? prefmt.suffix : '';
 
 	return form.GridSection.prototype.handleAdd.apply(this, [ ev, prefix + name + suffix ]);
-};
+}
 
 function handleReload(instance, ev, section_id) {
 	instance = instance || '';
@@ -670,7 +670,7 @@ function handleReload(instance, ev, section_id) {
 		.catch((e) => {
 			ui.addNotification(null, E('p', _('Failed to execute "/etc/init.d/fchomo %s %s" reason: %s').format('reload', instance, e)))
 		})
-};
+}
 
 function handleRemoveIdles() {
 	const section_type = this.sectiontype;
@@ -714,14 +714,14 @@ function handleRemoveIdles() {
 			])
 		]);
 	});
-};
+}
 
 function textvalue2Value(section_id) {
 	let cval = this.cfgvalue(section_id);
 	let i = this.keylist.indexOf(cval);
 
 	return this.vallist[i];
-};
+}
 
 function validateAuth(section_id, value) {
 	if (!value)
@@ -730,7 +730,7 @@ function validateAuth(section_id, value) {
 		return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}:[^:]+');
 
 	return true;
-};
+}
 function validateAuthUsername(section_id, value) {
 	if (!value)
 		return true;
@@ -738,7 +738,7 @@ function validateAuthUsername(section_id, value) {
 		return _('Expecting: %s').format('[A-Za-z0-9_-]{3,}');
 
 	return true;
-};
+}
 function validateAuthPassword(section_id, value) {
 	if (!value)
 		return true;
@@ -746,7 +746,7 @@ function validateAuthPassword(section_id, value) {
 		return _('Expecting: %s').format('[^:]+');
 
 	return true;
-};
+}
 
 function validateCommonPort(section_id, value) {
 	// thanks to homeproxy
@@ -785,7 +785,7 @@ function validateCommonPort(section_id, value) {
 	}
 
 	return true;
-};
+}
 
 function validateJson(section_id, value) {
 	if (!value)
@@ -801,7 +801,7 @@ function validateJson(section_id, value) {
 	}
 
 	return true;
-};
+}
 
 function validateBase64Key(length, section_id, value) {
 	/* Thanks to luci-proto-wireguard */
@@ -810,7 +810,7 @@ function validateBase64Key(length, section_id, value) {
 			return _('Expecting: %s').format(_('valid base64 key with %d characters').format(length));
 
 	return true;
-};
+}
 
 function validateShadowsocksPassword(encmode, section_id, value) {
 	let length = shadowsocks_cipher_length[encmode];
@@ -828,7 +828,7 @@ function validateShadowsocksPassword(encmode, section_id, value) {
 		return true;
 
 	return true;
-};
+}
 
 function validateBytesize(section_id, value) {
 	if (!value)
@@ -838,7 +838,7 @@ function validateBytesize(section_id, value) {
 		return _('Expecting: %s').format('^(\\d+)(k|m|g)?b?$');
 
 	return true;
-};
+}
 function validateTimeDuration(section_id, value) {
 	if (!value)
 		return true;
@@ -847,7 +847,7 @@ function validateTimeDuration(section_id, value) {
 		return _('Expecting: %s').format('^(\\d+)(s|m|h|d)?$');
 
 	return true;
-};
+}
 
 function validateUniqueValue(section_id, value) {
 	if (!value)
@@ -863,7 +863,7 @@ function validateUniqueValue(section_id, value) {
 		return _('Expecting: %s').format(_('unique value'));
 
 	return true;
-};
+}
 
 function validateUrl(section_id, value) {
 	if (!value)
@@ -879,7 +879,7 @@ function validateUrl(section_id, value) {
 	}
 
 	return true;
-};
+}
 
 function validateUUID(section_id, value) {
 	if (!value)
@@ -888,7 +888,7 @@ function validateUUID(section_id, value) {
 		return _('Expecting: %s').format(_('valid uuid'));
 
 	return true;
-};
+}
 
 function lsDir(type) {
 	const callLsDir = rpc.declare({
@@ -904,7 +904,7 @@ function lsDir(type) {
 		} else
 			throw res.error || 'unknown error';
 	});
-};
+}
 
 function readFile(type, filename) {
 	const callReadFile = rpc.declare({
@@ -920,7 +920,7 @@ function readFile(type, filename) {
 		} else
 			throw res.error || 'unknown error';
 	});
-};
+}
 
 function writeFile(type, filename, content) {
 	const callWriteFile = rpc.declare({
@@ -936,7 +936,7 @@ function writeFile(type, filename, content) {
 		} else
 			throw res.error || 'unknown error';
 	});
-};
+}
 
 function downloadFile(type, filename, url, header) {
 	const callDownloadFile = rpc.declare({
@@ -952,7 +952,7 @@ function downloadFile(type, filename, url, header) {
 		} else
 			throw res.error || 'unknown error';
 	});
-};
+}
 
 function removeFile(type, filename) {
 	const callRemoveFile = rpc.declare({
@@ -968,7 +968,7 @@ function removeFile(type, filename) {
 		} else
 			throw res.error || 'unknown error';
 	});
-};
+}
 
 // thanks to homeproxy
 function uploadCertificate(type, filename, ev) {
@@ -989,7 +989,7 @@ function uploadCertificate(type, filename, ev) {
 		});
 	}, this, ev.target))
 	.catch((e) => { ui.addNotification(null, E('p', e.message)) });
-};
+}
 function uploadInitialPack(ev, section_id) {
 	const callWriteInitialPack = rpc.declare({
 		object: 'luci.fchomo',
@@ -1008,7 +1008,7 @@ function uploadInitialPack(ev, section_id) {
 		});
 	}, this, ev.target))
 	.catch((e) => { ui.addNotification(null, E('p', e.message)) });
-};
+}
 
 return baseclass.extend({
 	/* Member */

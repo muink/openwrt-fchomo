@@ -47,6 +47,9 @@ const CBIPWGenValue = form.Value.extend({
 	renderWidget() {
 		let node = form.Value.prototype.renderWidget.apply(this, arguments);
 
+		if (!this.password)
+			node.classList.add('control-group');
+
 		(node.querySelector('.control-group') || node).appendChild(E('button', {
 			'class': 'cbi-button cbi-button-add',
 			'title': _('Generate'),
@@ -78,13 +81,13 @@ return view.extend({
 		s.render = function () {
 			poll.add(function () {
 				return hm.getServiceStatus('mihomo-s').then((isRunning) => {
-					hm.updateStatus(hm, document.getElementById('_server_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-s', true);
+					hm.updateStatus(document.getElementById('_server_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-s', true);
 				});
 			});
 
 			return E('div', { class: 'cbi-section' }, [
 				E('p', [
-					hm.renderStatus(hm, '_server_bar', false, 'mihomo-s', true)
+					hm.renderStatus('_server_bar', false, 'mihomo-s', true)
 				])
 			]);
 		}
@@ -211,7 +214,7 @@ return view.extend({
 		o.password = true;
 		o.validate = function(section_id, value) {
 			const encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
-			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
+			return hm.validateShadowsocksPassword.call(this, encmode, section_id, value);
 		}
 		o.depends({type: 'shadowsocks', shadowsocks_chipher: /.+/});
 		o.modalonly = true;

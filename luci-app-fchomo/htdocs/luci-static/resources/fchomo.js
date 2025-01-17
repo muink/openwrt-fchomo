@@ -399,17 +399,17 @@ function isEmpty(res) {
 	return false;
 };
 
-function removeBlankAttrs(self, res) {
+function removeBlankAttrs(res) {
 	if (Array.isArray(res)) {
 		return res
-			.filter(item => !self.isEmpty(item))
-			.map(item => self.removeBlankAttrs(self, item));
+			.filter(item => !isEmpty(item))
+			.map(item => removeBlankAttrs(item));
 	}
 	if (res !== null && typeof res === 'object') {
 		const obj = {};
 		for (const key in res) {
-			const val = self.removeBlankAttrs(self, res[key]);
-			if (!self.isEmpty(val))
+			const val = removeBlankAttrs(res[key]);
+			if (!isEmpty(val))
 				obj[key] = val;
 		}
 		return obj;
@@ -554,43 +554,43 @@ function loadSubRuleGroup(preadds, section_id) {
 	return this.super('load', section_id);
 };
 
-function renderStatus(self, ElId, isRunning, instance, noGlobal) {
+function renderStatus(ElId, isRunning, instance, noGlobal) {
 	const visible = isRunning && (isRunning.http || isRunning.https);
 
 	return E([
 		E('button', {
 			'class': 'cbi-button cbi-button-apply' + (noGlobal ? ' hidden' : ''),
-			'click': ui.createHandlerFn(this, self.handleReload, instance)
+			'click': ui.createHandlerFn(this, handleReload, instance)
 		}, [ _('Reload') ]),
-		self.updateStatus(self, E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning ? true : false),
+		updateStatus(E('span', { id: ElId, style: 'border: unset; font-style: italic; font-weight: bold' }), isRunning ? true : false),
 		E('a', {
 			'class': 'cbi-button cbi-button-apply %s'.format(visible ? '' : 'hidden'),
-			'href': visible ? self.getDashURL(self, isRunning) : '',
+			'href': visible ? getDashURL(isRunning) : '',
 			'target': '_blank',
 			'rel': 'noreferrer noopener'
 		}, [ _('Open Dashboard') ])
 	]);
 };
-function updateStatus(self, El, isRunning, instance, noGlobal) {
+function updateStatus(El, isRunning, instance, noGlobal) {
 	if (El) {
 		El.style.color = isRunning ? 'green' : 'red';
 		El.innerHTML = '&ensp;%s%s&ensp;'.format(noGlobal ? instance + ' ' : '', isRunning ? _('Running') : _('Not Running'));
 		/* Dashboard button */
 		if (El.nextSibling?.localName === 'a')
-			self.getClashAPI(instance).then((res) => {
+			getClashAPI(instance).then((res) => {
 				let visible = isRunning && (res.http || res.https);
 				if (visible) {
 					El.nextSibling.classList.remove('hidden');
 				} else
 					El.nextSibling.classList.add('hidden');
 
-				El.nextSibling.href = visible ? self.getDashURL(self, Object.assign(res, isRunning)) : '';
+				El.nextSibling.href = visible ? getDashURL(Object.assign(res, isRunning)) : '';
 			});
 	}
 
 	return El;
 };
-function getDashURL(self, isRunning) {
+function getDashURL(isRunning) {
 	const tls = isRunning.https ? 's' : '';
 	const host = window.location.hostname;
 	const port = isRunning.https ? isRunning.https.split(':').pop() : isRunning.http.split(':').pop();
@@ -598,10 +598,10 @@ function getDashURL(self, isRunning) {
 	const repo = isRunning.dashboard_repo;
 
 	return 'http%s://%s:%s/ui/'.format(tls, host, port) +
-		String.format(self.dashrepos_urlparams[repo] || '', host, port, secret)
+		String.format(dashrepos_urlparams[repo] || '', host, port, secret)
 };
 
-function renderResDownload(self, section_id) {
+function renderResDownload(section_id) {
 	const section_type = this.section.sectiontype;
 	const type = uci.get(this.config, section_id, 'type');
 	const url = uci.get(this.config, section_id, 'url');
@@ -613,7 +613,7 @@ function renderResDownload(self, section_id) {
 			disabled: (type !== 'http') || null,
 			click: ui.createHandlerFn(this, function(section_type, section_id, type, url, header) {
 				if (type === 'http') {
-					return self.downloadFile(section_type, section_id, url, header).then((res) => {
+					return downloadFile(section_type, section_id, url, header).then((res) => {
 						ui.addNotification(null, E('p', _('Download successful.')));
 					}).catch((e) => {
 						ui.addNotification(null, E('p', _('Download failed: %s').format(e)));
@@ -672,13 +672,13 @@ function handleReload(instance, ev, section_id) {
 		})
 };
 
-function handleRemoveIdles(self) {
+function handleRemoveIdles() {
 	const section_type = this.sectiontype;
 
 	let loaded = [];
 	uci.sections(this.config, section_type, (section, sid) => loaded.push(sid));
 
-	return self.lsDir(section_type).then((res) => {
+	return lsDir(section_type).then((res) => {
 		let sectionEl = E('div', { class: 'cbi-section' }, []);
 
 		res.filter(e => !loaded.includes(e)).forEach((filename) => {
@@ -692,7 +692,7 @@ function handleRemoveIdles(self) {
 						class: 'cbi-button cbi-button-negative important',
 						id: 'rmidles.' + filename + '.button',
 						click: ui.createHandlerFn(this, function(filename) {
-							return self.removeFile(section_type, filename).then((res) => {
+							return removeFile(section_type, filename).then((res) => {
 								let node = document.getElementById('rmidles.' + filename + '.label');
 								node.innerHTML = '<s>%s</s>'.format(node.innerHTML);
 								node = document.getElementById('rmidles.' + filename + '.button');
@@ -812,12 +812,12 @@ function validateBase64Key(length, section_id, value) {
 	return true;
 };
 
-function validateShadowsocksPassword(self, encmode, section_id, value) {
-	let length = self.shadowsocks_cipher_length[encmode];
+function validateShadowsocksPassword(encmode, section_id, value) {
+	let length = shadowsocks_cipher_length[encmode];
 	if (typeof length !== 'undefined') {
 		length = Math.ceil(length/3)*4;
 		if (encmode.match(/^2022-/)) {
-			return self.validateBase64Key(length, section_id, value);
+			return validateBase64Key(length, section_id, value);
 		} else {
 			if (length === 0 && !value)
 				return _('Expecting: %s').format(_('non-empty value'));

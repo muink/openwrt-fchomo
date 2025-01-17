@@ -165,7 +165,7 @@ class RulesEntry {
 				factor = [{type: 'MATCH'}];
 		}
 
-		rule = hm.removeBlankAttrs(hm, {
+		rule = hm.removeBlankAttrs({
 			type: this.type,
 			payload: factor,
 			detour: detour || null,
@@ -579,13 +579,13 @@ return view.extend({
 		s.render = function () {
 			poll.add(function () {
 				return hm.getServiceStatus('mihomo-c').then((isRunning) => {
-					hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-c', true);
+					hm.updateStatus(document.getElementById('_client_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-c', true);
 				});
 			});
 
 			return E('div', { class: 'cbi-section' }, [
 				E('p', [
-					hm.renderStatus(hm, '_client_bar', false, 'mihomo-c', true)
+					hm.renderStatus('_client_bar', false, 'mihomo-c', true)
 				])
 			]);
 		}

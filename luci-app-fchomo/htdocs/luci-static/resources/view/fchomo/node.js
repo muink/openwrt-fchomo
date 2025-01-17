@@ -152,7 +152,7 @@ return view.extend({
 		so.password = true;
 		so.validate = function(section_id, value) {
 			const encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
-			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
+			return hm.validateShadowsocksPassword.call(this, encmode, section_id, value);
 		}
 		so.depends({type: 'ss', shadowsocks_chipher: /.+/});
 		so.modalonly = true;
@@ -279,7 +279,7 @@ return view.extend({
 		so.password = true;
 		so.validate = function(section_id, value) {
 			const encmode = this.section.getOption('trojan_ss_chipher').formvalue(section_id);
-			return hm.validateShadowsocksPassword.call(this, hm, encmode, section_id, value);
+			return hm.validateShadowsocksPassword.call(this, encmode, section_id, value);
 		}
 		so.depends({type: 'trojan', trojan_ss_enabled: '1'});
 		so.modalonly = true;
@@ -798,7 +798,7 @@ return view.extend({
 			el.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
 				'title': _('Remove idles'),
-				'click': ui.createHandlerFn(this, hm.handleRemoveIdles, hm)
+				'click': ui.createHandlerFn(this, hm.handleRemoveIdles)
 			}, [ _('Remove idles') ]));
 
 			return el;
@@ -1041,7 +1041,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.option(form.DummyValue, '_update');
-		so.cfgvalue = L.bind(hm.renderResDownload, so, hm);
+		so.cfgvalue = L.bind(hm.renderResDownload, so);
 		so.editable = true;
 		so.modalonly = false;
 		/* Provider END */

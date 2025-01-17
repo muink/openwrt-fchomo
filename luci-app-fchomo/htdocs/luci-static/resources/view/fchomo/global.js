@@ -195,18 +195,18 @@ return view.extend({
 		}
 
 		so = ss.option(form.DummyValue, '_client_status', _('Client status'));
-		so.cfgvalue = function() { return hm.renderStatus(hm, '_client_bar', CisRunning ? { ...CclashAPI, dashboard_repo: dashboard_repo } : false, 'mihomo-c') }
+		so.cfgvalue = function() { return hm.renderStatus('_client_bar', CisRunning ? { ...CclashAPI, dashboard_repo: dashboard_repo } : false, 'mihomo-c') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-c').then((isRunning) => {
-				hm.updateStatus(hm, document.getElementById('_client_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-c');
+				hm.updateStatus(document.getElementById('_client_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-c');
 			});
 		})
 
 		so = ss.option(form.DummyValue, '_server_status', _('Server status'));
-		so.cfgvalue = function() { return hm.renderStatus(hm, '_server_bar', SisRunning ? { ...SclashAPI, dashboard_repo: dashboard_repo } : false, 'mihomo-s') }
+		so.cfgvalue = function() { return hm.renderStatus('_server_bar', SisRunning ? { ...SclashAPI, dashboard_repo: dashboard_repo } : false, 'mihomo-s') }
 		poll.add(function() {
 			return hm.getServiceStatus('mihomo-s').then((isRunning) => {
-				hm.updateStatus(hm, document.getElementById('_server_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-s');
+				hm.updateStatus(document.getElementById('_server_bar'), isRunning ? { dashboard_repo: dashboard_repo } : false, 'mihomo-s');
 			});
 		})
 

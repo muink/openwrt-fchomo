@@ -183,7 +183,7 @@ return view.extend({
 			el.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
 				'title': _('Remove idles'),
-				'click': ui.createHandlerFn(this, hm.handleRemoveIdles, hm)
+				'click': ui.createHandlerFn(this, hm.handleRemoveIdles)
 			}, [ _('Remove idles') ]));
 
 			return el;
@@ -312,7 +312,7 @@ return view.extend({
 		o.depends('type', 'http');
 
 		o = s.option(form.DummyValue, '_update');
-		o.cfgvalue = L.bind(hm.renderResDownload, o, hm);
+		o.cfgvalue = L.bind(hm.renderResDownload, o);
 		o.editable = true;
 		o.modalonly = false;
 		/* Rule set END */

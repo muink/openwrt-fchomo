@@ -235,6 +235,25 @@ const tls_client_fingerprints = [
 ];
 
 /* Prototype */
+const CBIGenValue = form.Value.extend({
+	__name__: 'CBI.GenValue',
+
+	renderWidget() {
+		let node = form.Value.prototype.renderWidget.apply(this, arguments);
+
+		if (!this.password)
+			node.classList.add('control-group');
+
+		(node.querySelector('.control-group') || node).appendChild(E('button', {
+			'class': 'cbi-button cbi-button-add',
+			'title': _('Generate'),
+			'click': ui.createHandlerFn(this, handleGenKey, this.option)
+		}, [ _('Generate') ]));
+
+		return node;
+	}
+});
+
 const CBIListValue = form.ListValue.extend({
 	renderWidget(/* ... */) {
 		let frameEl = form.ListValue.prototype.renderWidget.apply(this, arguments);
@@ -663,6 +682,40 @@ function handleAdd(prefmt, ev, name) {
 	return form.GridSection.prototype.handleAdd.apply(this, [ ev, prefix + name + suffix ]);
 }
 
+function handleGenKey(option) {
+	const section_id = this.section.section;
+	const type = this.section.getOption('type').formvalue(section_id);
+	let widget = this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
+	let password, required_method;
+
+	if (option === 'uuid' || option.match(/_uuid/))
+		required_method = 'uuid';
+	else if (type === 'shadowsocks')
+		required_method = this.section.getOption('shadowsocks_chipher')?.formvalue(section_id);
+
+	switch (required_method) {
+		/* NONE */
+		case 'none':
+			password = '';
+			break;
+		/* UUID */
+		case 'uuid':
+			password = generateRand('uuid');
+			break;
+		/* DEFAULT */
+		default:
+			password = generateRand('hex', 16);
+			break;
+	}
+	/* AEAD */
+	(function(length) {
+		if (length && length > 0)
+			password = generateRand('base64', length);
+	}(shadowsocks_cipher_length[required_method]));
+
+	return widget.value = password;
+}
+
 function handleReload(instance, ev, section_id) {
 	instance = instance || '';
 	return fs.exec('/etc/init.d/fchomo', ['reload', instance])
@@ -1035,6 +1088,7 @@ return baseclass.extend({
 	tls_client_fingerprints,
 
 	/* Prototype */
+	GenValue: CBIGenValue,
 	ListValue: CBIListValue,
 	StaticList: CBIStaticList,
 	TextValue: CBITextValue,
@@ -1061,6 +1115,7 @@ return baseclass.extend({
 	renderResDownload,
 	renderSectionAdd,
 	handleAdd,
+	handleGenKey,
 	handleReload,
 	handleRemoveIdles,
 	textvalue2Value,

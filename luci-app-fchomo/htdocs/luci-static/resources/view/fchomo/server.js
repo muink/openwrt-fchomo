@@ -7,59 +7,6 @@
 
 'require fchomo as hm';
 
-function handleGenKey(option) {
-	const section_id = this.section.section;
-	const type = this.section.getOption('type').formvalue(section_id);
-	let widget = this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
-	let password, required_method;
-
-	if (option === 'uuid' || option.match(/_uuid/))
-		required_method = 'uuid';
-	else if (type === 'shadowsocks')
-		required_method = this.section.getOption('shadowsocks_chipher')?.formvalue(section_id);
-
-	switch (required_method) {
-		/* NONE */
-		case 'none':
-			password = '';
-			break;
-		/* UUID */
-		case 'uuid':
-			password = hm.generateRand('uuid');
-			break;
-		/* DEFAULT */
-		default:
-			password = hm.generateRand('hex', 16);
-			break;
-	}
-	/* AEAD */
-	(function(length) {
-		if (length && length > 0)
-			password = hm.generateRand('base64', length);
-	}(hm.shadowsocks_cipher_length[required_method]));
-
-	return widget.value = password;
-}
-
-const CBIPWGenValue = form.Value.extend({
-	__name__: 'CBI.PWGenValue',
-
-	renderWidget() {
-		let node = form.Value.prototype.renderWidget.apply(this, arguments);
-
-		if (!this.password)
-			node.classList.add('control-group');
-
-		(node.querySelector('.control-group') || node).appendChild(E('button', {
-			'class': 'cbi-button cbi-button-add',
-			'title': _('Generate'),
-			'click': ui.createHandlerFn(this, handleGenKey, this.option)
-		}, [ _('Generate') ]));
-
-		return node;
-	}
-});
-
 return view.extend({
 	load() {
 		return Promise.all([
@@ -154,7 +101,7 @@ return view.extend({
 		o.depends({type: /^(http|socks|mixed|hysteria2)$/});
 		o.modalonly = true;
 
-		o = s.option(CBIPWGenValue, 'password', _('Password'));
+		o = s.option(hm.GenValue, 'password', _('Password'));
 		o.password = true;
 		o.validate = L.bind(hm.validateAuthPassword, o);
 		o.rmempty = false;
@@ -187,7 +134,7 @@ return view.extend({
 		o.depends('type', 'hysteria2');
 		o.modalonly = true;
 
-		o = s.option(CBIPWGenValue, 'hysteria_obfs_password', _('Obfuscate password'),
+		o = s.option(hm.GenValue, 'hysteria_obfs_password', _('Obfuscate password'),
 			_('Enabling obfuscation will make the server incompatible with standard QUIC connections, losing the ability to masquerade with HTTP/3.'));
 		o.password = true;
 		o.rmempty = false;
@@ -210,7 +157,7 @@ return view.extend({
 		o.depends('type', 'shadowsocks');
 		o.modalonly = true;
 
-		o = s.option(CBIPWGenValue, 'shadowsocks_password', _('Password'));
+		o = s.option(hm.GenValue, 'shadowsocks_password', _('Password'));
 		o.password = true;
 		o.validate = function(section_id, value) {
 			const encmode = this.section.getOption('shadowsocks_chipher').formvalue(section_id);
@@ -220,7 +167,7 @@ return view.extend({
 		o.modalonly = true;
 
 		/* Tuic fields */
-		o = s.option(CBIPWGenValue, 'uuid', _('UUID'));
+		o = s.option(hm.GenValue, 'uuid', _('UUID'));
 		o.rmempty = false;
 		o.validate = L.bind(hm.validateUUID, o);
 		o.depends('type', 'tuic');
@@ -256,7 +203,7 @@ return view.extend({
 		o.modalonly = true;
 
 		/* VMess fields */
-		o = s.option(CBIPWGenValue, 'vmess_uuid', _('UUID'));
+		o = s.option(hm.GenValue, 'vmess_uuid', _('UUID'));
 		o.rmempty = false;
 		o.validate = L.bind(hm.validateUUID, o);
 		o.depends('type', 'vmess');

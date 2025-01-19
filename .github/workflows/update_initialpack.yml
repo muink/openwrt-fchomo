@@ -1,0 +1,91 @@
+name: Update initialpack
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: "0 23 */15 * *"
+
+jobs:
+  deploy:
+    name: Update initialpack
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # To push a branch
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Make initialpack
+      shell: bash
+      run: |
+        wget="wget --tries=1 --timeout=10 -q"
+        # mkdir
+        resdir='resources'
+        mkdir -p initialpack/$resdir/
+        pushd initialpack
+        # Dashboard
+        dashrepo='metacubex/metacubexd'
+        dashrepoid="$(echo -n "$dashrepo" | sed 's|\W|_|g' | tr 'A-Z' 'a-z')"
+        if ! $wget "https://codeload.github.com/$dashrepo/tar.gz/refs/heads/gh-pages" -O "$resdir/$dashrepoid.tgz" || ! tar -tzf "$resdir/$dashrepoid.tgz" >/dev/null; then
+          >&2 echo "[$dashrepo] download failed."
+          exit 1
+        fi
+        # Routing list
+        listrepo='muink/route-list'
+        listref='release'
+        listnames='
+          china_ip4:china_ipv4.txt
+          china_ip6:china_ipv6.txt
+          gfw_list:gfwlist.txt
+          china_list:china_list2.txt'
+        for listname in $listnames; do
+          if ! $wget "https://raw.githubusercontent.com/$listrepo/refs/heads/$listref/${listname##*:}" -O "$resdir/${listname%:*}.txt" || [ ! -s "$resdir/${listname%:*}.txt" ]; then
+            >&2 echo "[$listname] download failed."
+            exit 1
+          fi
+        done
+        # Geodata
+        georepo='Loyalsoldier/v2ray-rules-dat'
+        geotypes='geoip geosite'
+        for geotype in $geotypes; do
+          if ! $wget "https://raw.githubusercontent.com/$georepo/refs/heads/release/$geotype.dat" -O "$geotype.dat" || [ ! -s "$geotype.dat" ]; then
+            >&2 echo "[$geotype] download failed."
+            exit 1
+          fi
+        done
+        # Make resources.json
+        timestamp="$(date -u "+%Y%m%d%H%M")"
+        cat <<-EOF > resources.json
+        {
+          "geoip": "$timestamp",
+          "geosite": "$timestamp",
+          "dashboard": {
+            "$dashrepoid": {
+              "repo": "$dashrepo",
+              "version": "$timestamp"
+            }
+          },
+          "china_ip4": "$timestamp",
+          "china_ip6": "$timestamp",
+          "gfw_list": "$timestamp",
+          "china_list": "$timestamp"
+        }
+        EOF
+        # Make tarball
+        tar -czvf ../initial.tgz * --owner=0 --group=0 --no-same-owner --no-same-permissions
+        popd
+
+    - name: Init repo
+      shell: bash
+      run: |
+        git config --local user.name "GitHub Action"
+        git config --local user.email "actions-user@users.noreply.github.com"
+
+    - name: Commit and push files
+      shell: bash
+      env:
+        Branch: initialpack
+      run: |
+        git checkout --orphan $Branch; git reset
+        git add initial.tgz
+        git commit -m "$(date -u "+%Y%m%d%H%M")"
+        git push -f origin refs/heads/$Branch

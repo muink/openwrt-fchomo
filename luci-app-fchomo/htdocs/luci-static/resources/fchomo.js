@@ -15,6 +15,8 @@ const sharktaikogif = function() {
 'c2hhcmstdGFpa28uZ2lm'
 }()
 
+const less_24_10 = !form.RichListValue;
+
 const monospacefonts = [
 	'"Cascadia Code"',
 	'"Cascadia Mono"',
@@ -1067,6 +1069,7 @@ return baseclass.extend({
 	/* Member */
 	rulesetdoc,
 	sharktaikogif,
+	less_24_10,
 	monospacefonts,
 	dashrepos,
 	dashrepos_urlparams,

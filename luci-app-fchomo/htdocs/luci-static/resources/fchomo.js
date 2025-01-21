@@ -18,6 +18,7 @@ const sharktaikogif = function() {
 const less_24_10 = !form.RichListValue;
 
 const pr7558_merged = false;
+const pr7574_merged = false;
 
 const monospacefonts = [
 	'"Cascadia Code"',
@@ -305,9 +306,13 @@ const CBIStaticList = form.DynamicList.extend({
 
 const CBITextValue = form.TextValue.extend({
 	renderWidget(/* ... */) {
+		if (pr7574_merged)
+			this.monospace = monospacefonts.join(',');
+
 		let frameEl = form.TextValue.prototype.renderWidget.apply(this, arguments);
 
-		frameEl.querySelector('textarea').style.fontFamily = monospacefonts.join(',');
+		if (!pr7574_merged)
+			frameEl.querySelector('textarea').style.fontFamily = monospacefonts.join(',');
 
 		return frameEl;
 	}
@@ -1123,6 +1128,7 @@ return baseclass.extend({
 	sharktaikogif,
 	less_24_10,
 	pr7558_merged,
+	pr7574_merged,
 	monospacefonts,
 	dashrepos,
 	dashrepos_urlparams,

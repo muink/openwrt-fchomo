@@ -10,9 +10,10 @@
 - DNS requests intelligent routing based on EDNS-Client-Subnet/Policy
 - Based on mihomo documentation, fully visual configuration GUI
 
-## Todo
+## Requirements
 
-- [ ] Any other improvements
+- OpenWrt >= 23.05
+- firewall4
 
 ## Known issues
 

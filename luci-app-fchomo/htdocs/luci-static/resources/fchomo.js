@@ -294,7 +294,7 @@ const CBIListValue = form.ListValue.extend({
 const CBIRichMultiValue = form.MultiValue.extend({
 	__name__: 'CBI.RichMultiValue',
 
-	value: (form.RichListValue || form.MultiValue).prototype.value
+	value: (form.RichListValue || form.MultiValue).prototype.value // less_24_10
 });
 
 const CBIStaticList = form.DynamicList.extend({

@@ -106,43 +106,6 @@ function updateResVersion(El, version) {
 	return El;
 }
 
-function renderNATBehaviorTest(El) {
-	let resEl = E('div',  { 'class': 'control-group' }, [
-		E('select', {
-			'id': '_status_nattest_l4proto',
-			'class': 'cbi-input-select',
-			'style': 'width: 5em'
-		}, [
-			E('option', { 'value': 'udp' }, 'UDP'),
-			E('option', { 'value': 'tcp' }, 'TCP')
-		]),
-		E('button', {
-			'class': 'cbi-button cbi-button-apply',
-			'click': ui.createHandlerFn(this, function() {
-				const stun = this.formvalue(this.section.section);
-				const l4proto = document.getElementById('_status_nattest_l4proto').value;
-				const l4proto_idx = document.getElementById('_status_nattest_l4proto').selectedIndex;
-
-				return fs.exec_direct('/etc/fchomo/scripts/natcheck.sh', [stun, l4proto, getRandom(32768, 61000)]).then((stdout) => {
-					this.description = '<details><summary>' + _('Expand/Collapse result') + '</summary>' + stdout + '</details>';
-
-					return this.map.reset().then((res) => {
-						document.getElementById('_status_nattest_l4proto').selectedIndex = l4proto_idx;
-					});
-				});
-			})
-		}, [ _('Check') ])
-	]);
-
-	let newEl = E('div', { style: 'font-weight: bold; align-items: center; display: flex' }, []);
-	if (El) {
-		newEl.appendChild(E([El, resEl]));
-	} else
-		newEl.appendChild(resEl);
-
-	return newEl;
-}
-
 return view.extend({
 	load() {
 		return Promise.all([
@@ -260,7 +223,40 @@ return view.extend({
 			so.renderWidget = function(/* ... */) {
 				let El = form.Value.prototype.renderWidget.apply(this, arguments);
 
-				return renderNATBehaviorTest.call(this, El);
+				let resEl = E('div',  { 'class': 'control-group' }, [
+					E('select', {
+						'id': '_status_nattest_l4proto',
+						'class': 'cbi-input-select',
+						'style': 'width: 5em'
+					}, [
+						E('option', { 'value': 'udp' }, 'UDP'),
+						E('option', { 'value': 'tcp' }, 'TCP')
+					]),
+					E('button', {
+						'class': 'cbi-button cbi-button-apply',
+						'click': ui.createHandlerFn(this, function() {
+							const stun = this.formvalue(this.section.section);
+							const l4proto = document.getElementById('_status_nattest_l4proto').value;
+							const l4proto_idx = document.getElementById('_status_nattest_l4proto').selectedIndex;
+
+							return fs.exec_direct('/etc/fchomo/scripts/natcheck.sh', [stun, l4proto, getRandom(32768, 61000)]).then((stdout) => {
+								this.description = '<details><summary>' + _('Expand/Collapse result') + '</summary>' + stdout + '</details>';
+
+								return this.map.reset().then((res) => {
+									document.getElementById('_status_nattest_l4proto').selectedIndex = l4proto_idx;
+								});
+							});
+						})
+					}, [ _('Check') ])
+				]);
+
+				let newEl = E('div', { style: 'font-weight: bold; align-items: center; display: flex' }, []);
+				if (El) {
+					newEl.appendChild(E([El, resEl]));
+				} else
+					newEl.appendChild(resEl);
+
+				return newEl;
 			}
 		}
 		so.onchange = function(ev, section_id, value) {

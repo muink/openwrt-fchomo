@@ -59,6 +59,8 @@ function wGET(url, header, filepath) {
 }
 
 const HM_DIR = '/etc/fchomo';
+const EXE_DIR = '/usr/libexec/fchomo';
+const SDL_DIR = '/usr/share/fchomo';
 const RUN_DIR = '/var/run/fchomo';
 const RES_TYPE = ['certs', 'provider', 'ruleset', 'resources', 'templates'];
 
@@ -144,9 +146,9 @@ const methods = {
 		args: { type: 'type', expr: 'expr' },
 		call: function(req) {
 			if (req.args?.type == 'resources') {
-				system(`sed -i "/${replace(HM_DIR, "/", "\\/")}\\/scripts\\/update_resources.sh/d" /etc/crontabs/root`);
+				system(`sed -i "/${replace(EXE_DIR, "/", "\\/")}\\/update_resources.sh/d" /etc/crontabs/root`);
 				if (req.args?.expr)
-					system(`echo -e "` + req.args?.expr + ` ${HM_DIR}/scripts/update_resources.sh ALL" >> /etc/crontabs/root`);
+					system(`echo -e "` + req.args?.expr + ` ${EXE_DIR}/update_resources.sh ALL" >> /etc/crontabs/root`);
 			} else
 				return { result: false, error: 'illegal type' };
 
@@ -190,7 +192,7 @@ const methods = {
 			if (req.args?.type) {
 				const type = shellquote(req.args?.type),
 				      repo = shellquote(req.args?.repo);
-				const exit_code = system(`${HM_DIR}/scripts/update_resources.sh ${type} ${repo}`);
+				const exit_code = system(`${EXE_DIR}/update_resources.sh ${type} ${repo}`);
 				return { status: exit_code };
 			} else
 				return { status: 255, error: 'illegal type' };

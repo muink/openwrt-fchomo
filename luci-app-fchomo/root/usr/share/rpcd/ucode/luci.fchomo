@@ -3,11 +3,10 @@
 'use strict';
 
 import { access, lsdir, lstat, popen, readfile, writefile } from 'fs';
-
-/* Kanged from ucode/luci */
-function shellquote(s) {
-	return `'${replace(s, "'", "'\\''")}'`;
-}
+import {
+	shellQuote, yqRead,
+	HM_DIR, EXE_DIR, SDL_DIR, RUN_DIR
+} from '/usr/share/fchomo/fchomo.uc';
 
 function isBinary(str) {
 	for (let off = 0, byte = ord(str); off < length(str); byte = ord(str, ++off))
@@ -18,19 +17,7 @@ function isBinary(str) {
 }
 
 function hasKernelModule(kmod) {
-	return (system(sprintf('[ -e "/lib/modules/$(uname -r)"/%s ]', shellquote(kmod))) === 0);
-}
-
-function yqRead(flags, command, filepath) {
-	let out = '';
-
-	const fd = popen(`yq ${flags} ${shellquote(command)} ${filepath}`);
-	if (fd) {
-		out = fd.read('all');
-		fd.close();
-	}
-
-	return out;
+	return (system(sprintf('[ -e "/lib/modules/$(uname -r)"/%s ]', shellQuote(kmod))) === 0);
 }
 
 function wGET(url, header, filepath) {
@@ -48,20 +35,16 @@ function wGET(url, header, filepath) {
 				ua = v;
 				v = null;
 			}
-			return v ? '--header=' + shellquote(`${k}: ${v}`) : null;
+			return v ? '--header=' + shellQuote(`${k}: ${v}`) : null;
 		}), v => v));
 	} else
 		header = '';
 
-	let exitcode = system(`wget --tries=1 --timeout=10 --user-agent ${shellquote(ua)} ${header} -q ${shellquote(url)} -O ${shellquote(filepath)}`);
+	let exitcode = system(`wget --tries=1 --timeout=10 --user-agent ${shellQuote(ua)} ${header} -q ${shellQuote(url)} -O ${shellQuote(filepath)}`);
 
 	return exitcode;
 }
 
-const HM_DIR = '/etc/fchomo';
-const EXE_DIR = '/usr/libexec/fchomo';
-const SDL_DIR = '/usr/share/fchomo';
-const RUN_DIR = '/var/run/fchomo';
 const RES_TYPE = ['certs', 'provider', 'ruleset', 'resources', 'templates'];
 
 const methods = {
@@ -190,8 +173,8 @@ const methods = {
 		args: { type: 'type', repo: 'repo' },
 		call: function(req) {
 			if (req.args?.type) {
-				const type = shellquote(req.args?.type),
-				      repo = shellquote(req.args?.repo);
+				const type = shellQuote(req.args?.type),
+				      repo = shellQuote(req.args?.repo);
 				const exit_code = system(`${EXE_DIR}/update_resources.sh ${type} ${repo}`);
 				return { status: exit_code };
 			} else

@@ -31,13 +31,6 @@ You can find the prebuilt-ipks [here](https://fantastic-packages.github.io/packa
 
 ## Compatibility with Nikki
 
-Core:
-
-- The Mihomo core provided by FullCombo Shark! only contains binaries and does not have daemons.
-- So in theory you can use the mihomo core provided by Nikki.
-
-LuCI application:
-
 - FullCombo Shark! and Nikki can be installed on the same device, but cannot be started as clients at the same time.
 
 ## Installation

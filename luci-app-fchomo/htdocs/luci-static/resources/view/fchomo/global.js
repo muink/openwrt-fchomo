@@ -136,7 +136,7 @@ return view.extend({
 
 		let m, s, o, ss, so;
 
-		m = new form.Map('fchomo', _('FullCombo Mihomo'),
+		m = new form.Map('fchomo', _('FullCombo Shark!'),
 			'<img src="' + hm.sharktaikogif + '" title="A!" alt="Ciallo～(∠・ω< )⌒☆" height="52"></img>' +
 			'<audio src="' + hm.sharkaudio + '" preload="auto" hidden=""></audio>');
 		m.renderContents = function(/* ... */) {

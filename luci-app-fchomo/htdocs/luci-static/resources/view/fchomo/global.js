@@ -467,6 +467,7 @@ return view.extend({
 		so.placeholder = '7892';
 		so.rmempty = false;
 
+		// Not required for v1.19.2+
 		so = ss.option(form.Value, 'tunnel_port', _('DNS port'));
 		so.datatype = 'port';
 		so.placeholder = '7893';

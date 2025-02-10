@@ -270,7 +270,7 @@ const CBIDynamicList = form.DynamicList.extend({
 const CBIGenValue = form.Value.extend({
 	__name__: 'CBI.GenValue',
 
-	renderWidget() {
+	renderWidget(/* ... */) {
 		let node = form.Value.prototype.renderWidget.apply(this, arguments);
 
 		if (!this.password)

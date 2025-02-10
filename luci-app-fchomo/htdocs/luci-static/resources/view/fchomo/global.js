@@ -7,7 +7,6 @@
 'require uci';
 'require ui';
 'require view';
-'require dom';
 
 'require fchomo as hm';
 'require tools.firewall as fwtool';

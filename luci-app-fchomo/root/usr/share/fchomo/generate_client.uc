@@ -650,8 +650,6 @@ uci.foreach(uciconf, ucipgrp, (cfg) => {
 		strategy: cfg.strategy,
 		// Override fields
 		"disable-udp": strToBool(cfg.disable_udp) || false,
-		"interface-name": cfg.interface_name, // need deprecated
-		"routing-mark": strToInt(cfg.routing_mark) || null, // need deprecated
 		// Health fields
 		url: cfg.url,
 		interval: cfg.url ? durationToSecond(cfg.interval) ?? 600 : null,

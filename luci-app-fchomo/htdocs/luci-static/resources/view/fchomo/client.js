@@ -697,20 +697,20 @@ return view.extend({
 		so.default = so.disabled;
 		so.modalonly = true;
 
-		// need deprecated
+		// Deprecated
 		so = ss.taboption('field_override', widgets.DeviceSelect, 'interface_name', _('Bind interface'),
 			_('Bind outbound interface.</br>') +
-			_('Priority: Proxy Node > Proxy Group > Global.') + '</br>' +
-			_('Option will soon be deprecated, please use the same option in proxy node.'));
+			_('Priority: Proxy Node > Global.') + '</br>' +
+			_('Option is deprecated, please use the same option in proxy node.'));
 		so.multiple = false;
 		so.noaliases = true;
 		so.readonly = true;
 		so.modalonly = true;
 
-		// need deprecated
+		// Deprecated
 		so = ss.taboption('field_override', form.Value, 'routing_mark', _('Routing mark'),
-			_('Priority: Proxy Node > Proxy Group > Global.') + '</br>' +
-			_('Option will soon be deprecated, please use the same option in proxy node.'));
+			_('Priority: Proxy Node > Global.') + '</br>' +
+			_('Option is deprecated, please use the same option in proxy node.'));
 		so.datatype = 'uinteger';
 		so.readonly = true;
 		so.modalonly = true;

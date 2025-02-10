@@ -1470,7 +1470,7 @@ msgstr ""
 #: htdocs/luci-static/resources/view/fchomo/client.js:704
 #: htdocs/luci-static/resources/view/fchomo/client.js:713
 msgid ""
-"Option will soon be deprecated, please use the same option in proxy node."
+"Option is deprecated, please use the same option in proxy node."
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:1063
@@ -1611,7 +1611,7 @@ msgstr ""
 #: htdocs/luci-static/resources/view/fchomo/node.js:769
 #: htdocs/luci-static/resources/view/fchomo/node.js:971
 #: htdocs/luci-static/resources/view/fchomo/node.js:977
-msgid "Priority: Proxy Node > Proxy Group > Global."
+msgid "Priority: Proxy Node > Global."
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:123

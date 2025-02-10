@@ -760,13 +760,13 @@ return view.extend({
 
 		so = ss.taboption('field_dial', widgets.DeviceSelect, 'interface_name', _('Bind interface'),
 			_('Bind outbound interface.</br>') +
-			_('Priority: Proxy Node > Proxy Group > Global.'));
+			_('Priority: Proxy Node > Global.'));
 		so.multiple = false;
 		so.noaliases = true;
 		so.modalonly = true;
 
 		so = ss.taboption('field_dial', form.Value, 'routing_mark', _('Routing mark'),
-			_('Priority: Proxy Node > Proxy Group > Global.'));
+			_('Priority: Proxy Node > Global.'));
 		so.datatype = 'uinteger';
 		so.modalonly = true;
 
@@ -968,13 +968,13 @@ return view.extend({
 
 		so = ss.taboption('field_override', widgets.DeviceSelect, 'override_interface_name', _('Bind interface'),
 			_('Bind outbound interface.</br>') +
-			_('Priority: Proxy Node > Proxy Group > Global.'));
+			_('Priority: Proxy Node > Global.'));
 		so.multiple = false;
 		so.noaliases = true;
 		so.modalonly = true;
 
 		so = ss.taboption('field_override', form.Value, 'override_routing_mark', _('Routing mark'),
-			_('Priority: Proxy Node > Proxy Group > Global.'));
+			_('Priority: Proxy Node > Global.'));
 		so.datatype = 'uinteger';
 		so.modalonly = true;
 

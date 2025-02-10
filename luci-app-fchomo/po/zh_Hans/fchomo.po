@@ -1492,8 +1492,8 @@ msgstr "运行模式"
 #: htdocs/luci-static/resources/view/fchomo/client.js:704
 #: htdocs/luci-static/resources/view/fchomo/client.js:713
 msgid ""
-"Option will soon be deprecated, please use the same option in proxy node."
-msgstr "该选项即将被弃用，请在代理节点中使用相同的选项。"
+"Option is deprecated, please use the same option in proxy node."
+msgstr "该选项已弃用，请在代理节点中使用相同的选项。"
 
 #: htdocs/luci-static/resources/view/fchomo/client.js:1063
 msgid "Override ECS in original request."
@@ -1634,8 +1634,8 @@ msgstr "优先 IPv6"
 #: htdocs/luci-static/resources/view/fchomo/node.js:769
 #: htdocs/luci-static/resources/view/fchomo/node.js:971
 #: htdocs/luci-static/resources/view/fchomo/node.js:977
-msgid "Priority: Proxy Node > Proxy Group > Global."
-msgstr "优先级: 代理节点 > 代理组 > 全局。"
+msgid "Priority: Proxy Node > Global."
+msgstr "优先级: 代理节点 > 全局。"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:123
 msgid "Priv-key"

@@ -96,8 +96,17 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		/* TLS */
 		...(cfg.tls === '1' ? {
 			alpn: cfg.tls_alpn,
-			certificate: cfg.tls_cert_path,
-			"private-key": cfg.tls_key_path
+			...(cfg.tls_reality === '1' ? {
+				"reality-config": {
+					dest: cfg.tls_reality_dest,
+					"private-key": cfg.tls_reality_private_key,
+					"short-id": cfg.tls_reality_short_id,
+					"server-names": cfg.tls_reality_server_names
+				}
+			} : {
+				certificate: cfg.tls_cert_path,
+				"private-key": cfg.tls_key_path
+			})
 		} : {})
 	});
 });

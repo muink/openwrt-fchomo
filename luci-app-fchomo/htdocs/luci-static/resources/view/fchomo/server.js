@@ -231,6 +231,7 @@ return view.extend({
 			const type = this.section.getOption('type').formvalue(section_id);
 			let tls = this.section.getUIElement(section_id, 'tls').node.querySelector('input');
 			let tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
+			let tls_reality = this.section.getUIElement(section_id, 'tls_reality').node.querySelector('input');
 
 			// Force enabled
 			if (['vless', 'tuic', 'hysteria2'].includes(type)) {
@@ -240,6 +241,14 @@ return view.extend({
 					tls_alpn.setValue('h3');
 			} else {
 				tls.disabled = null;
+			}
+
+			// Force disabled
+			if (!['vmess', 'vless'].includes(type)) {
+				tls_reality.checked = null;
+				tls_reality.disabled = true;
+			} else {
+				tls_reality.disabled = null;
 			}
 
 			return true;
@@ -255,7 +264,7 @@ return view.extend({
 		o = s.option(form.Value, 'tls_cert_path', _('Certificate path'),
 			_('The server public key, in PEM format.'));
 		o.value('/etc/fchomo/certs/server_publickey.pem');
-		o.depends('tls', '1');
+		o.depends({tls: '1', tls_reality: '0'});
 		o.rmempty = false;
 		o.modalonly = true;
 
@@ -280,6 +289,50 @@ return view.extend({
 		o.inputtitle = _('Upload...');
 		o.depends({tls: '1', tls_key_path: '/etc/fchomo/certs/server_privatekey.pem'});
 		o.onclick = L.bind(hm.uploadCertificate, o, _('private key'), 'server_privatekey');
+		o.modalonly = true;
+
+		// uTLS fields
+		o = s.option(form.Flag, 'tls_reality', _('REALITY'));
+		o.default = o.disabled;
+		o.depends('tls', '1');
+		o.modalonly = true;
+
+		o = s.option(form.Value, 'tls_reality_dest', _('REALITY handshake server'));
+		o.datatype = 'hostport';
+		o.placeholder = 'cloud.tencent.com';
+		o.rmempty = false;
+		o.depends('tls_reality', '1');
+		o.modalonly = true;
+
+		o = s.option(hm.GenValue, 'tls_reality_private_key', _('REALITY private key'));
+		const tls_reality_public_key = 'tls_reality_public_key';
+		o.hm_asymmetric = {
+			type: 'reality-keypair',
+			result: {
+				private_key: o.option,
+				public_key: tls_reality_public_key
+			}
+		};
+		o.password = true;
+		o.rmempty = false;
+		o.depends('tls_reality', '1');
+		o.modalonly = true;
+
+		o = s.option(form.Value, tls_reality_public_key, _('REALITY public key'));
+		o.depends('tls_reality', '1');
+		o.modalonly = true;
+
+		o = s.option(form.DynamicList, 'tls_reality_short_id', _('REALITY short ID'));
+		//o.value('', '""');
+		o.rmempty = false;
+		o.depends('tls_reality', '1');
+		o.modalonly = true;
+
+		o = s.option(form.DynamicList, 'tls_reality_server_names', _('REALITY certificate issued to'));
+		o.datatype = 'list(hostname)';
+		o.placeholder = 'cloud.tencent.com';
+		o.rmempty = false;
+		o.depends('tls_reality', '1');
 		o.modalonly = true;
 
 		/* Extra fields */

@@ -285,7 +285,7 @@ const CBIGenValue = form.Value.extend({
 		(node.querySelector('.control-group') || node).appendChild(E('button', {
 			'class': 'cbi-button cbi-button-add',
 			'title': _('Generate'),
-			'click': ui.createHandlerFn(this, handleGenKey, this.option)
+			'click': ui.createHandlerFn(this, handleGenKey, this.hm_asymmetric || this.option)
 		}, [ _('Generate') ]));
 
 		return node;
@@ -756,35 +756,55 @@ function handleAdd(prefmt, ev, name) {
 function handleGenKey(option) {
 	const section_id = this.section.section;
 	const type = this.section.getOption('type').formvalue(section_id);
-	let widget = this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
-	let password, required_method;
+	const widget = L.bind(function(option) {
+		return this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
+	}, this);
 
-	if (option === 'uuid' || option.match(/_uuid/))
-		required_method = 'uuid';
-	else if (type === 'shadowsocks')
-		required_method = this.section.getOption('shadowsocks_chipher')?.formvalue(section_id);
+	const callMihomoGenerator = rpc.declare({
+		object: 'luci.fchomo',
+		method: 'mihomo_generator',
+		params: ['type'],
+		expect: { '': {} }
+	});
 
-	switch (required_method) {
-		/* NONE */
-		case 'none':
-			password = '';
-			break;
-		/* UUID */
-		case 'uuid':
-			password = generateRand('uuid');
-			break;
-		/* DEFAULT */
-		default:
-			password = generateRand('hex', 16);
-			break;
+	if (typeof option === 'object') {
+		return callMihomoGenerator(option.type).then((ret) => {
+			if (ret.result)
+				for (let key in option.result)
+					widget(option.result[key]).value = ret.result[key];
+			else
+				ui.addNotification(null, E('p', _('Failed to generate %s, error: %s.').format(type, ret.error)));
+		});
+	} else {
+		let password, required_method;
+
+		if (option === 'uuid' || option.match(/_uuid/))
+			required_method = 'uuid';
+		else if (type === 'shadowsocks')
+			required_method = this.section.getOption('shadowsocks_chipher')?.formvalue(section_id);
+
+		switch (required_method) {
+			/* NONE */
+			case 'none':
+				password = '';
+				break;
+			/* UUID */
+			case 'uuid':
+				password = generateRand('uuid');
+				break;
+			/* DEFAULT */
+			default:
+				password = generateRand('hex', 16);
+				break;
+		}
+		/* AEAD */
+		(function(length) {
+			if (length && length > 0)
+				password = generateRand('base64', length);
+		}(shadowsocks_cipher_length[required_method]));
+
+		return widget(option).value = password;
 	}
-	/* AEAD */
-	(function(length) {
-		if (length && length > 0)
-			password = generateRand('base64', length);
-	}(shadowsocks_cipher_length[required_method]));
-
-	return widget.value = password;
 }
 
 function handleReload(instance, ev, section_id) {

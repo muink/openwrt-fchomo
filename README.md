@@ -1,5 +1,12 @@
 # FullCombo Shark!
 
+![Releases](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffantastic-packages.github.io%2Fpackages%2Freleases%2FSNAPSHOT%2Fpackages%2Fx86_64%2Fluci%2Findex.json&query=%24.packages.luci-app-fchomo&label=releases&style=flat-square&color=73eba0)
+[![License](https://img.shields.io/github/license/muink/openwrt-fchomo?style=flat-square)](./LICENSE)
+![Stars](https://img.shields.io/github/stars/muink/openwrt-fchomo?style=flat-square&color=ea4aaa)
+[![Discussions](https://img.shields.io/github/discussions/muink/openwrt-fchomo?style=flat-square)](https://github.com/muink/openwrt-fchomo/discussions)
+[![Static](https://img.shields.io/badge/chat-on%20Telegram-blue?style=flat-square)](https://t.me/fc_shark)
+<!-- ![Codesize](https://img.shields.io/github/languages/code-size/muink/openwrt-fchomo?style=flat-square) -->
+
 ## Features
 
 - Gateway level Transparent proxy

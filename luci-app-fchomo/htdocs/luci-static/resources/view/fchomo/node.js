@@ -292,8 +292,10 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.ListValue, 'vless_flow', _('Flow'));
-		so.value('', _('None'));
-		so.value('xtls-rprx-vision');
+		so.default = hm.vless_flow[0][0];
+		hm.vless_flow.forEach((res) => {
+			so.value.apply(so, res);
+		})
 		so.depends('type', 'vless');
 		so.modalonly = true;
 

@@ -202,11 +202,19 @@ return view.extend({
 		o.depends('type', 'tuic');
 		o.modalonly = true;
 
-		/* VMess fields */
+		/* VMess / VLESS fields */
 		o = s.option(hm.GenValue, 'vmess_uuid', _('UUID'));
 		o.rmempty = false;
 		o.validate = L.bind(hm.validateUUID, o);
-		o.depends('type', 'vmess');
+		o.depends({type: /^(vmess|vless)$/});
+		o.modalonly = true;
+
+		o = s.option(form.ListValue, 'vless_flow', _('Flow'));
+		o.default = hm.vless_flow[0][0];
+		hm.vless_flow.forEach((res) => {
+			o.value.apply(o, res);
+		})
+		o.depends('type', 'vless');
 		o.modalonly = true;
 
 		o = s.option(form.Value, 'vmess_alterid', _('Alter ID'),
@@ -225,10 +233,10 @@ return view.extend({
 			let tls_alpn = this.section.getUIElement(section_id, 'tls_alpn');
 
 			// Force enabled
-			if (['tuic', 'hysteria2'].includes(type)) {
+			if (['vless', 'tuic', 'hysteria2'].includes(type)) {
 				tls.checked = true;
 				tls.disabled = true;
-				if (!`${tls_alpn.getValue()}`)
+				if (['tuic', 'hysteria2'].includes(type) && !`${tls_alpn.getValue()}`)
 					tls_alpn.setValue('h3');
 			} else {
 				tls.disabled = null;
@@ -236,7 +244,7 @@ return view.extend({
 
 			return true;
 		}
-		o.depends({type: /^(vmess|tuic|hysteria2)$/});
+		o.depends({type: /^(vmess|vless|tuic|hysteria2)$/});
 		o.modalonly = true;
 
 		o = s.option(form.DynamicList, 'tls_alpn', _('TLS ALPN'),

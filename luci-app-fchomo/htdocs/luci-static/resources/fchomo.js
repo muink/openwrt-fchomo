@@ -68,6 +68,7 @@ const inbound_type = [
 	['mixed', _('Mixed')],
 	['shadowsocks', _('Shadowsocks')],
 	['vmess', _('VMess')],
+	['vless', _('VLESS')],
 	['tuic', _('TUIC')],
 	['hysteria2', _('Hysteria2')],
 	//['tunnel', _('Tunnel')]
@@ -241,6 +242,11 @@ const tls_client_fingerprints = [
 	['360'],
 	['qq'],
 	['random']
+];
+
+const vless_flow = [
+	['', _('None')],
+	['xtls-rprx-vision']
 ];
 
 /* Prototype */
@@ -1154,6 +1160,7 @@ return baseclass.extend({
 	shadowsocks_cipher_length,
 	stunserver,
 	tls_client_fingerprints,
+	vless_flow,
 
 	/* Prototype */
 	DynamicList: CBIDynamicList,

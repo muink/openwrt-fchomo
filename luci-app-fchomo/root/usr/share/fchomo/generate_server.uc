@@ -71,15 +71,16 @@ uci.foreach(uciconf, uciserver, (cfg) => {
 		"authentication-timeout": durationToSecond(cfg.tuic_authentication_timeout),
 		"max-udp-relay-packet-size": strToInt(cfg.tuic_max_udp_relay_packet_size),
 
-		/* HTTP / SOCKS / VMess / Tuic / Hysteria2 */
-		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess']) ? [
+		/* HTTP / SOCKS / VMess / VLESS / Tuic / Hysteria2 */
+		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess', 'vless']) ? [
 			{
 				/* HTTP / SOCKS */
 				username: cfg.username,
 				password: cfg.password,
 
-				/* VMess */
+				/* VMess / VLESS */
 				uuid: cfg.vmess_uuid,
+				flow: cfg.vless_flow,
 				alterId: strToInt(cfg.vmess_alterid)
 			}
 			/*{

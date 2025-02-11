@@ -891,7 +891,7 @@ return view.extend({
 		o = s.taboption('dns', form.SectionValue, '_dns', form.NamedSection, 'dns', 'fchomo', null);
 		ss = o.subsection;
 
-		so = ss.option(form.Value, 'port', _('Listen port'));
+		so = ss.option(form.Value, 'dns_port', _('Listen port'));
 		so.datatype = 'port'
 		so.placeholder = '7853';
 		so.rmempty = false;

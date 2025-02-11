@@ -73,7 +73,7 @@
 
 	const global_ipv6 = uci.get(cfgname, 'global', 'ipv6') || '1',
 	      dns_ipv6 = uci.get(cfgname, 'dns', 'ipv6') || '1',
-	      dns_port = uci.get(cfgname, 'dns', 'port') || '7853';
+	      dns_port = uci.get(cfgname, 'dns', 'dns_port') || '7853';
 
 	const dnsmasq_hijacked = uci.get('dhcp', '@dnsmasq[0]', 'dns_redirect') || '0',
 	      dnsmasq_port = uci.get('dhcp', '@dnsmasq[0]', 'port') || '53';

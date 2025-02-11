@@ -757,7 +757,7 @@ function handleGenKey(option) {
 	const section_id = this.section.section;
 	const type = this.section.getOption('type').formvalue(section_id);
 	const widget = L.bind(function(option) {
-		return this.map.findElement('id', 'widget.cbid.fchomo.%s.%s'.format(section_id, option));
+		return this.map.findElement('id', 'widget.' + this.cbid(section_id).replace(/\.[^\.]+$/, '.') + option);
 	}, this);
 
 	const callMihomoGenerator = rpc.declare({
